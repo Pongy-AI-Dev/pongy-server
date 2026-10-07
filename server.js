@@ -9,6 +9,7 @@ import 'dotenv/config';
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
+app.use(express.static('.'));
 
 const db = new DatabaseSync('pongy.db');
 db.exec('PRAGMA journal_mode = WAL;');
@@ -179,8 +180,6 @@ app.post('/api/chat', auth, chatLimit, async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
-
-app.get('/', (req, res) => res.json({ ok: true, name: 'Pongy AI API', version: '1.0.0' }));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log('✅ Pongy API listening on port ' + PORT));
