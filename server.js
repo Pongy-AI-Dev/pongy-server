@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { DatabaseSync } from 'node:sqlite';
+import Database from 'better-sqlite3';
 import rateLimit from 'express-rate-limit';
 import 'dotenv/config';
 
@@ -11,9 +11,9 @@ app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static('.'));
 
-const db = new DatabaseSync('pongy.db');
-db.exec('PRAGMA journal_mode = WAL;');
-db.exec('PRAGMA foreign_keys = ON;');
+const db = new Database('pongy.db');
+db.pragma('journal_mode = WAL');
+db.pragma('foreign_keys = ON');
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,10 +39,19 @@ db.exec(`
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
 const OPENROUTER_KEY = process.env.OPENROUTER_KEY || '';
 
+// Список бесплатных моделей — перебирается по порядку, если одна не работает
+const FREE_MODELS = [
+  'meta-llama/llama-3.3-70b-instruct:free',
+  'deepseek/deepseek-r1:free',
+  'qwen/qwen-2.5-72b-instruct:free',
+  'google/gemini-2.0-flash-exp:free',
+  'mistralai/mistral-nemo:free',
+  'microsoft/phi-3-medium-128k-instruct:free'
+];
+
 const authLimit = rateLimit({ windowMs: 15*60*1000, max: 20, message: { error: 'Too many attempts' } });
 const chatLimit = rateLimit({ windowMs: 60*1000, max: 20, message: { error: 'Rate limit exceeded' } });
 const globalLimit = rateLimit({ windowMs: 60*1000, max: 120 });
-
 app.use(globalLimit);
 
 function auth(req, res, next) {
@@ -88,12 +97,7 @@ app.post('/api/login', authLimit, (req, res) => {
   }
   res.json({
     token: makeToken(user),
-    user: {
-      id: user.id,
-      email: user.email,
-      nickname: user.nickname,
-      subscription_until: user.subscription_until
-    }
+    user: { id: user.id, email: user.email, nickname: user.nickname, subscription_until: user.subscription_until }
   });
 });
 
@@ -135,6 +139,7 @@ app.delete('/api/chats/:id', auth, (req, res) => {
   res.json({ ok: true });
 });
 
+// AI-ПРОКСИ с перебором бесплатных моделей
 app.post('/api/chat', auth, chatLimit, async (req, res) => {
   const { messages, model } = req.body || {};
   if (!Array.isArray(messages) || !messages.length) {
@@ -142,43 +147,72 @@ app.post('/api/chat', auth, chatLimit, async (req, res) => {
   }
   if (!OPENROUTER_KEY) return res.status(500).json({ error: 'Server not configured' });
 
-  try {
-    const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENROUTER_KEY}`,
-        'HTTP-Referer': 'https://pongy.chat',
-        'X-Title': 'Pongy AI'
-      },
-      body: JSON.stringify({
-        model: model || 'deepseek/deepseek-chat-v3-0324:free',
-        stream: true,
-        messages
-      })
-    });
+  // Формируем список моделей для попытки
+  const modelsToTry = [];
+  if (model) modelsToTry.push(model);
+  FREE_MODELS.forEach(m => { if (!modelsToTry.includes(m)) modelsToTry.push(m); });
 
-    if (!r.ok) {
-      const txt = await r.text();
-      return res.status(r.status).send(txt);
+  let lastError = null;
+  let lastStatus = 500;
+
+  for (const m of modelsToTry) {
+    try {
+      const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${OPENROUTER_KEY}`,
+          'HTTP-Referer': 'https://pongy.chat',
+          'X-Title': 'Pongy AI'
+        },
+        body: JSON.stringify({ model: m, stream: true, messages })
+      });
+
+      // Если 401 — неверный ключ, нет смысла пробовать другие
+      if (r.status === 401) {
+        const txt = await r.text();
+        return res.status(401).send(txt);
+      }
+
+      // Если модель недоступна/перегружена — пробуем следующую
+      if (!r.ok) {
+        lastError = await r.text();
+        lastStatus = r.status;
+        console.log('[Pongy] Model failed: ' + m + ' → ' + r.status);
+        continue;
+      }
+
+      // Успех — стримим клиенту
+      console.log('[Pongy] Using model: ' + m);
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+      res.setHeader('X-Accel-Buffering', 'no');
+
+      const reader = r.body.getReader();
+      const dec = new TextDecoder();
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        res.write(dec.decode(value, { stream: true }));
+      }
+      res.end();
+      return;
+
+    } catch (e) {
+      lastError = e.message;
+      console.log('[Pongy] Model error: ' + m + ' → ' + e.message);
+      continue;
     }
-
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.setHeader('X-Accel-Buffering', 'no');
-
-    const reader = r.body.getReader();
-    const dec = new TextDecoder();
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      res.write(dec.decode(value, { stream: true }));
-    }
-    res.end();
-  } catch (e) {
-    res.status(500).json({ error: e.message });
   }
+
+  // Все модели не сработали
+  console.error('[Pongy] All models failed');
+  res.status(lastStatus).send(lastError || 'All models are currently unavailable');
+});
+
+app.get('/', (req, res) => {
+  res.sendFile('index.html', { root: '.' });
 });
 
 const PORT = process.env.PORT || 3000;
