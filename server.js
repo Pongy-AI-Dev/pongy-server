@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import Database from 'better-sqlite3';
+import { DatabaseSync } from 'node:sqlite';
 import rateLimit from 'express-rate-limit';
 import 'dotenv/config';
 
