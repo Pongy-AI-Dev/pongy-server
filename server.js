@@ -10,10 +10,9 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
-// === БАЗА ДАННЫХ ===
-const db = new Database('pongy.db');
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
+const db = new DatabaseSync('pongy.db');
+db.exec('PRAGMA journal_mode = WAL;');
+db.exec('PRAGMA foreign_keys = ON;');
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,14 +38,12 @@ db.exec(`
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
 const OPENROUTER_KEY = process.env.OPENROUTER_KEY || '';
 
-// === ЛИМИТЫ ЗАПРОСОВ ===
 const authLimit = rateLimit({ windowMs: 15*60*1000, max: 20, message: { error: 'Too many attempts' } });
 const chatLimit = rateLimit({ windowMs: 60*1000, max: 20, message: { error: 'Rate limit exceeded' } });
 const globalLimit = rateLimit({ windowMs: 60*1000, max: 120 });
 
 app.use(globalLimit);
 
-// === АУТЕНТИФИКАЦИЯ ===
 function auth(req, res, next) {
   const h = req.headers.authorization || '';
   const token = h.replace('Bearer ', '');
@@ -63,7 +60,6 @@ function makeToken(user) {
   return jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '30d' });
 }
 
-// === РЕГИСТРАЦИЯ ===
 app.post('/api/register', authLimit, (req, res) => {
   const { email, password } = req.body || {};
   if (!email || !password || password.length < 6) {
@@ -83,7 +79,6 @@ app.post('/api/register', authLimit, (req, res) => {
   }
 });
 
-// === ВХОД ===
 app.post('/api/login', authLimit, (req, res) => {
   const { email, password } = req.body || {};
   const user = db.prepare('SELECT * FROM users WHERE email = ?').get((email || '').toLowerCase());
@@ -101,7 +96,6 @@ app.post('/api/login', authLimit, (req, res) => {
   });
 });
 
-// === ПРОФИЛЬ ===
 app.get('/api/me', auth, (req, res) => {
   const user = db.prepare('SELECT id,email,nickname,subscription_until FROM users WHERE id=?').get(req.user.id);
   if (!user) return res.status(404).json({ error: 'Not found' });
@@ -114,7 +108,6 @@ app.put('/api/me', auth, (req, res) => {
   res.json({ ok: true });
 });
 
-// === ЧАТЫ ===
 app.get('/api/chats', auth, (req, res) => {
   const rows = db.prepare('SELECT * FROM chats WHERE user_id=? ORDER BY pinned DESC, updated_at DESC').all(req.user.id);
   res.json(rows.map(r => ({ ...r, messages: JSON.parse(r.messages), pinned: !!r.pinned })));
@@ -141,7 +134,6 @@ app.delete('/api/chats/:id', auth, (req, res) => {
   res.json({ ok: true });
 });
 
-// === AI-ПРОКСИ (СТРИМИНГ) ===
 app.post('/api/chat', auth, chatLimit, async (req, res) => {
   const { messages, model } = req.body || {};
   if (!Array.isArray(messages) || !messages.length) {
@@ -188,7 +180,6 @@ app.post('/api/chat', auth, chatLimit, async (req, res) => {
   }
 });
 
-// === ПРОВЕРКА РАБОТОСПОСОБНОСТИ ===
 app.get('/', (req, res) => res.json({ ok: true, name: 'Pongy AI API', version: '1.0.0' }));
 
 const PORT = process.env.PORT || 3000;
