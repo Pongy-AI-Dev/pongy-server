@@ -1,5 +1,5 @@
 # pongy-server
-Pongy AI — это новый персональный ИИ-помощник на базе DeepSeek V.4.1 и собственной модели Pongy AI V1.1.
+Pongy AI — это новый персональный и универсальный ИИ-помощник на базе собственной модели Pongy AI, а также хост-сервера для API Key других ИИ с умным режимом автопереключения моделей!
 # 🐣 Pongy AI
 
 **Kind personal AI assistant — similar to Verity, yet friendlier.**
