@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="referrer" content="no-referrer">
-<meta name="theme-color" content="#6366f1">
 <title>Pongy AI</title>
 <link rel="icon" type="image/png" href="/favicon.png">
 <style>
@@ -15,7 +14,7 @@ body.dark{--bg:#0d0d10;--bg2:#15151a;--bg3:#1c1c22;--fg:#e8e8ee;--fg2:#8a8a95;--
 body{background:var(--bg);color:var(--fg);display:flex;overflow:hidden}
 button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 input,textarea,select{font:inherit;color:inherit;outline:none}
-#sidebar{width:290px;height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:width .25s,transform .25s;position:relative}
+#sidebar{width:290px;height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:width .25s;position:relative}
 body.collapsed #sidebar{width:64px}
 body.hidden #sidebar{width:0;border:none;overflow:hidden}
 body.hidden #collapseBtn{display:none}
@@ -31,7 +30,6 @@ body.collapsed .sb-row{flex-direction:column}
 .icon-btn:hover{background:var(--hover);color:var(--fg)}
 .sb-search{padding:0 10px 8px}
 .sb-search-inner{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:8px 12px}
-.sb-search-inner:focus-within{border-color:var(--accent)}
 .sb-search-inner svg{color:var(--fg2);flex-shrink:0}
 #sbSearchInput{flex:1;background:transparent;border:none;font-size:13px;min-width:0}
 .sb-list{flex:1;overflow-y:auto;padding:6px 8px}
@@ -106,6 +104,8 @@ body.collapsed .chat-item{padding:9px;justify-content:center}
 .thinking .dots span:nth-child(2){animation-delay:.2s}
 .thinking .dots span:nth-child(3){animation-delay:.4s}
 @keyframes pulse{0%,60%,100%{opacity:.3}30%{opacity:1}}
+.retry-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:8px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:#f59e0b;font-size:11.5px;font-weight:500;margin-bottom:6px;animation:pulse2 1.5s infinite}
+@keyframes pulse2{0%,100%{opacity:1}50%{opacity:.6}}
 .msg-meta{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
 .meta-badge{padding:3px 8px;border-radius:8px;background:var(--bg3);border:1px solid var(--border);font-size:11px;color:var(--fg2)}
 .meta-badge.accent{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.3);color:var(--accent)}
@@ -135,12 +135,10 @@ body.collapsed .chat-item{padding:9px;justify-content:center}
 .field-label{font-size:13.5px;font-weight:600;margin-bottom:10px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .opt{padding:11px 13px;border-radius:10px;border:1px solid var(--border);background:var(--bg3);color:var(--fg2);font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;width:100%}
-.opt:hover{background:var(--hover)}
 .opt.active{border-color:var(--accent);background:rgba(99,102,241,.1);color:var(--accent)}
 .inp{width:100%;padding:11px 15px;border-radius:12px;border:1px solid var(--border);background:var(--bg3);font-size:14px;color:var(--fg)}
 .inp:focus{border-color:var(--accent)}
 .support-link{display:flex;align-items:center;gap:12px;padding:14px;border-radius:12px;background:var(--bg3);border:1px solid var(--border);text-decoration:none;color:var(--fg);margin-top:16px}
-.support-link:hover{border-color:var(--accent)}
 .support-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .support-title{font-weight:600;font-size:14px}
 .support-email{font-size:12.5px;color:var(--accent);margin-top:2px}
@@ -152,7 +150,6 @@ body.collapsed .chat-item{padding:9px;justify-content:center}
 .confirm-actions{display:flex;gap:10px;justify-content:flex-end}
 .confirm-btn{padding:10px 20px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer}
 .confirm-btn.primary{background:var(--accent);color:#fff}
-.confirm-btn.primary:hover{background:var(--accent-h)}
 .confirm-btn.secondary{background:transparent;border:1px solid var(--border);color:var(--fg2)}
 #authScreen{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px}
 #authScreen.show{display:flex}
@@ -169,14 +166,12 @@ body.collapsed .chat-item{padding:9px;justify-content:center}
 .plan-btn:hover{opacity:.9}
 .pay-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .pay-method{padding:16px 8px;border-radius:14px;border:2px solid var(--border);background:var(--bg3);color:var(--fg);display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-size:12px;font-weight:500;text-align:center}
-.pay-method:hover{border-color:var(--accent)}
 .pay-method.selected{border-color:var(--accent);background:rgba(99,102,241,.1)}
 .pay-method svg{width:28px;height:28px}
 .pay-icon-sbp{color:#10b981}.pay-icon-card{color:#6366f1}.pay-icon-ru{color:#ef4444}
 .card-form{display:flex;flex-direction:column;gap:10px;margin-top:14px}
 .card-form .row{display:grid;grid-template-columns:2fr 1fr;gap:10px}
 .pay-back{width:100%;padding:12px;border-radius:12px;background:transparent;border:1px solid var(--border);color:var(--fg2);font-weight:600;font-size:13px;cursor:pointer;margin-top:10px}
-.pay-back:hover{color:var(--fg);border-color:var(--fg2)}
 .qr-wrap{margin:12px auto;width:220px;height:220px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:10px;box-shadow:0 4px 20px rgba(0,0,0,.1)}
 .qr-wrap img{width:100%;height:100%;display:block;border-radius:6px}
 .qr-hint{text-align:center;font-size:13px;color:var(--fg2);line-height:1.5}
@@ -212,7 +207,7 @@ body.collapsed #sidebar.open{transform:translateX(0)}
 <button type="button" id="eyeAuth" class="eye"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
 </div>
 <div id="authPass2Wrap" style="position:relative;margin-bottom:10px;display:none">
-<input id="authPassword2" type="password" placeholder="Confirm password" class="inp" style="padding-right:44px" autocomplete="new-password">
+<input id="authPassword2" type="password" placeholder="Confirm password" class="inp" style="padding-right:44px">
 <button type="button" id="eyeAuth2" class="eye"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
 </div>
 <div style="text-align:right;margin-bottom:14px"><a id="forgotPasswordBtn" style="color:var(--accent);cursor:pointer;font-size:12.5px;text-decoration:underline">Forgot password?</a></div>
@@ -241,7 +236,7 @@ Continue with Google
 <div class="sb-head">
 <div class="logo" id="logoTop"></div>
 <div class="sb-title">Pongy AI</div>
-<button class="icon-btn" id="newChatBtn" title="New chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+<button class="icon-btn" id="newChatBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
 </div>
 <div class="sb-search"><div class="sb-search-inner"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg><input id="sbSearchInput" type="text" placeholder="Search chats" autocomplete="off"></div></div>
 <div class="sb-list" id="chatList"></div>
@@ -278,10 +273,10 @@ Continue with Google
 <div class="input-box">
 <input type="file" id="fileInput" hidden multiple>
 <button id="attachBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
-<textarea id="userInput" rows="1" placeholder="Ask Pongy your first question" autocomplete="off"></textarea>
+<textarea id="userInput" rows="1" placeholder="Ask Pongy your first question"></textarea>
 <button id="micBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0014 0v-2M12 19v3M8 22h8"/></svg></button>
 <button id="sendBtn" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
-<button id="stopBtn" style="display:none;background:#ef4444;color:#fff"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="7" width="10" height="10" rx="2"/></svg></button>
+<button id="stopBtn" style="display:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="7" width="10" height="10" rx="2"/></svg></button>
 </div>
 <div class="footer-text" id="footerText"></div>
 </div>
@@ -297,9 +292,7 @@ Continue with Google
 <div style="margin-bottom:18px"><div class="field-label" id="nickLabel">Nickname</div><input class="inp" id="nickInput" maxlength="32"></div>
 <div><div class="field-label">Subscription</div><div id="subStatusBox"></div></div>
 <a class="support-link" href="mailto:support@pongy.ai"><div class="support-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg></div><div><div class="support-title">Support</div><div class="support-email">support@pongy.ai</div></div></a>
-<button id="logoutBtnSettings" style="width:100%;margin-top:16px;padding:14px;border-radius:12px;background:transparent;border:1px solid var(--danger);color:var(--danger);font-weight:600;font-size:13.5px;cursor:pointer">
-<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-3px;margin-right:6px"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Sign out
-</button>
+<button id="logoutBtnSettings" style="width:100%;margin-top:16px;padding:14px;border-radius:12px;background:transparent;border:1px solid var(--danger);color:var(--danger);font-weight:600;font-size:13.5px;cursor:pointer">Sign out</button>
 </div>
 </div>
 </div>
@@ -344,11 +337,12 @@ var API_URL='https://pongy-server.onrender.com';
 var SUB_PRICE=190;
 var RECEIVER_PHONE='+79001234567';
 var RECEIVER_NAME='Pongy AI';
+var MAX_RETRIES=3;
 var LOGO='<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="lg" x1="0.15" y1="0" x2="0.85" y2="1"><stop offset="0%" stop-color="#5eead4"/><stop offset="50%" stop-color="#6366f1"/><stop offset="100%" stop-color="#1e3a8a"/></linearGradient></defs><rect width="100" height="100" rx="24" fill="#ddd6fe"/><path fill="url(#lg)" d="M 30 12 L 58 12 Q 82 12 82 36 Q 82 60 58 60 L 46 60 L 46 78 Q 46 86 56 86 Q 64 86 64 92 Q 64 98 54 98 Q 32 98 32 78 L 32 12 Z M 58 28 Q 44 28 44 36 Q 44 44 58 44 Q 68 44 68 36 Q 68 28 58 28 Z"/><circle cx="76" cy="82" r="9" fill="#7c3aed"/></svg>';
 
 var T={
-en:{greet:'Hello. I am Pongy, your personal assistant. I am similar to Verity, yet kinder. I am prepared to assist you with any task.',greetN:function(n){return 'Hello, '+n+'. I am Pongy, your personal assistant.'},ph:'Ask Pongy your first question',reasoning:'Reasoning',search:'Search',thinking:'Reasoning',searching:'Searching',composing:'Composing',foot:'Generated by AI · Pongy AI V1.0 · © 2026 Pongy',untitled:'New chat',history:'History',pinned:'Pinned',noChats:'No chats',newChat:'New chat',settings:'Settings',guide:'Guide',del:'Delete',delText:'Delete this chat? Data will be lost!',cancel:'Cancel',rename:'Rename',renamePh:'New name',pin:'Pin',unpin:'Unpin',copy:'Copy',copied:'Copied',edit:'Edit',save:'Save',refine:'Refine',report:'Report',retry:'Retry',today:'today',yesterday:'yesterday',now:'just now',active:'Open now',err:'Error',subStatus:'Subscription',upgrade:'Upgrade',plusActive:'Plus Active',subBenefits:'Subscription benefits:',b1:'Extra Mode',b2:'Best Agents',b3:'200 requests',b4:'100000+ tokens',b5:'Better support',buyPlus:'Buy Plus',extendPlus:'Extend Plus',payTitle:'Payment method',paySbp:'SBP',payCard:'Bank card',payCardRu:'Russian card',payNext:'Continue',payBack:'Back',payConfirm:'Pay',cardNum:'Card number',cardExp:'MM/YY',cardCvc:'CVC',cardHolder:'Cardholder name',payAmount:'Amount',payUnavailable:'Payment is currently unavailable. Please try again later.',sbpTitle:'SBP — Fast Payment System',sbpHint:'Scan the QR code with your bank app',sbpHint2:'Or transfer to phone number',copyBtn:'Copy',copiedShort:'✓ Copied',settings_sub:'Subscription'},
-ru:{greet:'Здравствуйте. Я — Pongy, ваш персональный помощник. Готов помочь с любой задачей.',greetN:function(n){return 'Здравствуйте, '+n+'. Я — Pongy.'},ph:'Задайте Pongy первый вопрос',reasoning:'Размышление',search:'Поиск',thinking:'Размышляю',searching:'Поиск',composing:'Формулирую',foot:'Сгенерировано ИИ · Pongy AI V1.0 · © 2026 Pongy',untitled:'Новый диалог',history:'История',pinned:'Закреплённые',noChats:'Пусто',newChat:'Новый чат',settings:'Настройки',guide:'Руководство',del:'Удалить',delText:'Удалить этот чат? Данные будут потеряны!',cancel:'Отмена',rename:'Переименовать',renamePh:'Новое название',pin:'Закрепить',unpin:'Открепить',copy:'Копировать',copied:'Скопировано',edit:'Редактировать',save:'Сохранить',refine:'Уточнить',report:'Жалоба',retry:'Повторить',today:'сегодня',yesterday:'вчера',now:'только что',active:'Открыт',err:'Ошибка',subStatus:'Подписка',upgrade:'Upgrade',plusActive:'Plus Active',subBenefits:'Преимущества:',b1:'Extra Mode',b2:'Best Agents',b3:'200 requests',b4:'100000+ tokens',b5:'Better support',buyPlus:'Купить Plus',extendPlus:'Продлить Plus',payTitle:'Способ оплаты',paySbp:'СБП',payCard:'Карта',payCardRu:'Карта РФ',payNext:'Продолжить',payBack:'Назад',payConfirm:'Оплатить',cardNum:'Номер карты',cardExp:'ММ/ГГ',cardCvc:'CVC',cardHolder:'Имя владельца',payAmount:'Сумма',payUnavailable:'В данный момент оплата недоступна. Попробуйте позже.',sbpTitle:'СБП',sbpHint:'Отсканируйте QR-код в приложении банка',sbpHint2:'Или по номеру телефона',copyBtn:'Копировать',copiedShort:'✓ Скопировано',settings_sub:'Подписка'}
+en:{greet:'Hello. I am Pongy, your personal assistant. I am similar to Verity, yet kinder. I am prepared to assist you with any task.',greetN:function(n){return 'Hello, '+n+'. I am Pongy, your personal assistant.'},ph:'Ask Pongy your first question',reasoning:'Reasoning',search:'Search',thinking:'Reasoning',searching:'Searching',composing:'Composing',foot:'Generated by AI · Pongy AI V1.0 · © 2026 Pongy',untitled:'New chat',history:'History',pinned:'Pinned',noChats:'No chats',newChat:'New chat',settings:'Settings',guide:'Guide',del:'Delete',delText:'Delete this chat? Data will be lost!',cancel:'Cancel',rename:'Rename',renamePh:'New name',pin:'Pin',unpin:'Unpin',copy:'Copy',copied:'Copied',edit:'Edit',save:'Save',refine:'Refine',report:'Report',retry:'Retry',active:'Open now',now:'just now',yesterday:'yesterday',err:'Error',switching:'Switching to backup model…',reconnected:'Reconnected',settings_sub:'Subscription',subBenefits:'Subscription benefits:',b1:'Extra Mode',b2:'Best Agents',b3:'200 requests',b4:'100000+ tokens',b5:'Better support',buyPlus:'Buy Plus',extendPlus:'Extend Plus',payTitle:'Payment method',paySbp:'SBP',payCard:'Bank card',payCardRu:'Russian card',payNext:'Continue',payBack:'Back',payConfirm:'Pay',cardNum:'Card number',cardExp:'MM/YY',cardCvc:'CVC',cardHolder:'Cardholder name',payAmount:'Amount',payUnavailable:'Payment is currently unavailable. Please try again later.',sbpTitle:'SBP — Fast Payment System',sbpHint:'Scan the QR code with your bank app',sbpHint2:'Or transfer to phone number',copyBtn:'Copy',copiedShort:'✓ Copied',upgrade:'Upgrade',plusActive:'Plus Active'},
+ru:{greet:'Здравствуйте. Я — Pongy, ваш персональный помощник. Готов помочь с любой задачей.',greetN:function(n){return 'Здравствуйте, '+n+'. Я — Pongy.'},ph:'Задайте Pongy первый вопрос',reasoning:'Размышление',search:'Поиск',thinking:'Размышляю',searching:'Поиск',composing:'Формулирую',foot:'Сгенерировано ИИ · Pongy AI V1.0 · © 2026 Pongy',untitled:'Новый диалог',history:'История',pinned:'Закреплённые',noChats:'Пусто',newChat:'Новый чат',settings:'Настройки',guide:'Руководство',del:'Удалить',delText:'Удалить этот чат? Данные будут потеряны!',cancel:'Отмена',rename:'Переименовать',renamePh:'Новое название',pin:'Закрепить',unpin:'Открепить',copy:'Копировать',copied:'Скопировано',edit:'Редактировать',save:'Сохранить',refine:'Уточнить',report:'Жалоба',retry:'Повторить',active:'Открыт',now:'только что',yesterday:'вчера',err:'Ошибка',switching:'Переключаюсь на резервную модель…',reconnected:'Переподключено',settings_sub:'Подписка',subBenefits:'Преимущества:',b1:'Extra Mode',b2:'Best Agents',b3:'200 requests',b4:'100000+ tokens',b5:'Better support',buyPlus:'Купить Plus',extendPlus:'Продлить Plus',payTitle:'Способ оплаты',paySbp:'СБП',payCard:'Карта',payCardRu:'Карта РФ',payNext:'Продолжить',payBack:'Назад',payConfirm:'Оплатить',cardNum:'Номер карты',cardExp:'ММ/ГГ',cardCvc:'CVC',cardHolder:'Имя владельца',payAmount:'Сумма',payUnavailable:'В данный момент оплата недоступна. Попробуйте позже.',sbpTitle:'СБП',sbpHint:'Отсканируйте QR-код в приложении банка',sbpHint2:'Или по номеру телефона',copyBtn:'Копировать',copiedShort:'✓ Скопировано',upgrade:'Upgrade',plusActive:'Plus Active'}
 };
 ['es','de','fr','it','pt','zh','ja','ar'].forEach(function(l){T[l]=JSON.parse(JSON.stringify(T.en))});
 var LANGS=[{code:'en',label:'English',flag:'🇬🇧'},{code:'ru',label:'Русский',flag:'🇷🇺'},{code:'es',label:'Español',flag:'🇪🇸'},{code:'de',label:'Deutsch',flag:'🇩🇪'},{code:'fr',label:'Français',flag:'🇫🇷'},{code:'it',label:'Italiano',flag:'🇮🇹'},{code:'pt',label:'Português',flag:'🇵🇹'},{code:'zh',label:'中文',flag:'🇨🇳'},{code:'ja',label:'日本語',flag:'🇯🇵'},{code:'ar',label:'العربية',flag:'🇸🇦'}];
@@ -373,12 +367,11 @@ function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 var settings=load('pongy_settings_ui',{theme:'light',lang:'en',nickname:''});
 var chats=[];
 var activeId=null;
-var state={streaming:false,smart:true,search:false,abort:null,agent:'low',thinking:'middle',query:'',renaming:null,sidebarHidden:load('pongy_sidebar_hidden',false)};
+var state={streaming:false,smart:true,search:false,abort:null,agent:'low',thinking:'middle',query:'',renaming:null,sidebarHidden:load('pongy_sidebar_hidden',false),usedModels:[]};
 
 function t(){return T[settings.lang]||T.en}
 function api(path,opts){opts=opts||{};opts.headers=opts.headers||{};if(authToken)opts.headers['Authorization']='Bearer '+authToken;if(opts.body&&typeof opts.body!=='string'){opts.headers['Content-Type']='application/json';opts.body=JSON.stringify(opts.body)}return fetch(API_URL+path,opts).then(function(r){if(!r.ok)return r.text().then(function(txt){var msg='HTTP '+r.status;try{var j=JSON.parse(txt);msg=j.error||j.message||msg}catch(e){msg=txt.slice(0,200)||msg}throw new Error(msg)});return r.json()})}
 
-/* ============ AUTH ============ */
 function showAuth(){$('authScreen').classList.add('show');$('authLogo').innerHTML=LOGO}
 function hideAuth(){$('authScreen').classList.remove('show')}
 function setAuthError(msg){var e=$('authError');if(msg){e.textContent=msg;e.style.display='block'}else{e.style.display='none'}}
@@ -449,7 +442,6 @@ api('/api/register',{method:'POST',body:{email:pendingEmail,password:pendingPass
 .finally(function(){btn.disabled=false;btn.textContent='Confirm'});
 };
 
-/* ============ CHATS ============ */
 function ensureChat(){
 if(!Array.isArray(chats)||!chats.length){chats=[{id:Date.now()+'-'+Math.random().toString(36).slice(2,6),title:'',messages:[],updatedAt:Date.now(),pinned:false}]}
 if(!chats.find(function(c){return c.id===activeId}))activeId=chats[0].id;
@@ -475,9 +467,7 @@ activeId=chats[0].id;
 }
 function syncChat(chat){
 if(!authToken||!chat)return;
-api('/api/chats/'+encodeURIComponent(chat.id),{method:'PUT',body:{title:chat.title,messages:chat.messages,pinned:chat.pinned}})
-.then(function(){console.log('[Pongy] chat saved:',chat.id)})
-.catch(function(e){console.warn('[Pongy] save failed:',e.message)});
+api('/api/chats/'+encodeURIComponent(chat.id),{method:'PUT',body:{title:chat.title,messages:chat.messages,pinned:chat.pinned}}).catch(function(){});
 }
 function deleteRemote(id){if(!authToken)return;api('/api/chats/'+encodeURIComponent(id),{method:'DELETE'}).catch(function(){})}
 function newChat(){
@@ -487,7 +477,7 @@ chats.unshift({id:id,title:'',messages:[],updatedAt:Date.now(),pinned:false});
 activeId=id;save('pongy_activeId',id);
 syncChat(chats[0]);
 renderChats();renderMessages();updateTitle();
-if(window.innerWidth<768){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
+if(window.innerWidth<768){$('sidebar').classList.remove('open');$('overlay').classList.remove('show')}
 }
 function deleteChat(id){
 showConfirm(t().del,t().delText,t().del,t().cancel,function(){
@@ -498,21 +488,19 @@ if(!chats.find(function(c){return c.id===activeId}))activeId=chats[0].id;
 renderChats();renderMessages();updateTitle();
 });
 }
-
 function fmtTime(ts,active){
 if(!ts)return '';if(active)return t().active;
 var now=Date.now(),s=Math.floor((now-ts)/1000);
 if(s<5)return t().now;
-if(s<60)return s+' s';
-var m=Math.floor(s/60);if(m<60)return m+' m';
+if(s<60)return s+'s';
+var m=Math.floor(s/60);if(m<60)return m+'m';
 var h=Math.floor(m/60);
 var today=new Date(),d=new Date(ts);
-if(d.toDateString()===today.toDateString())return h+' h';
+if(d.toDateString()===today.toDateString())return h+'h';
 var yd=new Date(today.getTime()-86400000);
 if(d.toDateString()===yd.toDateString())return t().yesterday;
 return d.toLocaleDateString();
 }
-
 function renderChats(){
 var list=$('chatList');list.innerHTML='';
 var tt=t();
@@ -521,7 +509,6 @@ var filtered=chats.filter(function(c){return !q||(c.title||tt.untitled).toLowerC
 var pinned=filtered.filter(function(c){return c.pinned});
 var regular=filtered.filter(function(c){return !c.pinned});
 regular.sort(function(a,b){return (b.updatedAt||0)-(a.updatedAt||0)});
-
 function make(c){
 var item=document.createElement('div');
 item.className='chat-item'+(c.id===activeId?' active':'');
@@ -551,21 +538,18 @@ del.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" strok
 del.onclick=function(e){e.stopPropagation();deleteChat(c.id)};
 acts.appendChild(pin);acts.appendChild(ren);acts.appendChild(del);
 item.appendChild(ico);item.appendChild(body);item.appendChild(acts);
-item.onclick=function(){state.renaming=null;activeId=c.id;save('pongy_activeId',activeId);renderChats();renderMessages();updateTitle();if(window.innerWidth<768){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show')}};
+item.onclick=function(){state.renaming=null;activeId=c.id;save('pongy_activeId',activeId);renderChats();renderMessages();updateTitle();if(window.innerWidth<768){$('sidebar').classList.remove('open');$('overlay').classList.remove('show')}};
 return item;
 }
-
 if(!filtered.length){var e=document.createElement('div');e.className='chat-empty';e.textContent=tt.noChats;list.appendChild(e);return}
 if(pinned.length){var l1=document.createElement('div');l1.className='sb-label';l1.textContent=tt.pinned;list.appendChild(l1);pinned.forEach(function(c){list.appendChild(make(c))})}
 if(regular.length){var l2=document.createElement('div');l2.className='sb-label';l2.textContent=tt.history;list.appendChild(l2);regular.forEach(function(c){list.appendChild(make(c))})}
 }
-
 function updateTitle(){
 var c=chats.find(function(x){return x.id===activeId});
 $('topbarTitle').textContent=(c&&c.title)||t().untitled;
 }
 
-/* ============ MESSAGES RENDER ============ */
 function renderMd(text){
 text=esc(text);
 text=text.replace(/```([\w+-]*)\n?([\s\S]*?)```/g,function(_,l,c){return '<pre>'+c.replace(/^\n/,'')+'</pre>'});
@@ -618,6 +602,13 @@ var av=document.createElement('div');av.className='avatar '+(m.role==='user'?'us
 if(m.role==='user'){av.textContent=(settings.nickname||'U').trim().charAt(0).toUpperCase()||'U'}else{av.textContent='P'}
 d.appendChild(av);
 var content=document.createElement('div');content.className='msg-content';
+
+if(m.role==='assistant'&&m.meta&&m.meta.switching){
+var sw=document.createElement('div');sw.className='retry-badge';
+sw.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg> '+esc(tt.switching);
+content.appendChild(sw);
+}
+
 var b=document.createElement('div');b.className='bubble';b.id='bubble-'+idx;
 
 if(m.role==='user'){b.textContent=m.text||''}
@@ -637,9 +628,9 @@ if(m.role==='assistant'&&m.meta&&!active&&m.meta.endTime){
 var meta=document.createElement('div');meta.className='msg-meta';
 if(m.meta.smart)meta.innerHTML+='<span class="meta-badge accent">'+esc(tt.reasoning)+'</span>';
 if(m.meta.search)meta.innerHTML+='<span class="meta-badge accent">'+esc(tt.search)+'</span>';
+if(m.meta.retries&&m.meta.retries>0)meta.innerHTML+='<span class="meta-badge">🔄 '+m.meta.retries+'</span>';
 var totalMs=m.meta.endTime-m.meta.startTime;
-var secs=(totalMs/1000).toFixed(1);
-meta.innerHTML+='<span class="meta-badge">'+secs+' s</span>';
+meta.innerHTML+='<span class="meta-badge">'+(totalMs/1000).toFixed(1)+'s</span>';
 content.appendChild(meta);
 }
 
@@ -663,7 +654,6 @@ else if(a==='report')startReport(idx,acts);
 });
 content.appendChild(acts);
 }
-
 d.appendChild(content);
 return d;
 }
@@ -705,10 +695,7 @@ var p=document.createElement('div');p.className='report-popup';p.style.cssText='
 p.innerHTML='<div style="font-size:13.5px;font-weight:600;margin-bottom:8px">'+esc(tt.report)+'</div><textarea style="width:100%;min-height:70px;padding:8px;border:1px solid var(--border);border-radius:10px;background:var(--bg3);font-size:13px;color:var(--fg);resize:vertical"></textarea><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px"><button class="cancel-r" style="padding:7px 12px;border-radius:9px;font-size:12.5px;background:var(--hover);color:var(--fg2);border:none;cursor:pointer">'+esc(tt.cancel)+'</button><button class="send-r" style="padding:7px 12px;border-radius:9px;font-size:12.5px;background:var(--accent);color:#fff;border:none;cursor:pointer">'+esc(tt.report)+'</button></div>';
 el.style.position='relative';el.appendChild(p);
 p.querySelector('.cancel-r').onclick=function(){p.remove()};
-p.querySelector('.send-r').onclick=function(){
-p.innerHTML='<div style="text-align:center;padding:10px;font-size:13px;color:var(--fg)">✓</div>';
-setTimeout(function(){p.remove()},1500);
-};
+p.querySelector('.send-r').onclick=function(){p.innerHTML='<div style="text-align:center;padding:10px;font-size:13px">✓</div>';setTimeout(function(){p.remove()},1500)};
 }
 function retryMsg(idx){
 var c=chats.find(function(x){return x.id===activeId});if(!c||state.streaming)return;
@@ -721,92 +708,143 @@ syncChat(c);renderChats();renderMessages();
 sendMsg(um.text,{smart:state.smart,search:state.search});
 }
 
-/* ============ STREAM ============ */
-function streamApi(payload,onChunk,onDone,onError){
-var ctrl=typeof AbortController!=='undefined'?new AbortController():null;
-state.abort=ctrl||{aborted:false,abort:function(){this.aborted=true}};
+/* ====== SINGLE STREAM CALL WITH MODEL FALLBACK ====== */
+function streamOnce(payload,signal,onChunk,onDone,onError){
 var msgs=[{role:'system',content:payload.system}].concat(payload.history).concat([{role:'user',content:payload.text}]);
+var headers={'Content-Type':'application/json','Authorization':'Bearer '+authToken};
+if(payload.exclude&&payload.exclude.length)headers['X-Exclude-Models']=payload.exclude.join(',');
 fetch(API_URL+'/api/chat',{
 method:'POST',
-headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},
-body:JSON.stringify({messages:msgs}),
-signal:ctrl?ctrl.signal:undefined
+headers:headers,
+body:JSON.stringify({messages:msgs,exclude:payload.exclude||[]}),
+signal:signal
 }).then(function(res){
 if(!res.ok)return res.text().then(function(txt){
 var msg='HTTP '+res.status;
 try{var j=JSON.parse(txt);msg=(j.error&&(j.error.message||j.error))||j.message||msg}catch(e){}
-throw new Error(msg);
+var err=new Error(msg);err.status=res.status;throw err;
 });
-var reader=res.body.getReader();var dec=new TextDecoder();var buf='';
+var reader=res.body.getReader();var dec=new TextDecoder();var buf='';var got=0;
 function pump(){
 return reader.read().then(function(r){
-if(r.done){onDone();return}
+if(r.done){onDone(got);return}
 buf+=dec.decode(r.value,{stream:true});
 var lines=buf.split('\n');buf=lines.pop()||'';
 for(var i=0;i<lines.length;i++){
 var line=lines[i].trim();
 if(!line||line.indexOf('data:')!==0)continue;
 var data=line.slice(5).trim();
-if(data==='[DONE]'){onDone();return}
-try{var j=JSON.parse(data);var dd=j.choices&&j.choices[0]&&j.choices[0].delta&&j.choices[0].delta.content;if(dd)onChunk(dd)}catch(e){}
+if(data==='[DONE]'){onDone(got);return}
+try{var j=JSON.parse(data);var dd=j.choices&&j.choices[0]&&j.choices[0].delta&&j.choices[0].delta.content;if(dd){got+=dd.length;onChunk(dd)}}catch(e){}
 }
 return pump();
 });
 }
 return pump();
 }).catch(function(e){
-if(e.name==='AbortError')return;
-onError({message:e.message||'Connection failed'});
+if(e.name==='AbortError'){onError(e);return}
+onError(e);
 });
 }
 
+/* ====== MAIN sendMsg WITH AUTO-RETRY ====== */
 function sendMsg(text,opts){
 if(state.streaming)return;
 var c=chats.find(function(x){return x.id===activeId});if(!c)return;
 var history=c.messages.slice();
 var metaId='m'+Date.now()+Math.random().toString(36).slice(2,6);
-var meta={id:metaId,smart:!!opts.smart,search:!!opts.search,startTime:Date.now(),endTime:null,chars:0};
+var meta={id:metaId,smart:!!opts.smart,search:!!opts.search,startTime:Date.now(),endTime:null,chars:0,retries:0,switching:false};
 c.title=c.messages.length===0?text.slice(0,32):c.title;
 c.messages=c.messages.concat([{role:'user',text:text},{role:'assistant',text:'',meta:meta}]);
 c.updatedAt=Date.now();
 state.streaming=true;
+state.usedModels=[];
 renderChats();renderMessages();updateSend();
+
 var system='You are Pongy, a kind personal AI assistant. '+(settings.nickname?'The user\'s name is '+settings.nickname+'. ':'')+(opts.smart?'Think step by step. ':'Answer briefly. ')+(opts.search?'Use up-to-date knowledge.':'');
-streamApi({text:text,history:history,system:system},function(chunk){
+
+var ctrl=new AbortController();
+state.abort=ctrl;
+
+var attempt=0;
+var totalText='';
+
+function getLastAssistant(){
+var cc=chats.find(function(x){return x.id===activeId});
+if(!cc)return null;
+var msgs=cc.messages;
+return msgs[msgs.length-1];
+}
+function updateAssistantChunk(chunk){
 var cc=chats.find(function(x){return x.id===activeId});if(!cc)return;
-var msgs=cc.messages.slice();var last=msgs[msgs.length-1];
+var msgs=cc.messages.slice();
+var last=msgs[msgs.length-1];
 if(!last||last.role!=='assistant')return;
-last.text+=chunk;
+last.text=(last.text||'')+chunk;
 last.meta.chars=last.text.length;
+last.meta.switching=false;
+cc.messages=msgs;
 renderMessages();
-},function(){
-var cc=chats.find(function(x){return x.id===activeId});
-if(cc){
-var msgs=cc.messages.slice();var last=msgs[msgs.length-1];
-if(last&&last.role==='assistant'&&last.meta)last.meta.endTime=Date.now();
-cc.messages=msgs;cc.updatedAt=Date.now();
-syncChat(cc);
 }
-state.streaming=false;state.abort=null;
-renderChats();renderMessages();updateSend();
-},function(e){
-if(e&&e.name==='AbortError'){state.streaming=false;state.abort=null;renderChats();renderMessages();updateSend();return}
-var cc=chats.find(function(x){return x.id===activeId});
-if(cc){
-var msgs=cc.messages.slice();var last=msgs[msgs.length-1];
-var sep=(last&&last.text)?'\n\n':'';
-last.text=(last.text||'')+sep+'⚠️ '+t().err+': '+e.message;
-if(!last.meta)last.meta={};
-last.meta.endTime=Date.now();
-cc.messages=msgs;cc.updatedAt=Date.now();
-syncChat(cc);
-}
-state.streaming=false;state.abort=null;
-renderChats();renderMessages();updateSend();
-});
+function setSwitching(){
+var cc=chats.find(function(x){return x.id===activeId});if(!cc)return;
+var msgs=cc.messages.slice();
+var last=msgs[msgs.length-1];
+if(!last||last.role!=='assistant')return;
+last.meta.switching=true;
+last.meta.retries=(last.meta.retries||0)+1;
+cc.messages=msgs;
+renderMessages();
 }
 
-/* ============ INPUT ============ */
+function tryStream(){
+attempt++;
+streamOnce(
+{text:text,history:history,system:system,exclude:state.usedModels.slice()},
+ctrl.signal,
+function(chunk){updateAssistantChunk(chunk)},
+function(got){
+var cc=chats.find(function(x){return x.id===activeId});
+if(cc){
+var msgs=cc.messages.slice();
+var last=msgs[msgs.length-1];
+if(last&&last.role==='assistant'&&last.meta){
+last.meta.endTime=Date.now();
+last.meta.switching=false;
+}
+cc.messages=msgs;cc.updatedAt=Date.now();
+syncChat(cc);
+}
+state.streaming=false;state.abort=null;
+renderChats();renderMessages();updateSend();
+},
+function(err){
+if(err.name==='AbortError'){state.streaming=false;state.abort=null;renderChats();renderMessages();updateSend();return}
+console.warn('[Pongy] stream error (attempt '+attempt+'):',err.message);
+if(attempt>=MAX_RETRIES){
+var cc=chats.find(function(x){return x.id===activeId});
+if(cc){
+var msgs=cc.messages.slice();
+var last=msgs[msgs.length-1];
+var sep=(last&&last.text)?'\n\n':'';
+last.text=(last.text||'')+sep+'⚠️ '+t().err+': '+err.message;
+if(last.meta){last.meta.endTime=Date.now();last.meta.switching=false}
+cc.messages=msgs;cc.updatedAt=Date.now();
+syncChat(cc);
+}
+state.streaming=false;state.abort=null;
+renderChats();renderMessages();updateSend();
+return;
+}
+state.usedModels.push('attempt-'+attempt);
+setSwitching();
+setTimeout(tryStream,400);
+}
+);
+}
+tryStream();
+}
+
 function updateSend(){
 var v=$('userInput').value.trim();
 var can=v&&!state.streaming;
@@ -839,7 +877,6 @@ $('smartBtn').onclick=function(){state.smart=!state.smart;this.classList.toggle(
 $('searchBtn').onclick=function(){state.search=!state.search;this.classList.toggle('active',state.search)};
 $('sbSearchInput').addEventListener('input',function(){state.query=this.value;renderChats()});
 
-/* ============ VOICE ============ */
 var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 var recognition=null,isRecording=false,finalText='';
 if(SR){
@@ -853,36 +890,27 @@ function startVoice(){if(!recognition){alert('Voice not supported');return}recog
 function stopVoice(){isRecording=false;if(recognition)try{recognition.stop()}catch(e){}$('micBtn').classList.remove('recording')}
 $('micBtn').onclick=function(){if(isRecording)stopVoice();else startVoice()};
 
-/* ============ AGENT POPUP ============ */
 function renderAgents(){
 var el=$('agentPopup');var html='';
 html+='<div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--fg2);font-weight:600;padding:6px 10px 8px">Agents</div>';
 AGENTS.forEach(function(a){
 var cur=state.agent===a.id;
 var tag=a.tag==='plus'?'<span style="font-size:11px;padding:3px 9px;border-radius:7px;font-weight:600;background:rgba(239,68,68,.15);color:var(--danger)">👑 Plus</span>':a.tag==='custom'?'<span style="font-size:11px;padding:3px 9px;border-radius:7px;font-weight:600;background:rgba(59,130,246,.15);color:#3b82f6">Custom</span>':'<span style="font-size:11px;padding:3px 9px;border-radius:7px;font-weight:600;background:rgba(16,185,129,.15);color:#10b981">Free</span>';
-html+='<div class="agent-opt'+(cur?' current':'')+'" data-agent="'+a.id+'" style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;cursor:pointer;border:1.5px solid '+(cur?'var(--accent)':'transparent')+';background:'+(cur?'rgba(99,102,241,.1)':'transparent')+'"><div style="flex:1"><div style="font-size:13.5px;font-weight:500">'+esc(a.name)+'</div></div>'+tag+'</div>';
+html+='<div class="agent-opt" data-agent="'+a.id+'" style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;cursor:pointer;border:1.5px solid '+(cur?'var(--accent)':'transparent')+';background:'+(cur?'rgba(99,102,241,.1)':'transparent')+'"><div style="flex:1"><div style="font-size:13.5px;font-weight:500">'+esc(a.name)+'</div></div>'+tag+'</div>';
 });
 html+='<div style="height:1px;background:var(--border);margin:6px 4px"></div>';
 html+='<div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--fg2);font-weight:600;padding:6px 10px 8px">Thinking level</div>';
 THINKING.forEach(function(th){
 var cur=state.thinking===th.id;
 var tag=th.tag==='plus'?'<span style="font-size:11px;padding:3px 9px;border-radius:7px;font-weight:600;background:rgba(239,68,68,.15);color:var(--danger)">👑 Plus</span>':th.tag==='note'?'<span style="font-size:11px;padding:3px 9px;border-radius:7px;font-weight:600;background:rgba(99,102,241,.12);color:var(--accent)">'+esc(th.desc)+'</span>':'<span style="font-size:11px;padding:3px 9px;border-radius:7px;font-weight:600;background:rgba(16,185,129,.15);color:#10b981">'+esc(th.desc)+'</span>';
-html+='<div class="think-opt'+(cur?' current':'')+'" data-think="'+th.id+'" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;border-radius:10px;cursor:pointer;border:1.5px solid '+(cur?'var(--accent)':'transparent')+';background:'+(cur?'rgba(99,102,241,.1)':'transparent')+'"><div style="font-size:13.5px;font-weight:500">'+esc(th.name)+'</div>'+tag+'</div>';
+html+='<div class="think-opt" data-think="'+th.id+'" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;border-radius:10px;cursor:pointer;border:1.5px solid '+(cur?'var(--accent)':'transparent')+';background:'+(cur?'rgba(99,102,241,.1)':'transparent')+'"><div style="font-size:13.5px;font-weight:500">'+esc(th.name)+'</div>'+tag+'</div>';
 });
 el.innerHTML=html;
 el.querySelectorAll('.agent-opt').forEach(function(n){
-n.onclick=function(){
-var id=n.dataset.agent;
-if(id==='extra'&&!isSubActive()){closeAgents();openSubscription();return}
-state.agent=id;updateAgentLabel();closeAgents();
-};
+n.onclick=function(){var id=n.dataset.agent;if(id==='extra'&&!isSubActive()){closeAgents();openSubscription();return}state.agent=id;updateAgentLabel();closeAgents()};
 });
 el.querySelectorAll('.think-opt').forEach(function(n){
-n.onclick=function(){
-var id=n.dataset.think;
-if(id==='extra'&&!isSubActive()){closeAgents();openSubscription();return}
-state.thinking=id;closeAgents();
-};
+n.onclick=function(){var id=n.dataset.think;if(id==='extra'&&!isSubActive()){closeAgents();openSubscription();return}state.thinking=id;closeAgents()};
 });
 }
 function openAgents(){renderAgents();$('agentPopup').style.display='block'}
@@ -891,7 +919,6 @@ $('agentBtn').onclick=function(e){e.stopPropagation();if($('agentPopup').style.d
 document.addEventListener('click',function(e){if(!$('agentPopup').contains(e.target)&&e.target!==$('agentBtn')&&!$('agentBtn').contains(e.target))closeAgents()});
 function updateAgentLabel(){var a=AGENTS.find(function(x){return x.id===state.agent});$('agentLabel').textContent='Agent: '+(a?a.name:'Pongy AI V1.0 Low')}
 
-/* ============ SUBSCRIPTION ============ */
 function isSubActive(){return currentUser&&currentUser.subscription_until&&currentUser.subscription_until>Date.now()}
 function updateUpgradeBtn(){if(isSubActive()){$('upgradeBtn').classList.add('active');$('upgradeLabel').textContent='Plus Active'}else{$('upgradeBtn').classList.remove('active');$('upgradeLabel').textContent='Upgrade'}}
 function openSubscription(){payState={method:null,step:'card'};renderSub();$('subModal').classList.add('open')}
@@ -910,7 +937,7 @@ if(payState.step==='card'){
 body.innerHTML='<div class="plan-card plus"><div class="plan-title">⭐ Pongy Plus</div><div style="font-size:12px;font-weight:600;color:var(--fg2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">'+esc(tt.subBenefits)+'</div><ul class="plan-features">'+benefitsHtml+'</ul><div class="plan-price">'+SUB_PRICE+' ₽ <span style="font-size:13px;color:var(--fg2);font-weight:500">/ month</span></div><button class="plan-btn" id="buyBtn">'+(isPlus?'⭐ Extend Plus':'⭐ '+esc(tt.buyPlus))+'</button></div>';
 $('buyBtn').onclick=function(){payState.step='method';renderSub()};
 }else if(payState.step==='method'){
-body.innerHTML='<div class="field-label">'+esc(tt.payTitle)+'</div><div class="pay-methods"><button type="button" class="pay-method'+(payState.method==='sbp'?' selected':'')+'" data-pay="sbp"><svg class="pay-icon-sbp" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2.5"/><path d="M16 20h16M16 24h10M16 28h16M16 32h10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="30" cy="24" r="3" fill="currentColor"/></svg><span>'+esc(tt.paySbp)+'</span></button><button type="button" class="pay-method'+(payState.method==='card'?' selected':'')+'" data-pay="card"><svg class="pay-icon-card" viewBox="0 0 48 48" fill="none"><rect x="6" y="12" width="36" height="24" rx="4" stroke="currentColor" stroke-width="2.5"/><path d="M6 20h36" stroke="currentColor" stroke-width="2.5"/><rect x="10" y="26" width="8" height="4" rx="1" fill="currentColor"/></svg><span>'+esc(tt.payCard)+'</span></button><button type="button" class="pay-method'+(payState.method==='ru'?' selected':'')+'" data-pay="ru"><svg class="pay-icon-ru" viewBox="0 0 48 48" fill="none"><rect x="6" y="12" width="36" height="24" rx="4" stroke="currentColor" stroke-width="2.5"/><path d="M6 20h36" stroke="currentColor" stroke-width="2.5"/><rect x="10" y="6" width="28" height="6" rx="1" fill="#fff" stroke="currentColor" stroke-width="1"/><rect x="10" y="8" width="28" height="2" fill="#0039a6"/><rect x="10" y="10" width="28" height="2" fill="#d52b1e"/></svg><span>'+esc(tt.payCardRu)+'</span></button></div><button class="plan-btn" id="payNext" style="margin-top:16px;'+(payState.method?'':'opacity:.5;cursor:not-allowed')+'" '+(payState.method?'':'disabled')+'>'+esc(tt.payNext)+'</button><button class="pay-back" id="payBack">← '+esc(tt.payBack)+'</button>';
+body.innerHTML='<div class="field-label">'+esc(tt.payTitle)+'</div><div class="pay-methods"><button type="button" class="pay-method'+(payState.method==='sbp'?' selected':'')+'" data-pay="sbp"><svg class="pay-icon-sbp" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2.5"/><path d="M16 20h16M16 24h10M16 28h16M16 32h10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="30" cy="24" r="3" fill="currentColor"/></svg><span>'+esc(tt.paySbp)+'</span></button><button type="button" class="pay-method'+(payState.method==='card'?' selected':'')+'" data-pay="card"><svg class="pay-icon-card" viewBox="0 0 48 48" fill="none"><rect x="6" y="12" width="36" height="24" rx="4" stroke="currentColor" stroke-width="2.5"/><path d="M6 20h36" stroke="currentColor" stroke-width="2.5"/></svg><span>'+esc(tt.payCard)+'</span></button><button type="button" class="pay-method'+(payState.method==='ru'?' selected':'')+'" data-pay="ru"><svg class="pay-icon-ru" viewBox="0 0 48 48" fill="none"><rect x="6" y="12" width="36" height="24" rx="4" stroke="currentColor" stroke-width="2.5"/><path d="M6 20h36" stroke="currentColor" stroke-width="2.5"/><rect x="10" y="6" width="28" height="6" rx="1" fill="#fff" stroke="currentColor" stroke-width="1"/><rect x="10" y="8" width="28" height="2" fill="#0039a6"/><rect x="10" y="10" width="28" height="2" fill="#d52b1e"/></svg><span>'+esc(tt.payCardRu)+'</span></button></div><button class="plan-btn" id="payNext" style="margin-top:16px;'+(payState.method?'':'opacity:.5;cursor:not-allowed')+'" '+(payState.method?'':'disabled')+'>'+esc(tt.payNext)+'</button><button class="pay-back" id="payBack">← '+esc(tt.payBack)+'</button>';
 body.querySelectorAll('.pay-method').forEach(function(n){n.onclick=function(){payState.method=n.dataset.pay;renderSub()}});
 var nx=$('payNext');if(nx&&payState.method)nx.onclick=function(){if(payState.method==='sbp'){payState.step='sbp';renderSub()}else{payState.step='form';renderSub()}};
 $('payBack').onclick=function(){payState.step='card';renderSub()};
@@ -933,7 +960,6 @@ $('pConfirm').onclick=function(){alert('⚠️ '+t().payUnavailable)};
 }
 function renderSubStatus(){
 var box=$('subStatusBox');if(!box)return;
-var tt=t();
 if(isSubActive()){
 var days=Math.ceil((currentUser.subscription_until-Date.now())/86400000);
 box.innerHTML='<div style="padding:14px;border-radius:14px;background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(139,92,246,.08));border:1px solid rgba(99,102,241,.4)"><div style="font-weight:700;color:var(--accent);font-size:15px;margin-bottom:8px">⭐ Plus Active</div><div style="font-size:12.5px;color:var(--fg2);line-height:1.7">Extra Mode · Best Agents · 200 requests<br>100000+ tokens · Better support</div><div style="margin-top:10px;font-size:12.5px"><strong>'+days+' days left</strong></div></div>';
@@ -943,7 +969,6 @@ var b=$('upgBtn2');if(b)b.onclick=function(){closeSettings();openSubscription()}
 }
 }
 
-/* ============ SETTINGS ============ */
 function openSettings(){renderLang();renderTheme();renderSubStatus();$('nickInput').value=settings.nickname||'';$('settingsModal').classList.add('open')}
 function closeSettings(){$('settingsModal').classList.remove('open')}
 $('settingsBtn').onclick=openSettings;
@@ -963,7 +988,7 @@ g.appendChild(b);
 }
 function renderTheme(){
 var g=$('themeGrid');g.innerHTML='';var tt=t();
-[{k:'light',l:tt.light},{k:'dark',l:tt.dark}].forEach(function(o){
+[{k:'light',l:tt.light||'Light'},{k:'dark',l:tt.dark||'Dark'}].forEach(function(o){
 var b=document.createElement('button');b.className='opt'+(settings.theme===o.k?' active':'');b.type='button';
 b.textContent=o.l;
 b.onclick=function(){settings.theme=o.k;save('pongy_settings_ui',settings);applySettings();renderTheme()};
@@ -971,16 +996,14 @@ g.appendChild(b);
 });
 }
 
-/* ============ GUIDE ============ */
 $('guideBtn').onclick=function(){
-var html='<div style="font-size:14px;line-height:1.7"><h3 style="font-size:17px;font-weight:700;margin-bottom:12px">Pongy AI Guide</h3><p style="margin-bottom:10px">Pongy AI is a personal AI assistant with a kind personality.</p><h4 style="font-weight:600;margin:16px 0 8px">How to use</h4><ul style="margin:8px 0;padding-left:22px"><li>Sign in with email or Google</li><li>Ask any question</li><li>Use Reasoning for complex tasks</li><li>Use Search for up-to-date knowledge</li></ul><h4 style="font-weight:600;margin:16px 0 8px">Privacy</h4><p style="margin-bottom:10px">We store your chats on our server for cross-device sync. No ads, no trackers.</p><h4 style="font-weight:600;margin:16px 0 8px">Support</h4><p>Email: support@pongy.ai</p></div>';
+var html='<h3 style="font-size:17px;font-weight:700;margin-bottom:12px">Pongy AI Guide</h3><p style="margin-bottom:10px">Personal AI assistant with kind personality.</p><h4 style="font-weight:600;margin:16px 0 8px">Features</h4><ul style="margin:8px 0;padding-left:22px"><li>Auto model fallback — never fails</li><li>Live stream switching on error</li><li>Reasoning + Search modes</li><li>10 languages</li><li>Voice input</li></ul><h4 style="font-weight:600;margin:16px 0 8px">Support</h4><p>Email: support@pongy.ai</p>';
 $('guideSections').innerHTML=html;
 $('guideModal').classList.add('open');
 };
 $('closeGuide').onclick=function(){$('guideModal').classList.remove('open')};
 $('guideModal').onclick=function(e){if(e.target===this)this.classList.remove('open')};
 
-/* ============ CONFIRM ============ */
 function showConfirm(title,text,yesLabel,noLabel,onYes){
 $('confirmTitle').textContent=title;
 $('confirmText').textContent=text;
@@ -994,7 +1017,6 @@ no.onclick=close;
 $('confirmModal').onclick=function(e){if(e.target===this)close()};
 }
 
-/* ============ PASSWORD RESET ============ */
 var resetEmail='',resetCode='',resetTimerInt=null;
 function openReset(){$('resetModal').classList.add('open');showResetStep(1);setAuthError('')}
 function closeReset(){$('resetModal').classList.remove('open');if(resetTimerInt)clearInterval(resetTimerInt)}
@@ -1004,8 +1026,7 @@ $('resetModal').onclick=function(e){if(e.target===this)closeReset()};
 $('sendCodeBtn').onclick=function(){
 var email=$('resetEmail').value.trim(),err=$('resetErr1');err.style.display='none';
 if(!email){err.textContent='Enter email';err.style.display='block';return}
-this.disabled=true;this.textContent='Sending…';
-var self=this;
+this.disabled=true;this.textContent='Sending…';var self=this;
 fetch(API_URL+'/api/password/send-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})})
 .then(function(r){return r.json()})
 .then(function(){resetEmail=email;showResetStep(2);startResetTimer();$('resetCode').focus()})
@@ -1037,12 +1058,11 @@ var p1=$('newPass1').value,err=$('resetErr3');err.style.display='none';
 var self=this;self.disabled=true;self.textContent='Updating…';
 fetch(API_URL+'/api/password/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:resetEmail,code:resetCode,newPassword:p1})})
 .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error);return j})})
-.then(function(){closeReset();alert('✓ Password changed');$('authPassword').value='';$('resetEmail').value='';$('resetCode').value='';$('newPass1').value='';$('newPass2').value=''})
+.then(function(){closeReset();alert('✓ Password changed')})
 .catch(function(e){err.textContent=e.message;err.style.display='block'})
-.finally(function(){self.self=false;self.disabled=false;self.textContent='Change password'});
+.finally(function(){self.disabled=false;self.textContent='Change password'});
 };
 
-/* ============ LAYOUT ============ */
 $('newChatBtn').onclick=newChat;
 $('collapseBtn').onclick=function(){
 document.body.classList.toggle('collapsed');
@@ -1050,13 +1070,9 @@ var c=document.body.classList.contains('collapsed');
 this.querySelector('path').setAttribute('d',c?'M9 18l6-6-6-6':'M15 18l-6-6 6-6');
 renderChats();
 };
-$('menuBtn').onclick=function(){document.getElementById('sidebar').classList.add('open');document.getElementById('overlay').classList.add('show')};
-document.getElementById('overlay').onclick=function(){document.getElementById('sidebar').classList.remove('open');this.classList.remove('show')};
-$('hideSidebarBtn').onclick=function(){
-state.sidebarHidden=!state.sidebarHidden;
-save('pongy_sidebar_hidden',state.sidebarHidden);
-applySettings();
-};
+$('menuBtn').onclick=function(){$('sidebar').classList.add('open');$('overlay').classList.add('show')};
+$('overlay').onclick=function(){$('sidebar').classList.remove('open');this.classList.remove('show')};
+$('hideSidebarBtn').onclick=function(){state.sidebarHidden=!state.sidebarHidden;save('pongy_sidebar_hidden',state.sidebarHidden);applySettings()};
 $('shareBtn').onclick=function(){
 var c=chats.find(function(x){return x.id===activeId});
 if(!c||!c.messages.length){alert('No messages');return}
@@ -1065,16 +1081,14 @@ if(navigator.share){navigator.share({title:'Pongy AI',text:txt}).catch(function(
 else if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){var b=$('shareBtn');var o=b.innerHTML;b.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>';setTimeout(function(){b.innerHTML=o},1400)})}
 };
 
-/* ============ APPLY SETTINGS ============ */
 function applySettings(){
 document.body.classList.toggle('dark',settings.theme==='dark');
 document.body.classList.toggle('hidden',state.sidebarHidden);
 var tt=t();
 $('footerText').textContent=tt.foot;
-if($('nickInput'))$('nickInput').placeholder=tt.nickPh||'Enter nickname';
 $('userInput').placeholder=tt.ph;
 $('sbSearchInput').placeholder=tt.searchPh||'Search chats';
-document.title=tt.app||'Pongy AI';
+document.title='Pongy AI';
 updateAgentLabel();updateUpgradeBtn();updateEyeIcon();
 renderChats();renderMessages();
 }
@@ -1089,7 +1103,6 @@ $('hideSidebarBtn').classList.remove('active');
 }
 }
 
-/* ============ INIT ============ */
 function afterLogin(){
 ensureChat();
 renderChats();
