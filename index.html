@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; connect-src 'self' https://pongy-server.onrender.com https://pongy.chat; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; connect-src 'self' https://pongy-server.onrender.com https://pongy-ai.devs.surf; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';">
 <meta name="referrer" content="no-referrer">
 <title>Pongy AI</title>
 <style>
@@ -52,25 +52,26 @@ body.collapsed .chat-body{display:none}
 .chat-actions{position:absolute;right:6px;top:50%;transform:translateY(-50%);display:none;gap:2px;background:linear-gradient(90deg,transparent,var(--bg2) 20%);padding-left:12px}
 .chat-item:hover .chat-actions{display:flex}
 .chat-item.active .chat-actions{background:linear-gradient(90deg,transparent,var(--hover-strong) 20%)}
-.chat-act{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--fg2)}
+.chat-act{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:background .15s}
 .chat-act:hover{background:var(--hover-strong);color:var(--fg)}
 .chat-act.pin-icon.on{color:var(--accent)}
 .chat-act.danger:hover{background:rgba(239,68,68,.15);color:var(--danger)}
 .chat-empty{text-align:center;padding:20px;font-size:12.5px;color:var(--fg2)}
 .rename-input{width:100%;background:var(--bg);border:1.5px solid var(--accent);border-radius:8px;padding:5px 8px;font-size:13.5px;color:var(--fg)}
 .sb-bottom{padding:8px;border-top:1px solid var(--border);display:flex;gap:6px;flex-shrink:0}
-.sb-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:12px;color:var(--fg2);font-size:13px;min-width:0}
+.sb-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:12px;color:var(--fg2);font-size:13px;min-width:0;transition:background .15s}
 .sb-btn:hover{background:var(--hover);color:var(--fg)}
 body.collapsed .sb-btn span{display:none}
 body.collapsed .sb-bottom{flex-direction:column}
-#collapseBtn{position:absolute;top:50%;right:-14px;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--fg2);z-index:50}
+#collapseBtn{position:absolute;top:50%;right:-14px;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--fg2);z-index:50;transition:transform .2s}
+#collapseBtn:hover{transform:translateY(-50%) scale(1.1)}
 #main{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg)}
 #topbar{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid var(--border);background:var(--bg);flex-shrink:0}
 .tb-left{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
 .tb-menu{width:34px;height:34px;border-radius:12px;display:none;align-items:center;justify-content:center;color:var(--fg2)}
 .tb-title{font-weight:500;font-size:13.5px;color:var(--fg2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tb-actions{display:flex;gap:4px;align-items:center;flex-shrink:0}
-.tb-btn{width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--fg2)}
+.tb-btn{width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:background .15s}
 .tb-btn:hover{background:var(--hover);color:var(--fg)}
 .tb-btn.active{color:var(--accent)}
 @media(max-width:768px){.tb-menu{display:flex}}
@@ -101,9 +102,9 @@ body.collapsed .sb-bottom{flex-direction:column}
 .bubble a{color:var(--accent);text-decoration:none;word-break:break-all}
 .bubble ul,.bubble ol{margin:6px 0;padding-left:20px}
 .caret{display:inline-block;width:6px;height:15px;background:currentColor;vertical-align:-2px;margin-left:2px;border-radius:1px;animation:blink .9s infinite}
-.msg-actions{display:flex;gap:4px;margin-top:6px;opacity:0;transition:opacity .18s;pointer-events:none;position:relative}
+.msg-actions{display:flex;gap:4px;margin-top:6px;opacity:0;transition:opacity .18s;pointer-events:none;position:relative;flex-wrap:wrap}
 .msg:hover .msg-actions{opacity:1;pointer-events:auto}
-.msg-act{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:10px;font-size:11.5px;color:var(--fg2)}
+.msg-act{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:10px;font-size:11.5px;color:var(--fg2);transition:background .15s,color .15s}
 .msg-act:hover{background:var(--hover);color:var(--fg)}
 .msg-act.danger:hover{background:rgba(239,68,68,.12);color:var(--danger)}
 .thinking-box{display:flex;align-items:center;gap:12px;padding:2px 0;min-height:26px}
@@ -123,7 +124,7 @@ body.collapsed .sb-bottom{flex-direction:column}
 #inputArea{flex-shrink:0;padding:8px 16px 14px;background:var(--bg)}
 #inputInner{max-width:768px;margin:0 auto}
 .modes{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;position:relative}
-.mode-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:14px;font-size:13px;border:1px solid var(--border);background:var(--bg3);color:var(--fg2)}
+.mode-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:14px;font-size:13px;border:1px solid var(--border);background:var(--bg3);color:var(--fg2);transition:all .15s}
 .mode-btn:hover{color:var(--fg);border-color:var(--hover-strong)}
 .mode-btn.active{background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.5);color:var(--accent)}
 .agent-badge{font-size:11px;opacity:.85}
@@ -131,7 +132,7 @@ body.collapsed .sb-bottom{flex-direction:column}
 .agent-popup.open{display:block;animation:popIn .18s}
 .popup-section{padding:8px 6px}
 .popup-title{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--fg2);font-weight:600;padding:6px 10px 8px}
-.agent-opt,.think-opt{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;cursor:pointer;position:relative;border:1.5px solid transparent}
+.agent-opt,.think-opt{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;cursor:pointer;transition:all .15s;position:relative;border:1.5px solid transparent}
 .agent-opt:hover,.think-opt:hover{background:var(--hover);border-color:var(--border)}
 .agent-opt.current,.think-opt.current{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.5)}
 .agent-info{flex:1;min-width:0}
@@ -147,7 +148,7 @@ body.collapsed .sb-bottom{flex-direction:column}
 .crown{display:inline-block;width:12px;height:12px}
 .input-box{background:var(--bg3);border:1px solid var(--border);border-radius:22px;padding:6px;display:flex;align-items:flex-end;gap:4px;position:relative}
 .input-box:focus-within{border-color:rgba(99,102,241,.5)}
-.input-box button{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:var(--fg2);flex-shrink:0}
+.input-box button{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:var(--fg2);transition:background .15s;flex-shrink:0}
 .input-box button:hover{background:var(--hover)}
 #sendBtn{background:var(--hover-strong);color:var(--fg2);cursor:not-allowed}
 #sendBtn.ready{background:var(--accent);color:#fff;cursor:pointer}
@@ -168,20 +169,20 @@ body.collapsed .sb-bottom{flex-direction:column}
 .settings-body{padding:20px;display:flex;flex-direction:column;gap:18px}
 .field-label{font-size:13.5px;font-weight:500;margin-bottom:10px;color:var(--fg)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.opt{padding:11px 13px;border-radius:14px;border:1px solid var(--border);background:var(--bg3);color:var(--fg2);font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer}
+.opt{padding:11px 13px;border-radius:14px;border:1px solid var(--border);background:var(--bg3);color:var(--fg2);font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:all .15s}
 .opt:hover{background:var(--hover)}
 .opt.active{border-color:var(--accent);background:rgba(99,102,241,.1);color:var(--accent)}
 .opt .flag{font-size:17px}
-.inp{width:100%;padding:11px 15px;border-radius:14px;border:1px solid var(--border);background:var(--bg3);font-size:14px;color:var(--fg)}
+.inp{width:100%;padding:11px 15px;border-radius:14px;border:1px solid var(--border);background:var(--bg3);font-size:14px;color:var(--fg);transition:border-color .15s}
 .inp:focus{border-color:var(--accent)}
 .hint{font-size:11px;color:var(--fg2);margin-top:6px}
-.support-link{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;background:var(--bg3);border:1px solid var(--border);text-decoration:none;color:var(--fg)}
-.support-link:hover{border-color:var(--accent)}
+.support-link{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;background:var(--bg3);border:1px solid var(--border);text-decoration:none;color:var(--fg);transition:all .15s}
+.support-link:hover{border-color:var(--accent);background:rgba(99,102,241,.06)}
 .support-icon{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .support-title{font-weight:500;font-size:14px;color:var(--fg);margin-bottom:2px}
 .support-email{font-size:12.5px;color:var(--accent);word-break:break-all}
 .guide-toc{display:flex;gap:6px;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--bg2);overflow-x:auto;flex-shrink:0}
-.guide-tab{padding:7px 14px;border-radius:10px;font-size:12.5px;font-weight:500;color:var(--fg2);white-space:nowrap;cursor:pointer;border:1px solid transparent}
+.guide-tab{padding:7px 14px;border-radius:10px;font-size:12.5px;font-weight:500;color:var(--fg2);white-space:nowrap;cursor:pointer;border:1px solid transparent;transition:all .15s}
 .guide-tab:hover{background:var(--hover);color:var(--fg)}
 .guide-tab.active{background:rgba(99,102,241,.12);color:var(--accent);border-color:rgba(99,102,241,.4)}
 .guide-section{padding:22px 24px;display:none}
@@ -200,8 +201,9 @@ body.collapsed .sb-bottom{flex-direction:column}
 .confirm-title svg{color:#ef4444;flex-shrink:0}
 .confirm-text{font-size:14px;color:var(--fg2);line-height:1.55;margin-bottom:22px}
 .confirm-actions{display:flex;gap:10px;justify-content:flex-end}
-.confirm-btn{padding:10px 20px;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer}
+.confirm-btn{padding:10px 20px;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s}
 .confirm-btn.primary{background:var(--accent);color:#fff}
+.confirm-btn.primary:hover{background:var(--accent-h)}
 .confirm-btn.secondary{background:transparent;border:1.5px solid var(--border);color:var(--fg2)}
 .report-popup{position:absolute;bottom:calc(100% + 8px);right:0;width:320px;background:var(--bg);border:1px solid var(--border);border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.2);padding:16px;z-index:60}
 .report-popup h4{font-size:14px;font-weight:600;color:var(--fg);margin-bottom:10px}
@@ -245,7 +247,15 @@ body.hidden-sidebar #sidebar{transform:translateX(-100%);width:300px}
 <p style="color:var(--fg2);font-size:14px" id="authSubtitle">Sign in to continue</p>
 </div>
 <input id="authEmail" type="email" placeholder="Email" class="inp" style="margin-bottom:12px" autocomplete="email">
-<input id="authPassword" type="password" placeholder="Password (min 6)" class="inp" style="margin-bottom:16px" autocomplete="current-password">
+<div style="position:relative;margin-bottom:6px">
+<input id="authPassword" type="password" placeholder="Пароль (мин. 6)" class="inp" style="padding-right:44px" autocomplete="current-password">
+<button type="button" id="eyeAuth" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--fg2);cursor:pointer;background:transparent;border:none">
+<svg id="eyeAuthIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+</button>
+</div>
+<div style="text-align:right;margin-bottom:16px">
+<a id="forgotPasswordBtn" style="color:var(--accent);cursor:pointer;font-size:12.5px;text-decoration:underline">Забыли пароль?</a>
+</div>
 <button id="authBtn" class="confirm-btn primary" style="width:100%;padding:14px;border-radius:14px;font-weight:600">Sign in</button>
 <div style="text-align:center;margin-top:16px;font-size:13px;color:var(--fg2)">
 <span id="authSwitchText">No account?</span>
@@ -300,9 +310,6 @@ body.hidden-sidebar #sidebar{transform:translateX(-100%);width:300px}
 <button class="tb-btn" id="shareBtn" title="Share chat">
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>
 </button>
-<button class="tb-btn" id="logoutBtn" title="Sign out">
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
-</button>
 </div>
 </div>
 
@@ -330,7 +337,7 @@ body.hidden-sidebar #sidebar{transform:translateX(-100%);width:300px}
 <button id="attachBtn" title="Attach">
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
 </button>
-<textarea id="userInput" rows="1" placeholder="Ask Pongy your first question" autocomplete="off" spellcheck="false"></textarea>
+<textarea id="userInput" rows="1" placeholder="Задайте Pongy первый вопрос" autocomplete="off" spellcheck="false"></textarea>
 <button id="micBtn" title="Voice input">
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0014 0v-2M12 19v3M8 22h8"/></svg>
 </button>
@@ -349,31 +356,71 @@ body.hidden-sidebar #sidebar{transform:translateX(-100%);width:300px}
 <div class="overlay" id="settingsModal">
 <div class="modal-box">
 <div class="modal-head">
-<h2>Settings</h2>
+<h2>Настройки</h2>
 <button class="icon-btn" id="closeSettings"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
 </div>
 <div class="modal-body"><div class="settings-body">
-<div><div class="field-label" id="langLabel">Language</div><div class="grid2" id="langGrid"></div></div>
-<div><div class="field-label" id="themeLabel">Theme</div><div class="grid2" id="themeGrid"></div></div>
-<div><div class="field-label" id="nickLabel">Nickname</div><input class="inp" id="nickInput" maxlength="32" autocomplete="off"></div>
-<div>
-<div class="field-label" id="apiTitleLabel">Subscription</div>
-<div id="subStatusBox" style="margin-top:6px"></div>
-</div>
+<div><div class="field-label" id="langLabel">Язык</div><div class="grid2" id="langGrid"></div></div>
+<div><div class="field-label" id="themeLabel">Тема</div><div class="grid2" id="themeGrid"></div></div>
+<div><div class="field-label" id="nickLabel">Никнейм</div><input class="inp" id="nickInput" maxlength="32" autocomplete="off"></div>
 <div>
 <a class="support-link" href="mailto:support@pongy.ai">
 <div class="support-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg></div>
-<div><div class="support-title" id="fbLabel">Support</div><div class="support-email">support@pongy.ai</div></div>
+<div><div class="support-title">Поддержка</div><div class="support-email">support@pongy.ai</div></div>
 </a>
 </div>
+<div style="padding-top:12px;border-top:1px solid var(--border)">
+<button id="logoutBtnSettings" style="width:100%;display:flex;align-items:center;gap:10px;padding:14px 16px;border-radius:14px;background:transparent;border:1.5px solid var(--danger);color:var(--danger);font-weight:600;font-size:13.5px;cursor:pointer;justify-content:center;transition:background .15s" onmouseover="this.style.background='rgba(239,68,68,.08)'" onmouseout="this.style.background='transparent'">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+Выйти из аккаунта
+</button>
+</div>
 </div></div>
+</div>
+</div>
+
+<div class="overlay" id="resetModal">
+<div class="modal-box" style="max-width:400px">
+<div class="modal-head">
+<h2 id="resetTitle">Сброс пароля</h2>
+<button class="icon-btn" id="closeReset"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+</div>
+<div class="modal-body" style="padding:24px">
+<div id="resetStep1">
+<div style="font-size:13.5px;color:var(--fg2);margin-bottom:14px">Введите email, привязанный к аккаунту</div>
+<input class="inp" id="resetEmail" type="email" placeholder="Email" autocomplete="email">
+<button id="sendCodeBtn" class="confirm-btn primary" style="width:100%;margin-top:14px;padding:13px;border-radius:14px">Отправить код</button>
+<div id="resetErr1" style="color:#ef4444;font-size:12.5px;margin-top:10px;display:none"></div>
+</div>
+<div id="resetStep2" style="display:none">
+<div style="font-size:13.5px;color:var(--fg2);margin-bottom:14px">Введите код из письма</div>
+<input class="inp" id="resetCode" type="text" inputmode="numeric" maxlength="6" placeholder="000000" style="text-align:center;font-size:22px;letter-spacing:8px;font-family:Consolas,Monaco,monospace">
+<button id="verifyCodeBtn" class="confirm-btn primary" style="width:100%;margin-top:14px;padding:13px;border-radius:14px">Подтвердить</button>
+<div id="resetTimer" style="text-align:center;margin-top:12px;font-size:12.5px;color:var(--fg2)"></div>
+<div id="resendCodeLink" style="text-align:center;margin-top:8px;font-size:12.5px;color:var(--accent);cursor:pointer;text-decoration:underline;display:none">Код не пришёл? Отправить заново</div>
+<div id="resetErr2" style="color:#ef4444;font-size:12.5px;margin-top:10px;display:none"></div>
+</div>
+<div id="resetStep3" style="display:none">
+<div style="font-size:13.5px;color:var(--fg2);margin-bottom:14px">Придумайте новый пароль</div>
+<div style="position:relative;margin-bottom:12px">
+<input class="inp" id="newPass1" type="password" placeholder="Новый пароль" style="padding-right:44px" autocomplete="new-password">
+<button type="button" class="eye" data-target="newPass1" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--fg2);cursor:pointer;background:transparent;border:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+</div>
+<div style="position:relative;margin-bottom:12px">
+<input class="inp" id="newPass2" type="password" placeholder="Повторите пароль" style="padding-right:44px" autocomplete="new-password">
+<button type="button" class="eye" data-target="newPass2" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--fg2);cursor:pointer;background:transparent;border:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+</div>
+<button id="changePassBtn" class="confirm-btn primary" disabled style="width:100%;padding:13px;border-radius:14px;opacity:.5;cursor:not-allowed">Сменить пароль</button>
+<div id="resetErr3" style="color:#ef4444;font-size:12.5px;margin-top:10px;display:none"></div>
+</div>
+</div>
 </div>
 </div>
 
 <div class="overlay" id="guideModal">
 <div class="modal-box wide">
 <div class="modal-head">
-<h2>Guide</h2>
+<h2>Руководство</h2>
 <button class="icon-btn" id="closeGuide"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
 </div>
 <div class="modal-body">
@@ -387,11 +434,11 @@ body.hidden-sidebar #sidebar{transform:translateX(-100%);width:300px}
 <div class="confirm-box">
 <div class="confirm-title">
 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-<span id="confirmTitle">Confirm</span>
+<span id="confirmTitle">Подтверждение</span>
 </div>
 <div class="confirm-text" id="confirmText"></div>
 <div class="confirm-actions">
-<button class="confirm-btn secondary" id="confirmNo">Cancel</button>
+<button class="confirm-btn secondary" id="confirmNo">Отмена</button>
 <button class="confirm-btn primary" id="confirmYes">OK</button>
 </div>
 </div>
@@ -402,48 +449,20 @@ body.hidden-sidebar #sidebar{transform:translateX(-100%);width:300px}
 'use strict';
 
 var API_URL = 'https://pongy-server.onrender.com';
+var RESEND_TEST_EMAIL = 'sergiv1609@gmail.com';
 
 var LOGO_SVG='<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="lgMain" x1="0.15" y1="0" x2="0.85" y2="1"><stop offset="0%" stop-color="#5eead4"/><stop offset="30%" stop-color="#818cf8"/><stop offset="65%" stop-color="#6366f1"/><stop offset="100%" stop-color="#1e3a8a"/></linearGradient><linearGradient id="lgDot" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c084fc"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient></defs><rect width="100" height="100" rx="24" fill="#ddd6fe"/><path fill-rule="evenodd" fill="url(#lgMain)" d="M 30 12 L 58 12 Q 82 12 82 36 Q 82 60 58 60 L 46 60 L 46 78 Q 46 86 56 86 Q 64 86 64 92 Q 64 98 54 98 Q 32 98 32 78 L 32 12 Z M 58 28 Q 44 28 44 36 Q 44 44 58 44 Q 68 44 68 36 Q 68 28 58 28 Z"/><circle cx="76" cy="82" r="9" fill="url(#lgDot)"/></svg>';
 
 var T={
-en:{app:'Pongy AI',history:'History',untitled:'New chat',pinnedSection:'Pinned',searchPh:'Search chats',noResults:'No chats found',
-greet:'Hello. I am Pongy, your personal assistant. I am similar to Verity, yet kinder. I am prepared to assist you with any task.',
-greetN:function(n){return 'Hello, '+n+'. I am Pongy, your personal assistant.'},
-ph:'Ask Pongy your first question',reasoning:'Reasoning',search:'Search',
-thinking:'Reasoning',searching:'Searching',composing:'Composing response',
-foot:'Generated by AI · Pongy AI V1.0 · © 2026 Pongy',
-set:'Settings',guide:'Guide',share:'Share chat',hideUi:'Hide',showUi:'Show',
-lang:'Language',theme:'Theme',dark:'Dark',light:'Light',nick:'Nickname',nickPh:'Enter your nickname',
-apiT:'Subscription',fb:'Support',err:'Error',sec:'s',charsSec:'char/s',
-delTitle:'Delete conversation',delText:'Are you sure? Data will be lost forever!',delYes:'Delete',delNo:'Cancel',
-renameTitle:'Rename chat',renamePh:'Enter new name',pinTitle:'Pin chat',unpinTitle:'Unpin chat',
-shareNoChat:'No active chat',
-timeNow:'just now',timeSec:'s ago',timeMin:'m ago',timeHour:'h ago',timeYesterday:'yesterday',timeActive:'Open now',
-agent:'Agent',agents:'Agents',thinkingLevel:'Thinking level',
-agentLow:'Pongy AI V1.0 Low',agentStandard:'Pongy AI V1.0 Standart',agentExtra:'Pongy V1.1 Extra Smart',
-agentExtraBest:'Best in class',agentStandardDesc:'Use own API key',agentLowDesc:'Free balanced',
-tagFree:'Free',tagCustom:'Custom',tagPlus:'Plus',
-thinkExtra:'Extra',thinkExtraDesc:'Maximum',thinkHigh:'High',thinkHighDesc:'More tokens',thinkMiddle:'Middle',thinkMiddleDesc:'Fast',thinkLow:'Low',thinkLowDesc:'Ultra Fast',
-copy:'Copy',copied:'Copied',edit:'Edit',save:'Save',cancel:'Cancel',refine:'Refine',report:'Report',
-reportTitle:'Describe the issue',reportSend:'Send',reportThanks:'Thank you for helping us improve!',
-mic:'Listening…',voiceUnsupported:'Voice not supported',
-guideTitle:'Guide',gtocGuide:'Overview',gtocPrivacy:'Privacy',gtocRules:'Rules',gtocApi:'Setup AI',gtocSecurity:'Security',
-gIntroTitle:'Welcome to Pongy AI',gIntroBody:'Pongy AI is a personal AI assistant. Multi-user, available on all your devices.',
-gApiTitle:'How to use AI',gApiP1:'Pongy works out of the box. No configuration needed — the server manages the AI connection.',gApiP2:'For advanced users: contact support to add your own API key.',
-gPrivTitle:'Privacy policy',gPrivP1:'We store your chats on our server to sync across devices. We never share them with third parties.',
-gPrivP2:'Stored on server:',gPrivList1:'Email and encrypted password',gPrivList2:'Your chats',gPrivList3:'Nickname, preferences',
-gPrivP3:'Never shared:',gPrivList4:'No ads, no trackers',gPrivList5:'Only you see your data',
-gRulesTitle:'Rules',gRule1:'No illegal use.',gRule2:'No harmful content.',gRule3:'No bypassing security.',gRule4:'Respect other users.',gRule5:'Rules may update.',gRulesNote:'Violation may suspend access.',
-gSecTitle:'Security',gSecP1:'Protection:',gSecList1:'CSP and XSS protection',gSecList2:'bcrypt password hashing',gSecList3:'JWT tokens',gSecList4:'Rate limiting',gSecList5:'HTTPS only',gSecList6:'Server-side API keys',gSecNote:'Your password is encrypted. We never see it.'
-},
-ru:{app:'Pongy AI',history:'История',untitled:'Новый диалог',pinnedSection:'Закреплённые',searchPh:'Поиск по чатам',noResults:'Ничего не найдено',
-greet:'Здравствуйте. Я — Pongy, ваш персональный помощник. Напоминаю Verity, однако отличаюсь доброжелательностью. Готов помочь с любой задачей.',
-greetN:function(n){return 'Здравствуйте, '+n+'. Я — Pongy, ваш персональный помощник.'},
-ph:'Задайте Pongy первый вопрос',reasoning:'Размышление',search:'Поиск',thinking:'Размышляю',searching:'Выполняю поиск',composing:'Формулирую ответ',
+en:{app:'Pongy AI',history:'История',untitled:'Новый диалог',pinnedSection:'Закреплённые',searchPh:'Поиск по чатам',noResults:'Ничего не найдено',
+greet:'Здравствуйте. Я — Pongy, ваш персональный помощник.',
+greetN:function(n){return 'Здравствуйте, '+n+'. Я — Pongy.'},
+ph:'Задайте Pongy первый вопрос',reasoning:'Размышление',search:'Поиск',
+thinking:'Размышляю',searching:'Выполняю поиск',composing:'Формулирую ответ',
 foot:'Сгенерировано ИИ · Pongy AI V1.0 · © 2026 Pongy',
 set:'Настройки',guide:'Руководство',share:'Поделиться',hideUi:'Скрыть',showUi:'Показать',
 lang:'Язык',theme:'Тема',dark:'Тёмная',light:'Светлая',nick:'Никнейм',nickPh:'Введите никнейм',
-apiT:'Подписка',fb:'Поддержка',err:'Ошибка',sec:'с',charsSec:'симв/с',
+fb:'Поддержка',err:'Ошибка',sec:'с',charsSec:'симв/с',
 delTitle:'Удалить диалог?',delText:'Вы действительно хотите удалить диалог? Данные будут потеряны навсегда!',delYes:'Удалить',delNo:'Отмена',
 renameTitle:'Переименовать',renamePh:'Новое название',pinTitle:'Закрепить',unpinTitle:'Открепить',
 shareNoChat:'Нет активного чата',
@@ -453,82 +472,22 @@ agentLow:'Pongy AI V1.0 Low',agentStandard:'Pongy AI V1.0 Standart',agentExtra:'
 agentExtraBest:'Наилучший',agentStandardDesc:'Свой API-ключ',agentLowDesc:'Бесплатная модель',
 tagFree:'Free',tagCustom:'Custom',tagPlus:'Plus',
 thinkExtra:'Extra',thinkExtraDesc:'Максимум',thinkHigh:'High',thinkHighDesc:'Больше токенов',thinkMiddle:'Middle',thinkMiddleDesc:'Fast',thinkLow:'Low',thinkLowDesc:'Ultra Fast',
-copy:'Копировать',copied:'Скопировано',edit:'Редактировать',save:'Сохранить',cancel:'Отмена',refine:'Уточнить',report:'Жалоба',
+copy:'Копировать',copied:'Скопировано',edit:'Редактировать',save:'Сохранить',cancel:'Отмена',refine:'Уточнить',report:'Жалоба',retry:'Повторить',
 reportTitle:'Опишите проблему',reportSend:'Отправить',reportThanks:'Спасибо, что помогаете стать лучше!',
 mic:'Слушаю…',voiceUnsupported:'Голосовой ввод не поддерживается',
 guideTitle:'Руководство',gtocGuide:'Обзор',gtocPrivacy:'Приватность',gtocRules:'Правила',gtocApi:'Запуск ИИ',gtocSecurity:'Защита',
 gIntroTitle:'Добро пожаловать в Pongy AI',gIntroBody:'Pongy AI — персональный ИИ-помощник. Многопользовательский, доступен на всех устройствах.',
 gApiTitle:'Как пользоваться ИИ',gApiP1:'Pongy работает сразу. Настройка не требуется — сервер управляет подключением к ИИ.',gApiP2:'Для продвинутых: обратитесь в поддержку, чтобы добавить свой API-ключ.',
-gPrivTitle:'Политика конфиденциальности',gPrivP1:'Мы храним чаты на нашем сервере для синхронизации между устройствами. Мы никогда не передаём их третьим лицам.',
+gPrivTitle:'Политика конфиденциальности',gPrivP1:'Мы храним чаты на нашем сервере для синхронизации между устройствами.',
 gPrivP2:'Хранится на сервере:',gPrivList1:'Email и зашифрованный пароль',gPrivList2:'Ваши чаты',gPrivList3:'Никнейм, настройки',
 gPrivP3:'Никогда не передаётся:',gPrivList4:'Никакой рекламы, трекеров',gPrivList5:'Только вы видите свои данные',
 gRulesTitle:'Правила',gRule1:'Без незаконных действий.',gRule2:'Без вредного контента.',gRule3:'Не обходить защиту.',gRule4:'Уважать других пользователей.',gRule5:'Правила могут обновляться.',gRulesNote:'Нарушение может приостановить доступ.',
 gSecTitle:'Защита',gSecP1:'Меры защиты:',gSecList1:'CSP и защита от XSS',gSecList2:'bcrypt-хеширование паролей',gSecList3:'JWT-токены',gSecList4:'Ограничение запросов',gSecList5:'Только HTTPS',gSecList6:'API-ключи на сервере',gSecNote:'Пароль зашифрован. Мы его не видим.'
-},
-es:{app:'Pongy AI',history:'Historial',untitled:'Nuevo chat',pinnedSection:'Fijados',searchPh:'Buscar chats',noResults:'Sin chats',
-greet:'Hola. Soy Pongy, su asistente personal. Similar a Verity, pero amable.',
-greetN:function(n){return 'Hola, '+n+'. Soy Pongy.'},ph:'Primera pregunta',reasoning:'Razonamiento',search:'Búsqueda',
-thinking:'Razonando',searching:'Buscando',composing:'Componiendo',foot:'Generado por IA · Pongy AI V1.0 · © 2026',
-set:'Ajustes',guide:'Guía',share:'Compartir',hideUi:'Ocultar',showUi:'Mostrar',lang:'Idioma',theme:'Tema',dark:'Oscuro',light:'Claro',nick:'Apodo',nickPh:'Apodo',
-apiT:'Suscripción',fb:'Soporte',err:'Error',sec:'s',charsSec:'car/s',
-delTitle:'Eliminar',delText:'¿Está seguro? ¡Datos perdidos para siempre!',delYes:'Eliminar',delNo:'Cancelar',
-renameTitle:'Renombrar',renamePh:'Nuevo nombre',pinTitle:'Fijar',unpinTitle:'Desfijar',shareNoChat:'Sin chat',
-timeNow:'ahora',timeSec:'s',timeMin:'min',timeHour:'h',timeYesterday:'ayer',timeActive:'Abierto',
-agent:'Agente',agents:'Agentes',thinkingLevel:'Razonamiento',
-agentLow:'Pongy AI V1.0 Low',agentStandard:'Pongy AI V1.0 Standart',agentExtra:'Pongy V1.1 Extra Smart',
-agentExtraBest:'Mejor',agentStandardDesc:'Clave propia',agentLowDesc:'Gratis',tagFree:'Free',tagCustom:'Custom',tagPlus:'Plus',
-thinkExtra:'Extra',thinkExtraDesc:'Máximo',thinkHigh:'High',thinkHighDesc:'Más tokens',thinkMiddle:'Middle',thinkMiddleDesc:'Fast',thinkLow:'Low',thinkLowDesc:'Ultra Fast',
-copy:'Copiar',copied:'Copiado',edit:'Editar',save:'Guardar',cancel:'Cancelar',refine:'Ajustar',report:'Reportar',
-reportTitle:'Describe el problema',reportSend:'Enviar',reportThanks:'¡Gracias!',mic:'Escuchando…',voiceUnsupported:'Voz no soportada',
-guideTitle:'Guía',gtocGuide:'General',gtocPrivacy:'Privacidad',gtocRules:'Reglas',gtocApi:'Configurar IA',gtocSecurity:'Seguridad',
-gIntroTitle:'Bienvenido',gIntroBody:'Pongy AI es un asistente personal multiusuario.',
-gApiTitle:'Cómo usar',gApiP1:'Pongy funciona directo.',gApiP2:'Contacta soporte para clave propia.',
-gPrivTitle:'Privacidad',gPrivP1:'Guardamos chats en servidor.',gPrivP2:'Guardado:',gPrivList1:'Email y contraseña',gPrivList2:'Chats',gPrivList3:'Ajustes',gPrivP3:'Nunca compartido:',gPrivList4:'Sin anuncios',gPrivList5:'Solo tú ves',gRulesTitle:'Reglas',gRule1:'Sin uso ilegal.',gRule2:'Sin contenido dañino.',gRule3:'Sin bypass.',gRule4:'Respeta usuarios.',gRule5:'Pueden cambiar.',gRulesNote:'Violación puede suspender.',gSecTitle:'Seguridad',gSecP1:'Protección:',gSecList1:'CSP y XSS',gSecList2:'bcrypt',gSecList3:'JWT',gSecList4:'Rate limit',gSecList5:'HTTPS',gSecList6:'Claves servidor',gSecNote:'Contraseña encriptada.'
-},
-de:{app:'Pongy AI',history:'Verlauf',untitled:'Neuer Chat',pinnedSection:'Angepinnt',searchPh:'Chats suchen',noResults:'Keine Chats',
-greet:'Hallo. Ich bin Pongy, Ihr Assistent. Ähnlich wie Verity, aber freundlich.',
-greetN:function(n){return 'Hallo, '+n+'. Ich bin Pongy.'},ph:'Erste Frage',reasoning:'Denken',search:'Suche',
-thinking:'Denke nach',searching:'Suche',composing:'Formuliere',foot:'KI-generiert · Pongy AI V1.0 · © 2026',
-set:'Einstellungen',guide:'Anleitung',share:'Teilen',hideUi:'Verbergen',showUi:'Zeigen',lang:'Sprache',theme:'Design',dark:'Dunkel',light:'Hell',nick:'Spitzname',nickPh:'Spitzname',
-apiT:'Abonnement',fb:'Support',err:'Fehler',sec:'s',charsSec:'Z/s',
-delTitle:'Löschen',delText:'Sicher? Daten gehen verloren!',delYes:'Löschen',delNo:'Abbrechen',
-renameTitle:'Umbenennen',renamePh:'Neuer Name',pinTitle:'Anpinnen',unpinTitle:'Lösen',shareNoChat:'Kein Chat',
-timeNow:'gerade',timeSec:'s',timeMin:'min',timeHour:'h',timeYesterday:'gestern',timeActive:'Offen',
-agent:'Agent',agents:'Agenten',thinkingLevel:'Denkstufe',
-agentLow:'Pongy AI V1.0 Low',agentStandard:'Pongy AI V1.0 Standart',agentExtra:'Pongy V1.1 Extra Smart',
-agentExtraBest:'Bester',agentStandardDesc:'Eigener Schlüssel',agentLowDesc:'Kostenlos',tagFree:'Free',tagCustom:'Custom',tagPlus:'Plus',
-thinkExtra:'Extra',thinkExtraDesc:'Maximum',thinkHigh:'High',thinkHighDesc:'Mehr Tokens',thinkMiddle:'Middle',thinkMiddleDesc:'Fast',thinkLow:'Low',thinkLowDesc:'Ultra Fast',
-copy:'Kopieren',copied:'Kopiert',edit:'Bearbeiten',save:'Speichern',cancel:'Abbrechen',refine:'Verfeinern',report:'Melden',
-reportTitle:'Problem beschreiben',reportSend:'Senden',reportThanks:'Danke!',mic:'Ich höre…',voiceUnsupported:'Sprache nicht unterstützt',
-guideTitle:'Anleitung',gtocGuide:'Übersicht',gtocPrivacy:'Datenschutz',gtocRules:'Regeln',gtocApi:'KI-Setup',gtocSecurity:'Sicherheit',
-gIntroTitle:'Willkommen',gIntroBody:'Pongy AI ist ein Mehrbenutzer-Assistent.',
-gApiTitle:'KI nutzen',gApiP1:'Pongy funktioniert sofort.',gApiP2:'Support für eigenen Schlüssel kontaktieren.',
-gPrivTitle:'Datenschutz',gPrivP1:'Chats auf Server gespeichert.',gPrivP2:'Gespeichert:',gPrivList1:'Email und Passwort',gPrivList2:'Chats',gPrivList3:'Einstellungen',gPrivP3:'Nie geteilt:',gPrivList4:'Keine Werbung',gPrivList5:'Nur Sie sehen',gRulesTitle:'Regeln',gRule1:'Kein Missbrauch.',gRule2:'Kein schädlicher Inhalt.',gRule3:'Kein Bypass.',gRule4:'Respekt.',gRule5:'Regeln können sich ändern.',gRulesNote:'Verstoß kann sperren.',gSecTitle:'Sicherheit',gSecP1:'Schutz:',gSecList1:'CSP und XSS',gSecList2:'bcrypt',gSecList3:'JWT',gSecList4:'Rate limit',gSecList5:'HTTPS',gSecList6:'Server-Keys',gSecNote:'Passwort verschlüsselt.'
-},
-fr:{app:'Pongy AI',history:'Historique',untitled:'Nouveau chat',pinnedSection:'Épinglés',searchPh:'Rechercher',noResults:'Aucun chat',
-greet:'Bonjour. Je suis Pongy, votre assistant personnel. Similaire à Verity, mais amical.',
-greetN:function(n){return 'Bonjour, '+n+'. Je suis Pongy.'},ph:'Première question',reasoning:'Réflexion',search:'Recherche',
-thinking:'Réflexion',searching:'Recherche',composing:'Rédaction',foot:'Généré par IA · Pongy AI V1.0 · © 2026',
-set:'Paramètres',guide:'Guide',share:'Partager',hideUi:'Masquer',showUi:'Afficher',lang:'Langue',theme:'Thème',dark:'Sombre',light:'Clair',nick:'Pseudo',nickPh:'Pseudo',
-apiT:'Abonnement',fb:'Support',err:'Erreur',sec:'s',charsSec:'car/s',
-delTitle:'Supprimer',delText:'Sûr ? Données perdues à jamais !',delYes:'Supprimer',delNo:'Annuler',
-renameTitle:'Renommer',renamePh:'Nouveau nom',pinTitle:'Épingler',unpinTitle:'Détacher',shareNoChat:'Pas de chat',
-timeNow:'instant',timeSec:'s',timeMin:'min',timeHour:'h',timeYesterday:'hier',timeActive:'Ouvert',
-agent:'Agent',agents:'Agents',thinkingLevel:'Niveau de réflexion',
-agentLow:'Pongy AI V1.0 Low',agentStandard:'Pongy AI V1.0 Standart',agentExtra:'Pongy V1.1 Extra Smart',
-agentExtraBest:'Meilleur',agentStandardDesc:'Clé perso',agentLowDesc:'Gratuit',tagFree:'Free',tagCustom:'Custom',tagPlus:'Plus',
-thinkExtra:'Extra',thinkExtraDesc:'Maximum',thinkHigh:'High',thinkHighDesc:'Plus de tokens',thinkMiddle:'Middle',thinkMiddleDesc:'Fast',thinkLow:'Low',thinkLowDesc:'Ultra Fast',
-copy:'Copier',copied:'Copié',edit:'Modifier',save:'Enregistrer',cancel:'Annuler',refine:'Affiner',report:'Signaler',
-reportTitle:'Décrivez le problème',reportSend:'Envoyer',reportThanks:'Merci !',mic:'J\'écoute…',voiceUnsupported:'Voix non prise en charge',
-guideTitle:'Guide',gtocGuide:'Aperçu',gtocPrivacy:'Confidentialité',gtocRules:'Règles',gtocApi:'Config IA',gtocSecurity:'Sécurité',
-gIntroTitle:'Bienvenue',gIntroBody:'Pongy AI est un assistant personnel multi-utilisateur.',
-gApiTitle:'Utiliser l\'IA',gApiP1:'Pongy fonctionne immédiatement.',gApiP2:'Contactez le support pour une clé perso.',
-gPrivTitle:'Confidentialité',gPrivP1:'Chats stockés sur serveur.',gPrivP2:'Stocké:',gPrivList1:'Email et mot de passe',gPrivList2:'Chats',gPrivList3:'Préférences',gPrivP3:'Jamais partagé:',gPrivList4:'Sans pub',gPrivList5:'Seul vous voyez',gRulesTitle:'Règles',gRule1:'Pas d\'usage illégal.',gRule2:'Pas de contenu nuisible.',gRule3:'Pas de bypass.',gRule4:'Respecter les autres.',gRule5:'Règles peuvent changer.',gRulesNote:'Violation peut suspendre.',gSecTitle:'Sécurité',gSecP1:'Protection:',gSecList1:'CSP et XSS',gSecList2:'bcrypt',gSecList3:'JWT',gSecList4:'Rate limit',gSecList5:'HTTPS',gSecList6:'Clés serveur',gSecNote:'Mot de passe chiffré.'
 }
 };
 
 var LANGS=[{code:'en',label:'English',flag:'🇬🇧'},{code:'ru',label:'Русский',flag:'🇷🇺'},{code:'es',label:'Español',flag:'🇪🇸'},{code:'de',label:'Deutsch',flag:'🇩🇪'},{code:'fr',label:'Français',flag:'🇫🇷'}];
-var SPEECH_LANGS={en:'en-US',ru:'ru-RU',es:'es-ES',de:'de-DE',fr:'fr-FR'};
+var SPEECH_LANGS={en:'ru-RU',ru:'ru-RU',es:'es-ES',de:'de-DE',fr:'fr-FR'};
 
 var AGENTS=[
 {id:'extra',name:'agentExtra',desc:null,tag:'plus',best:true},
@@ -545,6 +504,16 @@ var THINKING=[
 var authToken = localStorage.getItem('pongy_token') || '';
 var currentUser = null;
 var authMode = 'login';
+
+function getDeviceId(){
+var d = localStorage.getItem('pongy_device_id');
+if(!d){
+d = 'd_' + Date.now() + '_' + Math.random().toString(36).slice(2,12);
+localStorage.setItem('pongy_device_id', d);
+}
+return d;
+}
+var DEVICE_ID = getDeviceId();
 
 function apiFetch(path, opts){
 opts = opts || {};
@@ -573,7 +542,7 @@ if(a) a.style.display = 'none';
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 
-var settings = load('pongy_settings_ui',{theme:'light',lang:'en',nickname:''});
+var settings = load('pongy_settings_ui',{theme:'light',lang:'ru',nickname:''});
 var chats = [];
 var activeId = null;
 
@@ -583,6 +552,9 @@ agent:'low',thinking:'middle',
 searchQuery:'',renamingId:null,guideSection:'guide',
 sidebarHidden:load('pongy_sidebar_hidden',false)
 };
+
+var sendHistory = [];
+var spamWarning = null;
 
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -612,59 +584,11 @@ if(d.toDateString()===yd.toDateString())return t().timeYesterday;
 return d.toLocaleDateString(settings.lang,{day:'numeric',month:'short'});
 }
 
-function renderSubStatusBox(){
-var box=document.getElementById('subStatusBox');
-if(!box)return;
-var user=currentUser;
-var isPlus=user&&user.subscription_until&&user.subscription_until>Date.now();
-if(isPlus){
-var daysLeft=Math.ceil((user.subscription_until-Date.now())/86400000);
-var expiresDate=new Date(user.subscription_until).toLocaleDateString(settings.lang,{day:'numeric',month:'long',year:'numeric'});
-box.innerHTML=
-'<div style="padding:16px;border-radius:16px;background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(139,92,246,.08));border:1px solid rgba(99,102,241,.4)">'+
-'<div style="font-weight:700;color:var(--accent);font-size:16px;margin-bottom:10px">⭐ Plus Active</div>'+
-'<div style="font-size:13px;color:var(--fg2);line-height:1.8">'+
-'<div>• DeepSeek V4.1 (fast)</div>'+
-'<div>• Claude Sonnet 4.5 (best)</div>'+
-'<div>• Gemini 2.5 Flash</div>'+
-'</div>'+
-'<div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(99,102,241,.2);font-size:13px;color:var(--fg)">'+
-'<strong>'+daysLeft+' days remaining</strong>'+
-'<div style="font-size:11.5px;color:var(--fg2);margin-top:2px">Expires: '+esc(expiresDate)+'</div>'+
-'</div></div>';
-}else{
-box.innerHTML=
-'<div style="padding:16px;border-radius:16px;background:var(--bg3);border:1px solid var(--border)">'+
-'<div style="font-weight:600;font-size:14px;color:var(--fg);margin-bottom:6px">Free Tier</div>'+
-'<div style="font-size:12.5px;color:var(--fg2);line-height:1.6">Uses free AI models. Upgrade to Plus for premium intelligence.</div>'+
-'<button type="button" id="upgradeBtnSettings" style="margin-top:12px;width:100%;padding:12px;border-radius:12px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-weight:600;font-size:13.5px;border:none;cursor:pointer">Upgrade to Plus — 190 ₽/mo</button>'+
-'</div>';
-var btn=document.getElementById('upgradeBtnSettings');
-if(btn)btn.onclick=startPayment;
-}
-}
-
-function startPayment(){
-if(!authToken){alert('Please sign in first');return}
-var btn=document.getElementById('upgradeBtnSettings');
-if(btn){btn.disabled=true;btn.textContent='Creating payment…'}
-apiFetch('/api/pay/create',{method:'POST'})
-.then(function(data){
-if(data.confirmation_url){window.location.href=data.confirmation_url}
-else throw new Error('No payment URL');
-})
-.catch(function(e){
-alert('Payment error: '+e.message);
-if(btn){btn.disabled=false;btn.textContent='Upgrade to Plus — 190 ₽/mo'}
-});
-}
-
 function applySettings(){
 body.classList.toggle('dark',settings.theme==='dark');
 body.classList.toggle('hidden-sidebar',state.sidebarHidden);
 var tt=t();
 $('langLabel').textContent=tt.lang;$('themeLabel').textContent=tt.theme;$('nickLabel').textContent=tt.nick;
-$('apiTitleLabel').textContent=tt.apiT;$('fbLabel').textContent=tt.fb;
 $('footerText').textContent=tt.foot;
 nickInput.placeholder=tt.nickPh;userInput.placeholder=tt.ph;sbSearchInput.placeholder=tt.searchPh;
 document.title=tt.app;
@@ -790,6 +714,7 @@ pencil:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="curr
 refine:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>',
 report:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>',
 plane:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>',
+retry:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>',
 crown:'<svg class="crown" viewBox="0 0 24 24" fill="currentColor"><path d="M2 18h20l-2-10-5 4-3-6-3 6-5-4z"/></svg>'
 };
 
@@ -847,7 +772,7 @@ var actions=document.createElement('div');actions.className='msg-actions';
 if(m.role==='user'){
 actions.innerHTML='<button type="button" class="msg-act" data-act="copy">'+SVGS.copy+'<span>'+esc(tt.copy)+'</span></button><button type="button" class="msg-act" data-act="edit">'+SVGS.pencil+'<span>'+esc(tt.edit)+'</span></button>';
 }else{
-actions.innerHTML='<button type="button" class="msg-act" data-act="copy">'+SVGS.copy+'<span>'+esc(tt.copy)+'</span></button><button type="button" class="msg-act" data-act="refine">'+SVGS.refine+'<span>'+esc(tt.refine)+'</span></button><button type="button" class="msg-act danger" data-act="report">'+SVGS.report+'<span>'+esc(tt.report)+'</span></button>';
+actions.innerHTML='<button type="button" class="msg-act" data-act="copy">'+SVGS.copy+'<span>'+esc(tt.copy)+'</span></button><button type="button" class="msg-act" data-act="retry">'+SVGS.retry+'<span>'+esc(tt.retry)+'</span></button><button type="button" class="msg-act" data-act="refine">'+SVGS.refine+'<span>'+esc(tt.refine)+'</span></button><button type="button" class="msg-act danger" data-act="report">'+SVGS.report+'<span>'+esc(tt.report)+'</span></button>';
 }
 actions.querySelectorAll('button').forEach(function(btn){
 btn.onclick=function(e){
@@ -857,6 +782,7 @@ if(act==='copy')copyMessage(m.text,btn);
 else if(act==='edit')startEditMessage(idx);
 else if(act==='refine')startRefine(idx);
 else if(act==='report')startReport(idx,actions);
+else if(act==='retry')retryMessage(idx);
 };
 });
 content.appendChild(actions);
@@ -933,8 +859,11 @@ box.querySelector('.cancel').onclick=function(){renderMessages()};
 box.querySelector('.save').onclick=function(){
 var nt=ta.value.trim();if(!nt)return;
 chat.messages[idx]=Object.assign({},chat.messages[idx],{text:nt});
+chat.messages.splice(idx+1,chat.messages.length-idx-1);
 chat.updatedAt=Date.now();
-syncChat(chat);renderChatList();renderMessages();
+syncChat(chat);
+renderChatList();renderMessages();
+sendMessage(nt,{smart:state.smart,search:state.search});
 };
 bubble.appendChild(box);ta.focus();
 }
@@ -958,6 +887,20 @@ if(!ta.value.trim())return;
 pop.innerHTML='<div class="report-thanks"><p>'+esc(tt.reportThanks)+'</p></div>';
 setTimeout(function(){pop.remove()},3000);
 };
+}
+function retryMessage(idx){
+var chat=chats.find(function(c){return c.id===activeId});
+if(!chat||state.streaming)return;
+var userMsg=null;
+for(var i=idx;i>=0;i--){
+if(chat.messages[i]&&chat.messages[i].role==='user'){userMsg=chat.messages[i];break;}
+}
+if(!userMsg)return;
+chat.messages.splice(idx,chat.messages.length-idx);
+chat.updatedAt=Date.now();
+syncChat(chat);
+renderChatList();renderMessages();
+sendMessage(userMsg.text,{smart:state.smart,search:state.search});
 }
 
 function streamApi(payload,onChunk,onDone,onError){
@@ -1078,9 +1021,54 @@ updateInputState();
 userInput.addEventListener('keydown',function(e){
 if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();doSend()}
 });
+
+function checkSpam(text){
+var now = Date.now();
+sendHistory = sendHistory.filter(function(s){ return now - s.time < 5000; });
+var hash = text.trim().toLowerCase().slice(0, 200);
+var sameCount = sendHistory.filter(function(s){ return s.hash === hash; }).length;
+if(sameCount >= 3) return { blocked: true, seconds: 30 };
+if(sendHistory.length >= 5) return { blocked: true, seconds: 10 };
+sendHistory.push({ time: now, hash: hash });
+return { blocked: false };
+}
+
+function showSpamWarning(seconds, retryText){
+if(spamWarning) spamWarning.remove();
+var warn = document.createElement('div');
+warn.style.cssText = 'position:fixed;bottom:120px;left:50%;transform:translateX(-50%);background:var(--bg);border:2px solid #ef4444;color:#ef4444;padding:12px 20px;border-radius:14px;box-shadow:0 12px 40px rgba(239,68,68,.3);z-index:9999;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:10px;cursor:pointer;max-width:calc(100% - 32px)';
+var remaining = seconds;
+function update(){
+warn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Сообщение не доставлено! Слишком быстро. Ещё ' + remaining + ' с';
+}
+update();
+warn.onclick = function(){
+if(remaining <= 0){
+warn.remove(); spamWarning = null;
+userInput.value = retryText;
+updateInputState();
+doSend();
+}
+};
+document.body.appendChild(warn);
+spamWarning = warn;
+var int = setInterval(function(){
+remaining--;
+if(remaining <= 0){
+clearInterval(int);
+warn.style.background = 'rgba(16,185,129,.1)';
+warn.style.borderColor = '#10b981';
+warn.style.color = '#10b981';
+warn.innerHTML = '✅ Разблокировано. Нажмите для отправки';
+} else update();
+}, 1000);
+}
+
 function doSend(){
 var v=userInput.value.trim();
 if(!v||state.streaming)return;
+var spam = checkSpam(v);
+if(spam.blocked){ showSpamWarning(spam.seconds, v); return; }
 if(isRecording)stopVoice();
 userInput.value='';userInput.style.height='auto';
 sendMessage(v,{smart:state.smart,search:state.search});
@@ -1120,7 +1108,7 @@ recognition.onend=function(){if(isRecording)try{recognition.start()}catch(_){}el
 }
 function startVoice(){
 if(!recognition){alert(t().voiceUnsupported);return}
-recognition.lang=SPEECH_LANGS[settings.lang]||'en-US';
+recognition.lang=SPEECH_LANGS[settings.lang]||'ru-RU';
 finalTranscript=userInput.value;
 try{recognition.start()}catch(_){}
 }
@@ -1166,7 +1154,7 @@ if(!agentPopup.contains(e.target)&&e.target!==$('agentBtn')&&!$('agentBtn').cont
 });
 
 function openSettings(){
-renderLangGrid();renderThemeGrid();renderSubStatusBox();
+renderLangGrid();renderThemeGrid();
 nickInput.value=settings.nickname||'';
 settingsModal.classList.add('open');
 }
@@ -1181,7 +1169,7 @@ LANGS.forEach(function(l){
 var b=document.createElement('button');b.type='button';
 b.className='opt'+(settings.lang===l.code?' active':'');
 b.innerHTML='<span class="flag">'+l.flag+'</span><span>'+esc(l.label)+'</span>';
-b.onclick=function(){settings.lang=l.code;applySettings();renderLangGrid();renderThemeGrid();renderSubStatusBox()};
+b.onclick=function(){settings.lang=l.code;applySettings();renderLangGrid();renderThemeGrid()};
 g.appendChild(b);
 });
 }
@@ -1199,6 +1187,154 @@ g.appendChild(b);
 nickInput.oninput=function(){
 settings.nickname=nickInput.value;save('pongy_settings_ui',settings);
 if(authToken)apiFetch('/api/me',{method:'PUT',body:{nickname:nickInput.value}}).catch(function(){});
+};
+
+// Eye toggle for auth password
+document.getElementById('eyeAuth').onclick = function(){
+var inp = document.getElementById('authPassword');
+var icon = document.getElementById('eyeAuthIcon');
+if(inp.type === 'password'){ inp.type='text'; icon.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><path d="M1 1l22 22"/>'; }
+else { inp.type='password'; icon.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'; }
+};
+document.querySelectorAll('.eye[data-target]').forEach(function(btn){
+btn.onclick = function(){
+var inp = document.getElementById(btn.dataset.target);
+if(!inp) return;
+if(inp.type === 'password'){ inp.type='text'; btn.querySelector('svg').innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><path d="M1 1l22 22"/>'; }
+else { inp.type='password'; btn.querySelector('svg').innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'; }
+};
+});
+
+// Reset password flow
+var resetEmailValue = '';
+var resetCodeValue = '';
+var resetTimerInterval = null;
+
+function openReset(){ document.getElementById('resetModal').classList.add('open'); showResetStep(1); }
+function closeReset(){ document.getElementById('resetModal').classList.remove('open'); if(resetTimerInterval) clearInterval(resetTimerInterval); }
+function showResetStep(n){
+document.getElementById('resetStep1').style.display = n===1 ? 'block' : 'none';
+document.getElementById('resetStep2').style.display = n===2 ? 'block' : 'none';
+document.getElementById('resetStep3').style.display = n===3 ? 'block' : 'none';
+}
+document.getElementById('forgotPasswordBtn').onclick = openReset;
+document.getElementById('closeReset').onclick = closeReset;
+
+document.getElementById('sendCodeBtn').onclick = function(){
+var email = document.getElementById('resetEmail').value.trim();
+var err = document.getElementById('resetErr1');
+err.style.display='none';
+if(!email){ err.textContent='Введите email'; err.style.display='block'; return; }
+this.disabled = true; this.textContent = 'Отправка…';
+var self = this;
+fetch(API_URL + '/api/password/send-code', {
+method:'POST', headers:{'Content-Type':'application/json'},
+body: JSON.stringify({ email: email })
+}).then(function(r){ return r.json() })
+.then(function(){
+resetEmailValue = email;
+showResetStep(2);
+startResetTimer();
+document.getElementById('resetCode').focus();
+})
+.catch(function(e){ err.textContent = e.message || 'Ошибка'; err.style.display='block'; })
+.finally(function(){ self.disabled=false; self.textContent='Отправить код'; });
+};
+
+function startResetTimer(){
+var secondsLeft = 90;
+var timerEl = document.getElementById('resetTimer');
+var resendEl = document.getElementById('resendCodeLink');
+timerEl.style.color='var(--fg2)';
+resendEl.style.display='none';
+if(resetTimerInterval) clearInterval(resetTimerInterval);
+function tick(){
+if(secondsLeft <= 0){
+clearInterval(resetTimerInterval);
+timerEl.textContent = '';
+resendEl.style.display='block';
+return;
+}
+var m = Math.floor(secondsLeft/60);
+var s = secondsLeft % 60;
+timerEl.textContent = 'Отправить повторно через ' + m + ':' + (s<10?'0':'') + s;
+secondsLeft--;
+}
+tick();
+resetTimerInterval = setInterval(tick, 1000);
+}
+
+document.getElementById('resendCodeLink').onclick = function(){
+fetch(API_URL + '/api/password/send-code', {
+method:'POST', headers:{'Content-Type':'application/json'},
+body: JSON.stringify({ email: resetEmailValue })
+}).then(function(){ startResetTimer(); });
+};
+
+document.getElementById('verifyCodeBtn').onclick = function(){
+var code = document.getElementById('resetCode').value.trim();
+var err = document.getElementById('resetErr2');
+err.style.display='none';
+if(!code){ err.textContent='Введите код'; err.style.display='block'; return; }
+var self = this; self.disabled=true; self.textContent='Проверка…';
+fetch(API_URL + '/api/password/verify-code', {
+method:'POST', headers:{'Content-Type':'application/json'},
+body: JSON.stringify({ email: resetEmailValue, code: code })
+}).then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error); return j; }) })
+.then(function(){
+resetCodeValue = code;
+if(resetTimerInterval) clearInterval(resetTimerInterval);
+showResetStep(3);
+})
+.catch(function(e){ err.textContent = e.message; err.style.display='block'; })
+.finally(function(){ self.disabled=false; self.textContent='Подтвердить'; });
+};
+
+function checkPasswordsMatch(){
+var p1 = document.getElementById('newPass1').value;
+var p2 = document.getElementById('newPass2').value;
+var btn = document.getElementById('changePassBtn');
+var ok = p1.length >= 6 && p1 === p2;
+btn.disabled = !ok;
+btn.style.opacity = ok ? '1' : '.5';
+btn.style.cursor = ok ? 'pointer' : 'not-allowed';
+}
+document.getElementById('newPass1').addEventListener('input', checkPasswordsMatch);
+document.getElementById('newPass2').addEventListener('input', checkPasswordsMatch);
+
+document.getElementById('changePassBtn').onclick = function(){
+var p1 = document.getElementById('newPass1').value;
+var err = document.getElementById('resetErr3');
+err.style.display='none';
+var self = this; self.disabled=true; self.textContent='Смена…';
+fetch(API_URL + '/api/password/reset', {
+method:'POST', headers:{'Content-Type':'application/json'},
+body: JSON.stringify({ email: resetEmailValue, code: resetCodeValue, newPassword: p1 })
+}).then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error); return j; }) })
+.then(function(){
+closeReset();
+alert('✅ Пароль успешно изменён. Войдите с новым паролем.');
+document.getElementById('authPassword').value='';
+document.getElementById('resetEmail').value='';
+document.getElementById('resetCode').value='';
+document.getElementById('newPass1').value='';
+document.getElementById('newPass2').value='';
+checkPasswordsMatch();
+})
+.catch(function(e){ err.textContent = e.message; err.style.display='block'; })
+.finally(function(){ self.disabled=false; self.textContent='Сменить пароль'; });
+};
+
+document.getElementById('logoutBtnSettings').onclick = function(){
+showConfirm('Выйти из аккаунта?', 'Вы сможете снова войти в любое время.', 'Выйти', 'Отмена', function(){
+authToken=''; currentUser=null;
+localStorage.removeItem('pongy_token');
+chats=[]; activeId=null;
+document.getElementById('authEmail').value='';
+document.getElementById('authPassword').value='';
+closeSettings();
+showAuthScreen();
+});
 };
 
 function renderGuide(){
@@ -1252,16 +1388,6 @@ btn.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" strok
 setTimeout(function(){btn.innerHTML=orig},1400);
 })}
 };
-$('logoutBtn').onclick=function(){
-showConfirm('Sign out?','You will need to log in again to access your chats.','Sign out','Cancel',function(){
-authToken='';currentUser=null;
-localStorage.removeItem('pongy_token');
-chats=[];activeId=null;
-document.getElementById('authEmail').value='';
-document.getElementById('authPassword').value='';
-showAuthScreen();
-});
-};
 
 function initAuthUI(){
 var btn=document.getElementById('authBtn');
@@ -1270,28 +1396,28 @@ var email=document.getElementById('authEmail').value.trim();
 var pass=document.getElementById('authPassword').value;
 var err=document.getElementById('authError');
 err.style.display='none';
-if(!email||!pass){err.textContent='Enter email and password';err.style.display='block';return}
-btn.disabled=true;btn.textContent='Please wait…';
-apiFetch('/api/'+authMode,{method:'POST',body:{email:email,password:pass}})
+if(!email||!pass){err.textContent='Введите email и пароль';err.style.display='block';return}
+btn.disabled=true;btn.textContent='Подождите…';
+apiFetch('/api/'+authMode,{method:'POST',body:{email:email,password:pass,deviceId:DEVICE_ID}})
 .then(function(data){
 authToken=data.token;localStorage.setItem('pongy_token',authToken);
 currentUser=data.user;
 return loadUserChats();
 })
 .then(function(){
-hideAuthScreen();renderChatList();renderMessages();renderSubStatusBox();
+hideAuthScreen();renderChatList();renderMessages();
 })
 .catch(function(e){
 err.textContent=e.message;err.style.display='block';
 })
-.finally(function(){btn.disabled=false;btn.textContent=authMode==='login'?'Sign in':'Register'});
+.finally(function(){btn.disabled=false;btn.textContent=authMode==='login'?'Войти':'Зарегистрироваться'});
 };
 document.getElementById('authSwitch').onclick=function(){
 authMode=authMode==='login'?'register':'login';
-document.getElementById('authSubtitle').textContent=authMode==='login'?'Sign in to continue':'Create your account';
-document.getElementById('authBtn').textContent=authMode==='login'?'Sign in':'Register';
-document.getElementById('authSwitchText').textContent=authMode==='login'?'No account?':'Have an account?';
-document.getElementById('authSwitch').textContent=authMode==='login'?'Register':'Sign in';
+document.getElementById('authSubtitle').textContent=authMode==='login'?'Войдите, чтобы продолжить':'Создайте аккаунт';
+document.getElementById('authBtn').textContent=authMode==='login'?'Войти':'Зарегистрироваться';
+document.getElementById('authSwitchText').textContent=authMode==='login'?'Нет аккаунта?':'Уже есть аккаунт?';
+document.getElementById('authSwitch').textContent=authMode==='login'?'Зарегистрироваться':'Войти';
 };
 }
 
@@ -1318,20 +1444,6 @@ showAuthScreen();
 }
 updateInputState();
 setInterval(function(){if(currentUser)renderChatList()},60000);
-
-(function checkPaymentReturn(){
-try{
-var params=new URLSearchParams(window.location.search);
-if(params.get('payment')==='success'&&authToken){
-apiFetch('/api/me').then(function(user){
-currentUser=user;
-renderSubStatusBox();
-if(window.history&&window.history.replaceState)window.history.replaceState({},'','/');
-setTimeout(function(){alert('✅ Payment successful! Plus is now active.')},500);
-}).catch(function(){});
-}
-}catch(e){}
-})();
 
 })();
 </script>
