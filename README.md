@@ -6,7 +6,7 @@ Pongy AI — это новый персональный и универсаль�
 
 Pongy AI is a modern multi-user web application that provides intelligent conversational assistance in 5 languages. It runs as a full-stack solution with a Node.js backend and a lightweight frontend — no build tools required.
 
-🌐 **Live:** [pongy.chat](https://pongy.chat)
+🌐 **Live:** [pongy-ai.devs.surf](https://pongy-ai.devs.surf)
 
 ---
 
