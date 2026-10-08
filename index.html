@@ -9,48 +9,33 @@
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="apple-touch-icon" href="/favicon.png">
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}:root{--bg:#ffffff;--bg2:#f7f7f9;--bg3:#f0f0f3;--fg:#000000;--fg2:#4b5563;--border:#e3e3e8;--accent:#6366f1;--accent-h:#4f46e5;--user:#6366f1;--user-fg:#fff;--ai:#f0f0f3;--ai-fg:#000000;--hover:rgba(0,0,0,.055);--hover-strong:rgba(0,0,0,.09);--danger:#ef4444;--success:#10b981;--warning:#f59e0b;--code-bg:rgba(127,127,127,.15);--code-fg:#000;--glow:rgba(99,102,241,.35)}body.dark{--bg:#0a0a0c;--bg2:#131317;--bg3:#1a1a20;--fg:#60a5fa;--fg2:#93c5fd;--border:#26262e;--accent:#7c7ff5;--accent-h:#9999ff;--ai:#1a1a20;--ai-fg:#60a5fa;--hover:rgba(255,255,255,.06);--hover-strong:rgba(255,255,255,.1);--code-bg:rgba(255,255,255,.1);--code-fg:#93c5fd;--glow:rgba(124,127,245,.5)}body{background:var(--bg);color:var(--fg);display:flex;transition:background .35s ease,color .35s ease;overflow:hidden}button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;transition:background-color .3s,color .3s,transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .3s,border-color .3s}input,textarea,select{font:inherit;color:inherit;outline:none;transition:background-color .3s,border-color .3s,color .3s,box-shadow .3s}button:active:not(:disabled){transform:scale(.96)}button:not(:disabled):hover,a:hover,.opt:hover,.mode-btn:hover,.sb-btn:hover,.guide-tab:hover,.msg-act:hover,.agent-opt:hover,.think-opt:hover,.chat-item:hover{transform:scale(1.04)}.chat-item:hover .chat-title{color:var(--accent)}
-#sidebar{width:300px;height:100%;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;transition:width .35s cubic-bezier(.4,0,.2,1),transform .35s cubic-bezier(.4,0,.2,1),background-color .3s;flex-shrink:0;position:relative}
-body.collapsed #sidebar{width:64px}body.hidden-sidebar #sidebar{width:0;border-right:none;overflow:hidden}body.hidden-sidebar #collapseBtn{display:none}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}:root{--bg:#fff;--bg2:#f7f7f9;--bg3:#f0f0f3;--fg:#000;--fg2:#4b5563;--border:#e3e3e8;--accent:#6366f1;--accent-h:#4f46e5;--user:#6366f1;--user-fg:#fff;--ai:#f0f0f3;--ai-fg:#000;--hover:rgba(0,0,0,.055);--hover-strong:rgba(0,0,0,.09);--danger:#ef4444;--success:#10b981;--warning:#f59e0b;--code-bg:rgba(127,127,127,.15);--code-fg:#000;--glow:rgba(99,102,241,.35)}body.dark{--bg:#0a0a0c;--bg2:#131317;--bg3:#1a1a20;--fg:#60a5fa;--fg2:#93c5fd;--border:#26262e;--accent:#7c7ff5;--accent-h:#9999ff;--ai:#1a1a20;--ai-fg:#60a5fa;--hover:rgba(255,255,255,.06);--hover-strong:rgba(255,255,255,.1);--code-bg:rgba(255,255,255,.1);--code-fg:#93c5fd;--glow:rgba(124,127,245,.5)}body{background:var(--bg);color:var(--fg);display:flex;transition:background .35s ease,color .35s ease;overflow:hidden}button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;transition:background-color .3s,color .3s,transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .3s,border-color .3s}input,textarea,select{font:inherit;color:inherit;outline:none;transition:background-color .3s,border-color .3s,color .3s,box-shadow .3s}button:active:not(:disabled){transform:scale(.96)}button:not(:disabled):hover,a:hover,.opt:hover,.mode-btn:hover,.sb-btn:hover,.guide-tab:hover,.msg-act:hover,.agent-opt:hover,.think-opt:hover,.chat-item:hover{transform:scale(1.04)}.chat-item:hover .chat-title{color:var(--accent)}
+#sidebar{width:300px;height:100%;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;transition:width .35s cubic-bezier(.4,0,.2,1),transform .35s,background-color .3s;flex-shrink:0;position:relative}body.collapsed #sidebar{width:64px}body.hidden-sidebar #sidebar{width:0;border-right:none;overflow:hidden}body.hidden-sidebar #collapseBtn{display:none}
 .sb-head{display:flex;align-items:center;justify-content:space-between;padding:12px;height:56px;flex-shrink:0}body.collapsed .sb-head{justify-content:center}body.collapsed .sb-title{display:none}
 .logo{width:34px;height:34px;border-radius:10px;flex-shrink:0;overflow:hidden;box-shadow:0 4px 12px var(--glow);transition:transform .35s}.logo:hover{transform:scale(1.08) rotate(-5deg)}.logo svg{display:block;width:100%;height:100%;border-radius:10px}
 .sb-title{font-weight:700;font-size:15px;margin-left:10px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .icon-btn{width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--fg2);flex-shrink:0}.icon-btn:hover{background:var(--hover);color:var(--fg)}
 .sb-search{display:flex;align-items:center;gap:8px;padding:0 10px 8px;flex-shrink:0}body.collapsed .sb-search{display:none}
-.sb-search-inner{flex:1;display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:8px 12px;transition:border-color .3s,box-shadow .3s}
-.sb-search-inner:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+.sb-search-inner{flex:1;display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:8px 12px;transition:border-color .3s,box-shadow .3s}.sb-search-inner:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.12)}
 .sb-search-inner svg{flex-shrink:0;color:var(--fg2)}
 #sbSearchInput{flex:1;background:transparent;border:none;font-size:13px;color:var(--fg);min-width:0}
-.sb-list{flex:1;overflow-y:auto;padding:6px 8px;min-height:0;scroll-behavior:smooth}
-.sb-list::-webkit-scrollbar{width:8px}.sb-list::-webkit-scrollbar-thumb{background:var(--hover-strong);border-radius:4px}
-body.collapsed .sb-list{padding:6px 4px}
+.sb-list{flex:1;overflow-y:auto;padding:6px 8px;min-height:0;scroll-behavior:smooth}.sb-list::-webkit-scrollbar{width:8px}.sb-list::-webkit-scrollbar-thumb{background:var(--hover-strong);border-radius:4px}body.collapsed .sb-list{padding:6px 4px}
 .sb-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--fg2);padding:10px 12px 6px;font-weight:600}body.collapsed .sb-label{display:none}
-.chat-item{display:flex;gap:8px;padding:9px 11px;border-radius:12px;cursor:pointer;position:relative;margin-bottom:2px;transition:background-color .25s,transform .2s}
-.chat-item:hover{background:var(--hover);transform:translateX(2px)}.chat-item.active{background:var(--hover-strong)}
-body.collapsed .chat-item{padding:9px;justify-content:center;align-items:center}
+.chat-item{display:flex;gap:8px;padding:9px 11px;border-radius:12px;cursor:pointer;position:relative;margin-bottom:2px;transition:background-color .25s,transform .2s}.chat-item:hover{background:var(--hover);transform:translateX(2px)}.chat-item.active{background:var(--hover-strong)}body.collapsed .chat-item{padding:9px;justify-content:center;align-items:center}
 .chat-ico{flex-shrink:0;opacity:.6;margin-top:2px;color:var(--fg2)}
 .chat-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}body.collapsed .chat-body{display:none}
 .chat-title{font-size:13.5px;color:var(--fg);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .25s}
 .chat-time{font-size:11px;color:var(--fg2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chat-item.active .chat-time{color:var(--accent);font-weight:500}
-.chat-actions{position:absolute;right:6px;top:50%;transform:translateY(-50%);display:none;gap:2px;background:linear-gradient(90deg,transparent,var(--bg2) 20%);padding-left:12px}
-.chat-item:hover .chat-actions{display:flex}.chat-item.active .chat-actions{background:linear-gradient(90deg,transparent,var(--hover-strong) 20%)}
-.chat-act{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--fg2)}
-.chat-act:hover{background:var(--hover-strong);color:var(--fg)}.chat-act.pin-icon.on{color:var(--accent)}
-.chat-act.danger:hover{background:rgba(239,68,68,.15);color:var(--danger)}
+.chat-actions{position:absolute;right:6px;top:50%;transform:translateY(-50%);display:none;gap:2px;background:linear-gradient(90deg,transparent,var(--bg2) 20%);padding-left:12px}.chat-item:hover .chat-actions{display:flex}.chat-item.active .chat-actions{background:linear-gradient(90deg,transparent,var(--hover-strong) 20%)}
+.chat-act{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--fg2)}.chat-act:hover{background:var(--hover-strong);color:var(--fg)}.chat-act.pin-icon.on{color:var(--accent)}.chat-act.danger:hover{background:rgba(239,68,68,.15);color:var(--danger)}
 .chat-empty{text-align:center;padding:20px;font-size:12.5px;color:var(--fg2)}
 .rename-input{width:100%;background:var(--bg);border:1.5px solid var(--accent);border-radius:8px;padding:5px 8px;font-size:13.5px;color:var(--fg)}
 .sb-bottom{padding:8px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px;flex-shrink:0}
 .sb-row{display:flex;gap:6px}
-.sb-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:12px;color:var(--fg2);font-size:13px;min-width:0}
-.sb-btn:hover{background:var(--hover);color:var(--fg)}
-body.collapsed .sb-btn span{display:none}
-.upgrade-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:12px;background:transparent;border:1.5px solid var(--danger);color:var(--danger);font-weight:600;font-size:12.5px;width:100%;transition:all .3s}
-.upgrade-btn:hover{background:rgba(239,68,68,.08);border-color:#dc2626;transform:scale(1.03);box-shadow:0 4px 14px rgba(239,68,68,.2)}
-.upgrade-btn.active{border-color:var(--success);color:var(--success);cursor:default;pointer-events:none;background:rgba(16,185,129,.06)}
-body.collapsed .upgrade-btn span{display:none}
-#collapseBtn{position:absolute;top:50%;right:-14px;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--fg2);z-index:50;transition:transform .25s,box-shadow .25s}
-#collapseBtn:hover{transform:translateY(-50%) scale(1.12);box-shadow:0 4px 14px rgba(0,0,0,.15)}
+.sb-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:12px;color:var(--fg2);font-size:13px;min-width:0}.sb-btn:hover{background:var(--hover);color:var(--fg)}body.collapsed .sb-btn span{display:none}
+.upgrade-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:12px;background:transparent;border:1.5px solid var(--danger);color:var(--danger);font-weight:600;font-size:12.5px;width:100%;transition:all .3s}.upgrade-btn:hover{background:rgba(239,68,68,.08);border-color:#dc2626;transform:scale(1.03);box-shadow:0 4px 14px rgba(239,68,68,.2)}.upgrade-btn.active{border-color:var(--success);color:var(--success);cursor:default;pointer-events:none;background:rgba(16,185,129,.06)}body.collapsed .upgrade-btn span{display:none}
+#collapseBtn{position:absolute;top:50%;right:-14px;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--fg2);z-index:50;transition:transform .25s,box-shadow .25s}#collapseBtn:hover{transform:translateY(-50%) scale(1.12);box-shadow:0 4px 14px rgba(0,0,0,.15)}
 #main{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg)}
 #topbar{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid var(--border);background:var(--bg);flex-shrink:0}
 .tb-left{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
@@ -58,14 +43,11 @@ body.collapsed .upgrade-btn span{display:none}
 .tb-title{font-weight:500;font-size:13.5px;color:var(--fg2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tb-actions{display:flex;gap:4px;align-items:center;flex-shrink:0}
 .tb-btn{width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--fg2)}.tb-btn:hover{background:var(--hover);color:var(--fg)}.tb-btn.active{color:var(--accent)}
-#messages{flex:1;overflow-y:auto;padding:16px 0;min-height:0;scroll-behavior:smooth}
-#messages::-webkit-scrollbar{width:8px}#messages::-webkit-scrollbar-thumb{background:var(--hover-strong);border-radius:4px}
+#messages{flex:1;overflow-y:auto;padding:16px 0;min-height:0;scroll-behavior:smooth}#messages::-webkit-scrollbar{width:8px}#messages::-webkit-scrollbar-thumb{background:var(--hover-strong);border-radius:4px}
 .msg-wrap{max-width:768px;margin:0 auto;padding:0 16px}
 .welcome{height:100%;display:flex;align-items:center;justify-content:center;padding:0 24px}
 .welcome-inner{text-align:center;max-width:560px;animation:fade .5s ease}
-.welcome .big-logo{width:96px;height:96px;border-radius:28px;overflow:hidden;margin:0 auto 24px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899,#6366f1);background-size:300% 300%;animation:logoGradient 8s ease infinite,glow 3s ease-in-out infinite;padding:14px;transition:transform .4s}
-.welcome .big-logo:hover{transform:scale(1.06) rotate(-3deg)}
-.welcome .big-logo svg{display:block;width:100%;height:100%;border-radius:20px}
+.welcome .big-logo{width:96px;height:96px;border-radius:28px;overflow:hidden;margin:0 auto 24px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899,#6366f1);background-size:300% 300%;animation:logoGradient 8s ease infinite,glow 3s ease-in-out infinite;padding:14px}.welcome .big-logo svg{display:block;width:100%;height:100%;border-radius:20px}
 @keyframes logoGradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 @keyframes glow{0%,100%{box-shadow:0 8px 32px rgba(99,102,241,.35)}50%{box-shadow:0 8px 48px rgba(99,102,241,.6)}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
@@ -74,57 +56,39 @@ body.collapsed .upgrade-btn span{display:none}
 @keyframes popIn{0%{opacity:0;transform:scale(.92) translateY(-6px)}100%{opacity:1;transform:scale(1) translateY(0)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 .welcome p{color:var(--fg2);font-size:17px;line-height:1.6}
-.msg{display:flex;gap:12px;padding:6px 0;animation:slideIn .35s cubic-bezier(.16,1,.3,1)}
-.msg.user{flex-direction:row-reverse}
-.avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;transition:transform .25s}
-.avatar:hover{transform:scale(1.08)}
+.msg{display:flex;gap:12px;padding:6px 0;animation:slideIn .35s cubic-bezier(.16,1,.3,1)}.msg.user{flex-direction:row-reverse}
+.avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;transition:transform .25s}.avatar:hover{transform:scale(1.08)}
 .avatar.ai{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 2px 8px rgba(99,102,241,.35)}
 .avatar.user{background:var(--bg3);color:var(--fg);border:1px solid var(--border)}
-.msg-content{display:flex;flex-direction:column;max-width:78%;min-width:0;position:relative}
-.msg.user .msg-content{align-items:flex-end}
+.msg-content{display:flex;flex-direction:column;max-width:78%;min-width:0;position:relative}.msg.user .msg-content{align-items:flex-end}
 .bubble{padding:11px 17px;border-radius:22px;font-size:15px;line-height:1.55;word-wrap:break-word;overflow-wrap:break-word}
 .msg.user .bubble{background:linear-gradient(135deg,var(--user),#8b5cf6);color:var(--user-fg);border-bottom-right-radius:8px;box-shadow:0 4px 14px rgba(99,102,241,.3);white-space:pre-wrap}
-.msg.ai .bubble{background:var(--ai);color:var(--ai-fg);border-bottom-left-radius:8px;border:1px solid var(--border);white-space:pre-wrap;box-shadow:0 2px 12px rgba(0,0,0,.04)}
-body.dark .msg.ai .bubble{box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.msg.ai .bubble{background:var(--ai);color:var(--ai-fg);border-bottom-left-radius:8px;border:1px solid var(--border);white-space:pre-wrap;box-shadow:0 2px 12px rgba(0,0,0,.04)}body.dark .msg.ai .bubble{box-shadow:0 2px 12px rgba(0,0,0,.3)}
 .bubble code{background:var(--code-bg);color:var(--code-fg);padding:2px 6px;border-radius:6px;font-family:Consolas,Monaco,monospace;font-size:13px}
 .bubble pre{background:#111;color:#f0f0f3;padding:12px;border-radius:10px;overflow-x:auto;margin:8px 0;font-family:Consolas,Monaco,monospace;font-size:12.5px;line-height:1.5}
-.bubble a{color:var(--accent);text-decoration:none;word-break:break-all}
-.bubble ul,.bubble ol{margin:6px 0;padding-left:20px}
+.bubble a{color:var(--accent);text-decoration:none;word-break:break-all}.bubble ul,.bubble ol{margin:6px 0;padding-left:20px}
 .caret{display:inline-block;width:6px;height:15px;background:currentColor;vertical-align:-2px;margin-left:2px;border-radius:1px;animation:blink .9s infinite}
-.msg-actions{display:flex;gap:4px;margin-top:6px;opacity:0;transition:opacity .25s;pointer-events:none;position:relative;flex-wrap:wrap}
-.msg:hover .msg-actions{opacity:1;pointer-events:auto}
-.msg-act{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:10px;font-size:11.5px;color:var(--fg2);transition:all .25s}
-.msg-act:hover{background:var(--hover);color:var(--fg)}.msg-act.danger:hover{background:rgba(239,68,68,.12);color:var(--danger)}
+.msg-actions{display:flex;gap:4px;margin-top:6px;opacity:0;transition:opacity .25s;pointer-events:none;position:relative;flex-wrap:wrap}.msg:hover .msg-actions{opacity:1;pointer-events:auto}
+.msg-act{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:10px;font-size:11.5px;color:var(--fg2);transition:all .25s}.msg-act:hover{background:var(--hover);color:var(--fg)}.msg-act.danger:hover{background:rgba(239,68,68,.12);color:var(--danger)}
 .thinking-box{display:flex;align-items:center;gap:12px;padding:2px 0;min-height:26px}
-.think-orb{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6,#a855f7,#6366f1);background-size:300% 300%;animation:orbWave 1.6s ease-in-out infinite;flex-shrink:0;position:relative}
-.think-orb::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(99,102,241,.3);animation:pulseRing 1.6s ease-out infinite}
+.think-orb{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6,#a855f7,#6366f1);background-size:300% 300%;animation:orbWave 1.6s ease-in-out infinite;flex-shrink:0;position:relative}.think-orb::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(99,102,241,.3);animation:pulseRing 1.6s ease-out infinite}
 @keyframes orbWave{0%,100%{transform:scale(1);background-position:0% 50%}50%{transform:scale(1.12);background-position:100% 50%}}
 @keyframes pulseRing{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.4);opacity:0}}
 .think-text{font-size:14.5px;color:var(--ai-fg);opacity:.85;display:flex;align-items:baseline;gap:2px}
-.think-text .dots{display:inline-flex;gap:2px;margin-left:2px}
-.think-text .dots span{width:4px;height:4px;border-radius:50%;background:currentColor;animation:dotJump 1.2s infinite}
-.think-text .dots span:nth-child(2){animation-delay:.15s}.think-text .dots span:nth-child(3){animation-delay:.3s}
+.think-text .dots{display:inline-flex;gap:2px;margin-left:2px}.think-text .dots span{width:4px;height:4px;border-radius:50%;background:currentColor;animation:dotJump 1.2s infinite}.think-text .dots span:nth-child(2){animation-delay:.15s}.think-text .dots span:nth-child(3){animation-delay:.3s}
 @keyframes dotJump{0%,60%,100%{opacity:.3}30%{opacity:1}}
 .msg-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;animation:fade .3s}
-.meta-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:9px;background:var(--bg3);border:1px solid var(--border);font-size:11.5px;color:var(--fg2);font-weight:500}
-.meta-badge.accent{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.35);color:var(--accent)}
-#inputArea{flex-shrink:0;padding:8px 16px 14px;background:var(--bg)}
-#inputInner{max-width:768px;margin:0 auto}
+.meta-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:9px;background:var(--bg3);border:1px solid var(--border);font-size:11.5px;color:var(--fg2);font-weight:500}.meta-badge.accent{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.35);color:var(--accent)}
+#inputArea{flex-shrink:0;padding:8px 16px 14px;background:var(--bg)}#inputInner{max-width:768px;margin:0 auto}
 .modes{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;position:relative}
-.mode-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:14px;font-size:13px;border:1px solid var(--border);background:var(--bg3);color:var(--fg2)}
-.mode-btn:hover{color:var(--fg);border-color:var(--hover-strong)}
-.mode-btn.active{background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.5);color:var(--accent)}
+.mode-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:14px;font-size:13px;border:1px solid var(--border);background:var(--bg3);color:var(--fg2)}.mode-btn:hover{color:var(--fg);border-color:var(--hover-strong)}.mode-btn.active{background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.5);color:var(--accent)}
 .agent-badge{font-size:11px;opacity:.85}
-.agent-popup{position:absolute;bottom:calc(100% + 8px);left:0;min-width:320px;background:var(--bg);border:1px solid var(--border);border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.2);padding:8px;z-index:60;display:none}
-.agent-popup.open{display:block;animation:popIn .22s cubic-bezier(.16,1,.3,1)}
+.agent-popup{position:absolute;bottom:calc(100% + 8px);left:0;min-width:320px;background:var(--bg);border:1px solid var(--border);border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.2);padding:8px;z-index:60;display:none}.agent-popup.open{display:block;animation:popIn .22s cubic-bezier(.16,1,.3,1)}
 .popup-section{padding:8px 6px}
 .popup-title{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--fg2);font-weight:600;padding:6px 10px 8px}
-.agent-opt,.think-opt{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;cursor:pointer;position:relative;border:1.5px solid transparent;transition:all .25s}
-.agent-opt:hover,.think-opt:hover{background:var(--hover);border-color:var(--border)}
-.agent-opt.current,.think-opt.current{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.5)}
+.agent-opt,.think-opt{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;cursor:pointer;position:relative;border:1.5px solid transparent;transition:all .25s}.agent-opt:hover,.think-opt:hover{background:var(--hover);border-color:var(--border)}.agent-opt.current,.think-opt.current{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.5)}
 .agent-info{flex:1;min-width:0}
-.agent-name,.think-name{font-size:13.5px;font-weight:500;color:var(--fg)}
-.agent-opt.current .agent-name,.think-opt.current .think-name{color:var(--accent);font-weight:600}
+.agent-name,.think-name{font-size:13.5px;font-weight:500;color:var(--fg)}.agent-opt.current .agent-name,.think-opt.current .think-name{color:var(--accent);font-weight:600}
 .agent-sub{font-size:11px;color:var(--fg2);margin-top:2px}
 .agent-tag,.think-tag{font-size:11px;padding:3px 9px;border-radius:7px;font-weight:600;flex-shrink:0}
 .agent-tag.free,.think-tag.free{background:rgba(16,185,129,.15);color:#10b981}
@@ -133,97 +97,80 @@ body.dark .msg.ai .bubble{box-shadow:0 2px 12px rgba(0,0,0,.3)}
 .think-tag.note{background:rgba(99,102,241,.12);color:var(--accent)}
 .popup-divider{height:1px;background:var(--border);margin:6px 4px}
 .crown{display:inline-block;width:12px;height:12px}
-.input-box{background:var(--bg3);border:1px solid var(--border);border-radius:22px;padding:6px;display:flex;align-items:flex-end;gap:4px;position:relative;transition:border-color .3s,box-shadow .3s}
-.input-box:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px rgba(99,102,241,.12)}
-.input-box button{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:var(--fg2);flex-shrink:0}
-.input-box button:hover{background:var(--hover)}
-#sendBtn{background:var(--hover-strong);color:var(--fg2);cursor:not-allowed}
-#sendBtn.ready{background:linear-gradient(135deg,var(--accent),var(--accent-h));color:#fff;cursor:pointer;box-shadow:0 4px 12px rgba(99,102,241,.35)}
+.input-box{background:var(--bg3);border:1px solid var(--border);border-radius:22px;padding:6px;display:flex;align-items:flex-end;gap:4px;position:relative;transition:border-color .3s,box-shadow .3s}.input-box:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px rgba(99,102,241,.12)}
+.input-box button{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:var(--fg2);flex-shrink:0}.input-box button:hover{background:var(--hover)}
+#sendBtn{background:var(--hover-strong);color:var(--fg2);cursor:not-allowed}#sendBtn.ready{background:linear-gradient(135deg,var(--accent),var(--accent-h));color:#fff;cursor:pointer;box-shadow:0 4px 12px rgba(99,102,241,.35)}
 #stopBtn{background:#ef4444!important;color:#fff!important}
 #micBtn.recording{background:var(--danger)!important;color:#fff!important}
-#userInput{flex:1;background:transparent;border:none;resize:none;padding:10px 6px;font-size:15px;max-height:160px;min-height:20px;line-height:1.4;color:var(--fg);min-width:0}
-#userInput::placeholder{color:var(--fg2)}
+#userInput{flex:1;background:transparent;border:none;resize:none;padding:10px 6px;font-size:15px;max-height:160px;min-height:20px;line-height:1.4;color:var(--fg);min-width:0}#userInput::placeholder{color:var(--fg2)}
 .footer-text{text-align:center;font-size:11px;color:var(--fg2);margin-top:8px}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}
-.overlay.open{display:flex;animation:fade .25s}
-.modal-box{width:100%;max-width:560px;max-height:92vh;background:var(--bg);border:1px solid var(--border);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;animation:slide .35s cubic-bezier(.16,1,.3,1)}
-.modal-box.wide{max-width:900px}
-.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
-.modal-head h2{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
-.modal-body{padding:0;overflow-y:auto;flex:1;min-height:0}
-.modal-body::-webkit-scrollbar{width:8px}.modal-body::-webkit-scrollbar-thumb{background:var(--hover-strong);border-radius:4px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}.overlay.open{display:flex;animation:fade .25s}
+.modal-box{width:100%;max-width:560px;max-height:92vh;background:var(--bg);border:1px solid var(--border);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;animation:slide .35s cubic-bezier(.16,1,.3,1)}.modal-box.wide{max-width:900px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}.modal-head h2{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+.modal-body{padding:0;overflow-y:auto;flex:1;min-height:0}.modal-body::-webkit-scrollbar{width:8px}.modal-body::-webkit-scrollbar-thumb{background:var(--hover-strong);border-radius:4px}
 .settings-body{padding:20px;display:flex;flex-direction:column;gap:18px}
 .field-label{font-size:13.5px;font-weight:600;margin-bottom:10px;color:var(--fg)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.opt{padding:11px 13px;border-radius:14px;border:1px solid var(--border);background:var(--bg3);color:var(--fg2);font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:all .25s}
-.opt:hover{background:var(--hover)}.opt.active{border-color:var(--accent);background:rgba(99,102,241,.1);color:var(--accent)}
-.opt .flag{font-size:17px}
-.inp{width:100%;padding:11px 15px;border-radius:14px;border:1px solid var(--border);background:var(--bg3);font-size:14px;color:var(--fg)}
-.inp:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(99,102,241,.12)}
+.opt{padding:11px 13px;border-radius:14px;border:1px solid var(--border);background:var(--bg3);color:var(--fg2);font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:all .25s}.opt:hover{background:var(--hover)}.opt.active{border-color:var(--accent);background:rgba(99,102,241,.1);color:var(--accent)}.opt .flag{font-size:17px}
+.inp{width:100%;padding:11px 15px;border-radius:14px;border:1px solid var(--border);background:var(--bg3);font-size:14px;color:var(--fg)}.inp:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(99,102,241,.12)}
 .hint{font-size:11px;color:var(--fg2);margin-top:6px}
-.support-link{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;background:var(--bg3);border:1px solid var(--border);text-decoration:none;color:var(--fg);transition:all .25s}
-.support-link:hover{border-color:var(--accent);transform:translateY(-2px)}
+.support-link{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;background:var(--bg3);border:1px solid var(--border);text-decoration:none;color:var(--fg);transition:all .25s}.support-link:hover{border-color:var(--accent);transform:translateY(-2px)}
 .support-icon{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.support-title{font-weight:600;font-size:14px;color:var(--fg);margin-bottom:2px}
-.support-email{font-size:12.5px;color:var(--accent);word-break:break-all}
+.support-title{font-weight:600;font-size:14px;color:var(--fg);margin-bottom:2px}.support-email{font-size:12.5px;color:var(--accent);word-break:break-all}
 .guide-toc{display:flex;gap:6px;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--bg2);overflow-x:auto;flex-shrink:0}
-.guide-tab{padding:7px 14px;border-radius:10px;font-size:12.5px;font-weight:500;color:var(--fg2);white-space:nowrap;cursor:pointer;border:1px solid transparent;transition:all .25s}
-.guide-tab:hover{background:var(--hover);color:var(--fg)}.guide-tab.active{background:rgba(99,102,241,.12);color:var(--accent);border-color:rgba(99,102,241,.4)}
+.guide-tab{padding:7px 14px;border-radius:10px;font-size:12.5px;font-weight:500;color:var(--fg2);white-space:nowrap;cursor:pointer;border:1px solid transparent;transition:all .25s}.guide-tab:hover{background:var(--hover);color:var(--fg)}.guide-tab.active{background:rgba(99,102,241,.12);color:var(--accent);border-color:rgba(99,102,241,.4)}
 .guide-section{padding:22px 24px;display:none}.guide-section.active{display:block;animation:fade .3s}
-.guide-section h3{font-size:17px;font-weight:700;color:var(--fg);margin-bottom:14px}
-.guide-section h4{font-size:14px;font-weight:600;color:var(--fg);margin:18px 0 8px}
-.guide-section p{font-size:13.5px;line-height:1.7;color:var(--fg);margin-bottom:10px}
-.guide-section ul{margin:8px 0 14px 0;padding-left:22px}
-.guide-section li{font-size:13.5px;line-height:1.65;color:var(--fg);margin-bottom:6px}
+.guide-section h3{font-size:17px;font-weight:700;color:var(--fg);margin-bottom:14px}.guide-section h4{font-size:14px;font-weight:600;color:var(--fg);margin:18px 0 8px}.guide-section p{font-size:13.5px;line-height:1.7;color:var(--fg);margin-bottom:10px}.guide-section ul{margin:8px 0 14px 0;padding-left:22px}.guide-section li{font-size:13.5px;line-height:1.65;color:var(--fg);margin-bottom:6px}
 .guide-section .note{background:var(--bg3);border-left:3px solid var(--accent);padding:12px 16px;border-radius:8px;font-size:12.5px;color:var(--fg2);line-height:1.6;margin:14px 0}
-.confirm-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px;z-index:300}
-.confirm-modal.open{display:flex;animation:fade .25s}
-.confirm-box{width:100%;max-width:400px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:24px;animation:popIn .3s cubic-bezier(.16,1,.3,1)}
-.confirm-title{font-size:17px;font-weight:700;color:var(--fg);margin-bottom:10px;display:flex;align-items:center;gap:10px}
-.confirm-title svg{color:#ef4444;flex-shrink:0}
+.confirm-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px;z-index:300}.confirm-modal.open{display:flex;animation:fade .25s}
+.confirm-box{width:100%;max-width:400px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:24px;animation:popIn .3s}
+.confirm-title{font-size:17px;font-weight:700;color:var(--fg);margin-bottom:10px;display:flex;align-items:center;gap:10px}.confirm-title svg{color:#ef4444;flex-shrink:0}
 .confirm-text{font-size:14px;color:var(--fg2);line-height:1.55;margin-bottom:22px}
 .confirm-actions{display:flex;gap:10px;justify-content:flex-end}
 .confirm-btn{padding:10px 20px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:all .25s}
-.confirm-btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-h));color:#fff}
-.confirm-btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(99,102,241,.4)}
-.confirm-btn.secondary{background:transparent;border:1.5px solid var(--border);color:var(--fg2)}
-.confirm-btn.secondary:hover{border-color:var(--fg2);color:var(--fg)}
+.confirm-btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-h));color:#fff}.confirm-btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(99,102,241,.4)}
+.confirm-btn.secondary{background:transparent;border:1.5px solid var(--border);color:var(--fg2)}.confirm-btn.secondary:hover{border-color:var(--fg2);color:var(--fg)}
 .report-popup{position:absolute;bottom:calc(100% + 8px);right:0;width:320px;background:var(--bg);border:1px solid var(--border);border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.2);padding:16px;z-index:60;animation:popIn .22s}
 .report-popup h4{font-size:14px;font-weight:600;color:var(--fg);margin-bottom:10px}
 .report-popup textarea{width:100%;min-height:80px;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--bg3);font-size:13.5px;color:var(--fg);resize:vertical;font-family:inherit}
 .report-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
 .report-actions button{padding:8px 14px;border-radius:11px;font-size:13px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:all .25s}
-.report-actions .send-btn{background:var(--accent);color:#fff}
-.report-actions .cancel-btn{background:var(--hover);color:var(--fg2)}
-.report-thanks{text-align:center;padding:20px 8px}
-.report-thanks p{font-size:14.5px;color:var(--fg);line-height:1.5}
+.report-actions .send-btn{background:var(--accent);color:#fff}.report-actions .cancel-btn{background:var(--hover);color:var(--fg2)}
+.report-thanks{text-align:center;padding:20px 8px}.report-thanks p{font-size:14.5px;color:var(--fg);line-height:1.5}
 .edit-area{display:flex;flex-direction:column;gap:8px;min-width:280px}
 .edit-area textarea{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:10px;font-size:14px;color:var(--fg);resize:vertical;min-height:60px;font-family:inherit}
 .edit-area .btns{display:flex;gap:8px;justify-content:flex-end}
 .edit-area .btns button{padding:7px 14px;border-radius:10px;font-size:12.5px;cursor:pointer;transition:all .25s}
-.edit-area .btns .save{background:var(--accent);color:#fff}
-.edit-area .btns .cancel{background:var(--hover);color:var(--fg2)}
+.edit-area .btns .save{background:var(--accent);color:#fff}.edit-area .btns .cancel{background:var(--hover);color:var(--fg2)}
 #authScreen{position:fixed;inset:0;background:linear-gradient(135deg,var(--bg),var(--bg2));display:none;align-items:center;justify-content:center;z-index:1000;padding:16px;animation:fade .35s}
 #authScreen::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(99,102,241,.12),transparent 50%),radial-gradient(circle at 80% 70%,rgba(168,85,247,.1),transparent 50%);pointer-events:none}
-.auth-box{width:100%;max-width:420px;padding:36px;background:var(--bg);border-radius:24px;border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,.2);position:relative;animation:slide .45s cubic-bezier(.16,1,.3,1)}
-.eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--fg2);cursor:pointer;background:transparent;border:none;transition:all .2s}
-.eye:hover{background:var(--hover);color:var(--fg)}
-.plan-card{padding:20px;border-radius:18px;border:1px solid var(--border);background:var(--bg3);transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s}
-.plan-card:hover{transform:translateY(-4px);box-shadow:0 14px 36px rgba(99,102,241,.18)}
+.auth-box{width:100%;max-width:420px;padding:36px;background:var(--bg);border-radius:24px;border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,.2);position:relative;animation:slide .45s}
+.eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--fg2);cursor:pointer;background:transparent;border:none;transition:all .2s}.eye:hover{background:var(--hover);color:var(--fg)}
+.plan-card{padding:20px;border-radius:18px;border:1px solid var(--border);background:var(--bg3);transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s}.plan-card:hover{transform:translateY(-4px);box-shadow:0 14px 36px rgba(99,102,241,.18)}
 .plan-card.plus{background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(139,92,246,.06));border-color:rgba(99,102,241,.4)}
 .plan-title{font-size:16px;font-weight:700;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.plan-features{font-size:13px;color:var(--fg2);line-height:1.8;margin-bottom:14px}
+.plan-features{font-size:13px;color:var(--fg2);line-height:2;margin-bottom:14px;list-style:none}
+.plan-features li{display:flex;align-items:flex-start;gap:8px;padding:2px 0}
+.plan-features li::before{content:'✓';color:#10b981;font-weight:700;flex-shrink:0}
 .plan-price{font-size:28px;font-weight:800;color:var(--fg);margin:12px 0}
-.plan-btn{width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-weight:700;font-size:14px;border:none;cursor:pointer;transition:all .25s}
-.plan-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(239,68,68,.4)}
+.plan-btn{width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-weight:700;font-size:14px;border:none;cursor:pointer;transition:all .25s}.plan-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(239,68,68,.4)}
+.plan-btn.extend{background:linear-gradient(135deg,#f59e0b,#d97706)}.plan-btn.extend:hover{box-shadow:0 8px 24px rgba(245,158,11,.4)}
+.pay-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+.pay-method{padding:18px 10px;border-radius:16px;border:2px solid var(--border);background:var(--bg3);color:var(--fg);display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:all .25s;font-size:12.5px;font-weight:500;text-align:center}
+.pay-method:hover{border-color:var(--accent);background:rgba(99,102,241,.08);transform:translateY(-2px)}
+.pay-method.selected{border-color:var(--accent);background:rgba(99,102,241,.12);box-shadow:0 4px 14px rgba(99,102,241,.2)}
+.pay-method svg{width:32px;height:32px;flex-shrink:0}
+.pay-icon-sbp{color:#10b981}.pay-icon-card{color:#6366f1}.pay-icon-ru{color:#ef4444}
+.card-form{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+.card-form .row{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+.pay-back{width:100%;padding:12px;border-radius:14px;background:transparent;border:1.5px solid var(--border);color:var(--fg2);font-weight:600;font-size:13.5px;cursor:pointer;margin-top:12px;transition:all .25s}.pay-back:hover{border-color:var(--fg2);color:var(--fg)}
 .overlay-bd{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;z-index:30}.overlay-bd.show{display:block}
 .lang-switch-fade{animation:langFade .4s ease}
 @keyframes langFade{0%{opacity:1}30%{opacity:.2;filter:blur(3px)}100%{opacity:1;filter:blur(0)}}
 ::view-transition-old(root){animation:220ms ease both themeFadeOut}
 ::view-transition-new(root){animation:450ms cubic-bezier(.4,0,.2,1) both themeCircle;clip-path:circle(0% at var(--tx,50%) var(--ty,50%))}
-@keyframes themeFadeOut{to{opacity:0}}
-@keyframes themeCircle{to{clip-path:circle(150% at var(--tx,50%) var(--ty,50%))}}
-@media(max-width:768px){#sidebar{position:fixed;z-index:40;transform:translateX(-100%);width:300px}#sidebar.open{transform:translateX(0)}body.collapsed #sidebar{width:300px;transform:translateX(-100%)}body.collapsed #sidebar.open{transform:translateX(0)}body.hidden-sidebar #sidebar{transform:translateX(-100%);width:300px}#collapseBtn{display:none}.msg-content{max-width:88%}.msg-actions{opacity:1;pointer-events:auto}.agent-popup{left:auto;right:0;min-width:280px}.chat-actions{display:flex!important}.grid2{grid-template-columns:1fr}}
+@keyframes themeFadeOut{to{opacity:0}}@keyframes themeCircle{to{clip-path:circle(150% at var(--tx,50%) var(--ty,50%))}}
+@media(max-width:768px){#sidebar{position:fixed;z-index:40;transform:translateX(-100%);width:300px}#sidebar.open{transform:translateX(0)}body.collapsed #sidebar{width:300px;transform:translateX(-100%)}body.collapsed #sidebar.open{transform:translateX(0)}body.hidden-sidebar #sidebar{transform:translateX(-100%);width:300px}#collapseBtn{display:none}.msg-content{max-width:88%}.msg-actions{opacity:1;pointer-events:auto}.agent-popup{left:auto;right:0;min-width:280px}.chat-actions{display:flex!important}.grid2{grid-template-columns:1fr}.pay-methods{grid-template-columns:1fr 1fr 1fr}.pay-method{padding:12px 4px;font-size:11px}.pay-method svg{width:26px;height:26px}}
 </style>
 </head>
 <body>
@@ -264,11 +211,7 @@ body.dark .msg.ai .bubble{box-shadow:0 2px 12px rgba(0,0,0,.3)}
 </div>
 </div>
 <aside id="sidebar">
-<div class="sb-head">
-<div class="logo" id="logoTop"></div>
-<div class="sb-title">Pongy AI</div>
-<button class="icon-btn" id="newChatBtn" title="New chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
-</div>
+<div class="sb-head"><div class="logo" id="logoTop"></div><div class="sb-title">Pongy AI</div><button class="icon-btn" id="newChatBtn" title="New chat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
 <div class="sb-search"><div class="sb-search-inner"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg><input id="sbSearchInput" type="text" placeholder="Search chats" autocomplete="off"></div></div>
 <div class="sb-list" id="chatList"></div>
 <div class="sb-bottom">
@@ -283,14 +226,10 @@ body.dark .msg.ai .bubble{box-shadow:0 2px 12px rgba(0,0,0,.3)}
 <div id="main">
 <div id="topbar">
 <div class="tb-left"><button class="tb-menu" id="menuBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button><span class="tb-title" id="topbarTitle">Pongy AI</span></div>
-<div class="tb-actions">
-<button class="tb-btn" id="hideSidebarBtn" title="Hide"><svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-<button class="tb-btn" id="shareBtn" title="Share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg></button>
-</div>
+<div class="tb-actions"><button class="tb-btn" id="hideSidebarBtn" title="Hide"><svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="tb-btn" id="shareBtn" title="Share"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg></button></div>
 </div>
 <div id="messages"></div>
-<div id="inputArea">
-<div id="inputInner">
+<div id="inputArea"><div id="inputInner">
 <div class="modes">
 <button class="mode-btn active" id="smartBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0112 4.5v15a2.5 2.5 0 01-4.96.44 2.5 2.5 0 01-2.96-3.08 3 3 0 01-.34-5.58 2.5 2.5 0 011.32-4.24A2.5 2.5 0 019.5 2z"/><path d="M14.5 2A2.5 2.5 0 0012 4.5v15a2.5 2.5 0 004.96.44 2.5 2.5 0 002.96-3.08 3 3 0 00.34-5.58 2.5 2.5 0 00-1.32-4.24A2.5 2.5 0 0014.5 2z"/></svg><span>Reasoning</span></button>
 <button class="mode-btn" id="searchBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.35-4.35"/></svg><span>Search</span></button>
@@ -306,8 +245,7 @@ body.dark .msg.ai .bubble{box-shadow:0 2px 12px rgba(0,0,0,.3)}
 <button id="stopBtn" title="Stop" style="display:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="7" width="10" height="10" rx="2"/></svg></button>
 </div>
 <div class="footer-text" id="footerText"></div>
-</div>
-</div>
+</div></div>
 </div>
 <div class="overlay" id="settingsModal">
 <div class="modal-box">
@@ -323,22 +261,9 @@ body.dark .msg.ai .bubble{box-shadow:0 2px 12px rgba(0,0,0,.3)}
 </div>
 </div>
 <div class="overlay" id="subModal">
-<div class="modal-box" style="max-width:540px">
-<div class="modal-head"><h2>⭐ Pongy Plus</h2><button class="icon-btn" id="closeSub"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
-<div class="modal-body" style="padding:24px">
-<div class="plan-card" style="margin-bottom:14px">
-<div class="plan-title" style="color:var(--fg2)">🆓 Free</div>
-<div class="plan-features">• 12+ free AI models<br>• DeepSeek R1, Llama 3.3, Qwen 2.5<br>• Gemma 2, Mistral, Phi-3<br>• Unlimited chats</div>
-<div class="plan-price">$0 <span style="font-size:13px;color:var(--fg2);font-weight:500">/ month</span></div>
-<div style="text-align:center;padding:10px;border-radius:12px;background:var(--bg);color:var(--fg2);font-size:13px;font-weight:600">Your current plan</div>
-</div>
-<div class="plan-card plus">
-<div class="plan-title">⭐ Pongy Plus</div>
-<div class="plan-features">• Everything in Free, plus:<br>• GPT-4o, Claude 3.5 Sonnet<br>• Gemini 2.5 Pro, Grok Beta<br>• Perplexity Sonar<br>• +8 premium models</div>
-<div class="plan-price">$2.99 <span style="font-size:13px;color:var(--fg2);font-weight:500">/ month</span></div>
-<button class="plan-btn" id="buyPlusBtn">⭐ Buy Plus</button>
-</div>
-</div>
+<div class="modal-box" style="max-width:520px">
+<div class="modal-head"><h2 id="subHeadTitle">⭐ Pongy Plus</h2><button class="icon-btn" id="closeSub"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+<div class="modal-body" style="padding:24px" id="subBody"></div>
 </div>
 </div>
 <div class="overlay" id="resetModal">
@@ -372,68 +297,18 @@ window.addEventListener('load',function(){setTimeout(function(){document.body.cl
 var API_URL='https://pongy-server.onrender.com';
 var LOGO_SVG='<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="lgMain" x1="0.15" y1="0" x2="0.85" y2="1"><stop offset="0%" stop-color="#5eead4"/><stop offset="30%" stop-color="#818cf8"/><stop offset="65%" stop-color="#6366f1"/><stop offset="100%" stop-color="#1e3a8a"/></linearGradient><linearGradient id="lgDot" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c084fc"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient></defs><rect width="100" height="100" rx="24" fill="#ddd6fe"/><path fill-rule="evenodd" fill="url(#lgMain)" d="M 30 12 L 58 12 Q 82 12 82 36 Q 82 60 58 60 L 46 60 L 46 78 Q 46 86 56 86 Q 64 86 64 92 Q 64 98 54 98 Q 32 98 32 78 L 32 12 Z M 58 28 Q 44 28 44 36 Q 44 44 58 44 Q 68 44 68 36 Q 68 28 58 28 Z"/><circle cx="76" cy="82" r="9" fill="url(#lgDot)"/></svg>';
 var T={
-en:{app:'Pongy AI',history:'History',untitled:'New chat',pinnedSection:'Pinned',searchPh:'Search chats',noResults:'No chats found',
-greet:'Hello. I am Pongy, your personal assistant. I am similar to Verity, yet kinder. I am prepared to assist you with any task.',
-greetN:function(n){return 'Hello, '+n+'. I am Pongy, your personal assistant. I am prepared to assist you with any task.'},
-ph:'Ask Pongy your first question',reasoning:'Reasoning',search:'Search',thinking:'Reasoning',searching:'Searching',composing:'Composing response',
-foot:'Generated by AI · Pongy AI V1.0 · © 2026 Pongy',set:'Settings',guide:'Guide',share:'Share chat',hideUi:'Hide',showUi:'Show',
-lang:'Language',theme:'Theme',dark:'Dark',light:'Light',nick:'Nickname',nickPh:'Enter your nickname',
-fb:'Support',err:'Error',sec:'s',charsSec:'char/s',
-delTitle:'Delete conversation?',delText:'Are you sure? Data will be lost forever!',delYes:'Delete',delNo:'Cancel',
-renameTitle:'Rename',renamePh:'Enter new name',pinTitle:'Pin',unpinTitle:'Unpin',
-shareNoChat:'No active chat',timeNow:'just now',timeSec:'s ago',timeMin:'m ago',timeHour:'h ago',timeYesterday:'yesterday',timeActive:'Open now',
-agent:'Agent',agents:'Agents',thinkingLevel:'Thinking level',
-agentLow:'Pongy AI V1.0 Low',agentStandard:'Pongy AI V1.0 Standart',agentExtra:'Pongy V1.1 Extra Smart',
-agentExtraBest:'Best in class',agentStandardDesc:'Use your own API key',agentLowDesc:'Free balanced model',
-tagFree:'Free',tagCustom:'Custom API Key',tagPlus:'Plus',
-thinkExtra:'Extra',thinkExtraDesc:'Maximum reasoning',thinkHigh:'High',thinkHighDesc:'More tokens',thinkMiddle:'Middle',thinkMiddleDesc:'Fast',thinkLow:'Low',thinkLowDesc:'Ultra Fast',
-copy:'Copy',copied:'Copied',edit:'Edit',save:'Save',cancel:'Cancel',refine:'Refine',report:'Report',retry:'Retry',
-reportTitle:'Describe the issue',reportSend:'Send',reportThanks:'Thank you for helping us improve!',
-mic:'Listening…',voiceUnsupported:'Voice input is not supported',
-guideTitle:'Guide',gtocGuide:'Overview',gtocPrivacy:'Privacy',gtocRules:'Rules',gtocApi:'Setup AI',gtocSecurity:'Security',
-gIntroTitle:'Welcome to Pongy AI',gIntroBody:'Pongy AI is a personal AI assistant. Multi-user, available on all your devices.',
-gApiTitle:'How to use AI',gApiP1:'Pongy works out of the box. No configuration needed — the server manages the AI connection.',gApiP2:'Plus subscription unlocks premium models: GPT-4o, Claude, Gemini, Grok.',
-gPrivTitle:'Privacy policy',gPrivP1:'We store your chats on our server to sync across devices.',
-gPrivP2:'Stored on server:',gPrivList1:'Email and encrypted password',gPrivList2:'Your chats',gPrivList3:'Nickname, preferences',
-gPrivP3:'Never shared:',gPrivList4:'No ads, no trackers',gPrivList5:'Only you see your data',
-gRulesTitle:'Rules',gRule1:'No illegal use.',gRule2:'No harmful content.',gRule3:'No bypassing security.',gRule4:'Respect other users.',gRule5:'Rules may update.',gRulesNote:'Violation may suspend access.',
-gSecTitle:'Security',gSecP1:'Protection measures:',gSecList1:'CSP and XSS protection',gSecList2:'bcrypt password hashing',gSecList3:'JWT tokens',gSecList4:'Rate limiting',gSecList5:'HTTPS only',gSecList6:'Server-side API keys',gSecNote:'Your password is encrypted. We never see it.'},
-ru:{app:'Pongy AI',history:'История',untitled:'Новый диалог',pinnedSection:'Закреплённые',searchPh:'Поиск по чатам',noResults:'Ничего не найдено',
-greet:'Здравствуйте. Я — Pongy, ваш персональный помощник. Напоминаю Verity, однако отличаюсь доброжелательностью. Готов помочь с любой задачей.',
-greetN:function(n){return 'Здравствуйте, '+n+'. Я — Pongy, ваш персональный помощник. Готов помочь с любой задачей.'},
-ph:'Задайте Pongy первый вопрос',reasoning:'Размышление',search:'Поиск',thinking:'Размышляю',searching:'Выполняю поиск',composing:'Формулирую ответ',
-foot:'Сгенерировано ИИ · Pongy AI V1.0 · © 2026 Pongy',set:'Настройки',guide:'Руководство',share:'Поделиться',hideUi:'Скрыть',showUi:'Показать',
-lang:'Язык',theme:'Тема',dark:'Тёмная',light:'Светлая',nick:'Никнейм',nickPh:'Введите никнейм',
-fb:'Поддержка',err:'Ошибка',sec:'с',charsSec:'симв/с',
-delTitle:'Удалить диалог?',delText:'Вы действительно хотите удалить диалог? Данные будут потеряны навсегда!',delYes:'Удалить',delNo:'Отмена',
-renameTitle:'Переименовать',renamePh:'Новое название',pinTitle:'Закрепить',unpinTitle:'Открепить',
-shareNoChat:'Нет активного чата',timeNow:'только что',timeSec:'сек. назад',timeMin:'мин. назад',timeHour:'ч. назад',timeYesterday:'вчера',timeActive:'Открыт сейчас',
-agent:'Агент',agents:'Агенты',thinkingLevel:'Уровень мышления',
-agentLow:'Pongy AI V1.0 Low',agentStandard:'Pongy AI V1.0 Standart',agentExtra:'Pongy V1.1 Extra Smart',
-agentExtraBest:'Наилучший',agentStandardDesc:'Свой API-ключ',agentLowDesc:'Бесплатная модель',
-tagFree:'Free',tagCustom:'Custom API Key',tagPlus:'Plus',
-thinkExtra:'Extra',thinkExtraDesc:'Максимум',thinkHigh:'High',thinkHighDesc:'Больше токенов',thinkMiddle:'Middle',thinkMiddleDesc:'Fast',thinkLow:'Low',thinkLowDesc:'Ultra Fast',
-copy:'Копировать',copied:'Скопировано',edit:'Редактировать',save:'Сохранить',cancel:'Отмена',refine:'Уточнить',report:'Жалоба',retry:'Повторить',
-reportTitle:'Опишите проблему',reportSend:'Отправить',reportThanks:'Спасибо, что помогаете стать нам лучше!',
-mic:'Слушаю…',voiceUnsupported:'Голосовой ввод не поддерживается',
-guideTitle:'Руководство',gtocGuide:'Обзор',gtocPrivacy:'Приватность',gtocRules:'Правила',gtocApi:'Запуск ИИ',gtocSecurity:'Защита',
-gIntroTitle:'Добро пожаловать в Pongy AI',gIntroBody:'Pongy AI — персональный ИИ-помощник. Многопользовательский, доступен на всех устройствах.',
-gApiTitle:'Как пользоваться ИИ',gApiP1:'Pongy работает сразу. Настройка не требуется.',gApiP2:'Plus-подписка открывает премиум-модели: GPT-4o, Claude, Gemini, Grok.',
-gPrivTitle:'Политика конфиденциальности',gPrivP1:'Мы храним чаты на нашем сервере для синхронизации между устройствами.',
-gPrivP2:'Хранится на сервере:',gPrivList1:'Email и зашифрованный пароль',gPrivList2:'Ваши чаты',gPrivList3:'Никнейм, настройки',
-gPrivP3:'Никогда не передаётся:',gPrivList4:'Никакой рекламы, трекеров',gPrivList5:'Только вы видите свои данные',
-gRulesTitle:'Правила',gRule1:'Без незаконных действий.',gRule2:'Без вредного контента.',gRule3:'Не обходить защиту.',gRule4:'Уважать других пользователей.',gRule5:'Правила могут обновляться.',gRulesNote:'Нарушение может приостановить доступ.',
-gSecTitle:'Защита',gSecP1:'Меры защиты:',gSecList1:'CSP и защита от XSS',gSecList2:'bcrypt-хеширование паролей',gSecList3:'JWT-токены',gSecList4:'Ограничение запросов',gSecList5:'Только HTTPS',gSecList6:'API-ключи на сервере',gSecNote:'Пароль зашифрован. Мы его не видим.'}
+en:{app:'Pongy AI',history:'History',untitled:'New chat',pinnedSection:'Pinned',searchPh:'Search chats',noResults:'No chats found',greet:'Hello. I am Pongy, your personal assistant. I am similar to Verity, yet kinder. I am prepared to assist you with any task.',greetN:function(n){return 'Hello, '+n+'. I am Pongy, your personal assistant.'},ph:'Ask Pongy your first question',reasoning:'Reasoning',search:'Search',thinking:'Reasoning',searching:'Searching',composing:'Composing',foot:'Generated by AI · Pongy AI V1.0 · © 2026 Pongy',set:'Settings',guide:'Guide',share:'Share',hideUi:'Hide',showUi:'Show',lang:'Language',theme:'Theme',dark:'Dark',light:'Light',nick:'Nickname',nickPh:'Enter nickname',fb:'Support',err:'Error',sec:'s',charsSec:'char/s',delTitle:'Delete?',delText:'Data will be lost!',delYes:'Delete',delNo:'Cancel',renameTitle:'Rename',renamePh:'New name',pinTitle:'Pin',unpinTitle:'Unpin',shareNoChat:'No active chat',timeNow:'just now',timeSec:'s ago',timeMin:'m ago',timeHour:'h ago',timeYesterday:'yesterday',timeActive:'Open now',agent:'Agent',agents:'Agents',thinkingLevel:'Thinking level',agentLow:'Pongy AI V1.0 Low',agentStandard:'Pongy AI V1.0 Standart',agentExtra:'Pongy V1.1 Extra Smart',agentExtraBest:'Best in class',agentStandardDesc:'Own API key',agentLowDesc:'Free model',tagFree:'Free',tagCustom:'Custom API Key',tagPlus:'Plus',thinkExtra:'Extra',thinkExtraDesc:'Maximum reasoning',thinkHigh:'High',thinkHighDesc:'More tokens',thinkMiddle:'Middle',thinkMiddleDesc:'Fast',thinkLow:'Low',thinkLowDesc:'Ultra Fast',copy:'Copy',copied:'Copied',edit:'Edit',save:'Save',cancel:'Cancel',refine:'Refine',report:'Report',retry:'Retry',reportTitle:'Describe the issue',reportSend:'Send',reportThanks:'Thank you!',mic:'Listening…',voiceUnsupported:'Voice not supported',guideTitle:'Guide',gtocGuide:'Overview',gtocPrivacy:'Privacy',gtocRules:'Rules',gtocApi:'Setup AI',gtocSecurity:'Security',gIntroTitle:'Welcome',gIntroBody:'Pongy AI is a personal assistant.',gApiTitle:'How to use',gApiP1:'Works out of the box.',gApiP2:'Plus unlocks premium models.',gPrivTitle:'Privacy',gPrivP1:'We store chats for sync.',gPrivP2:'Stored:',gPrivList1:'Email & password',gPrivList2:'Chats',gPrivList3:'Settings',gPrivP3:'Never shared:',gPrivList4:'No ads',gPrivList5:'Only you see',gRulesTitle:'Rules',gRule1:'No illegal use.',gRule2:'No harmful content.',gRule3:'No bypassing.',gRule4:'Respect others.',gRule5:'Rules may change.',gRulesNote:'Violation — suspension.',gSecTitle:'Security',gSecP1:'Measures:',gSecList1:'CSP & XSS',gSecList2:'bcrypt',gSecList3:'JWT',gSecList4:'Rate limit',gSecList5:'HTTPS',gSecList6:'Server keys',gSecNote:'Password encrypted.',plusTitle:'Pongy Plus',planFree:'Free',planPlus:'Plus',currentPlan:'Your current plan',buyPlus:'Buy Plus',b1:'Extra Mode',b2:'Best Agents',b3:'200 requests',b4:'100000+ tokens',b5:'Better support',subBenefits:'Subscription benefits:',payTitle:'Payment method',paySbp:'SBP',payCard:'Bank card',payCardRu:'Russian card',payNext:'Continue',payBack:'Back',payConfirm:'Pay',cardNum:'Card number',cardExp:'MM/YY',cardCvc:'CVC',cardHolder:'Cardholder name',payAmount:'Amount',payUnavailable:'Payment is currently unavailable. Please try again later.'},
+ru:{app:'Pongy AI',history:'История',untitled:'Новый диалог',pinnedSection:'Закреплённые',searchPh:'Поиск по чатам',noResults:'Ничего не найдено',greet:'Здравствуйте. Я — Pongy, ваш персональный помощник. Напоминаю Verity, однако отличаюсь доброжелательностью. Готов помочь с любой задачей.',greetN:function(n){return 'Здравствуйте, '+n+'. Я — Pongy, ваш персональный помощник.'},ph:'Задайте Pongy первый вопрос',reasoning:'Размышление',search:'Поиск',thinking:'Размышляю',searching:'Выполняю поиск',composing:'Формулирую',foot:'Сгенерировано ИИ · Pongy AI V1.0 · © 2026 Pongy',set:'Настройки',guide:'Руководство',share:'Поделиться',hideUi:'Скрыть',showUi:'Показать',lang:'Язык',theme:'Тема',dark:'Тёмная',light:'Светлая',nick:'Никнейм',nickPh:'Введите никнейм',fb:'Поддержка',err:'Ошибка',sec:'с',charsSec:'симв/с',delTitle:'Удалить?',delText:'Данные будут потеряны!',delYes:'Удалить',delNo:'Отмена',renameTitle:'Переименовать',renamePh:'Новое название',pinTitle:'Закрепить',unpinTitle:'Открепить',shareNoChat:'Нет активного чата',timeNow:'только что',timeSec:'сек. назад',timeMin:'мин. назад',timeHour:'ч. назад',timeYesterday:'вчера',timeActive:'Открыт сейчас',agent:'Агент',agents:'Агенты',thinkingLevel:'Уровень мышления',agentLow:'Pongy AI V1.0 Low',agentStandard:'Pongy AI V1.0 Standart',agentExtra:'Pongy V1.1 Extra Smart',agentExtraBest:'Наилучший',agentStandardDesc:'Свой API-ключ',agentLowDesc:'Бесплатная модель',tagFree:'Free',tagCustom:'Custom API Key',tagPlus:'Plus',thinkExtra:'Extra',thinkExtraDesc:'Максимум',thinkHigh:'High',thinkHighDesc:'Больше токенов',thinkMiddle:'Middle',thinkMiddleDesc:'Fast',thinkLow:'Low',thinkLowDesc:'Ultra Fast',copy:'Копировать',copied:'Скопировано',edit:'Редактировать',save:'Сохранить',cancel:'Отмена',refine:'Уточнить',report:'Жалоба',retry:'Повторить',reportTitle:'Опишите проблему',reportSend:'Отправить',reportThanks:'Спасибо!',mic:'Слушаю…',voiceUnsupported:'Голос не поддерживается',guideTitle:'Руководство',gtocGuide:'Обзор',gtocPrivacy:'Приватность',gtocRules:'Правила',gtocApi:'Запуск ИИ',gtocSecurity:'Защита',gIntroTitle:'Добро пожаловать',gIntroBody:'Pongy AI — персональный ИИ-помощник.',gApiTitle:'Как пользоваться',gApiP1:'Pongy работает сразу.',gApiP2:'Plus даёт доступ к премиум-моделям.',gPrivTitle:'Приватность',gPrivP1:'Храним чаты для синхронизации.',gPrivP2:'Хранится:',gPrivList1:'Email и пароль',gPrivList2:'Чаты',gPrivList3:'Настройки',gPrivP3:'Не передаётся:',gPrivList4:'Без рекламы',gPrivList5:'Только вы видите',gRulesTitle:'Правила',gRule1:'Без незаконных действий.',gRule2:'Без вредного контента.',gRule3:'Не обходить защиту.',gRule4:'Уважать других.',gRule5:'Правила обновляются.',gRulesNote:'Нарушение — блокировка.',gSecTitle:'Защита',gSecP1:'Меры:',gSecList1:'CSP и XSS',gSecList2:'bcrypt пароли',gSecList3:'JWT токены',gSecList4:'Rate limiting',gSecList5:'HTTPS',gSecList6:'Ключи на сервере',gSecNote:'Пароль зашифрован.',plusTitle:'Pongy Plus',planFree:'Бесплатно',planPlus:'Plus',currentPlan:'Ваш текущий план',buyPlus:'Купить Plus',b1:'Extra Mode',b2:'Best Agents',b3:'200 requests',b4:'100000+ tokens',b5:'Better support',subBenefits:'Преимущества подписки:',payTitle:'Способ оплаты',paySbp:'СБП',payCard:'Банковская карта',payCardRu:'Карта РФ',payNext:'Продолжить',payBack:'Назад',payConfirm:'Оплатить',cardNum:'Номер карты',cardExp:'ММ/ГГ',cardCvc:'CVC',cardHolder:'Имя владельца',payAmount:'Сумма',payUnavailable:'В данный момент оплата недоступна. Попробуйте позже.'}
 };
 ['es','de','fr','it','pt','zh','ja','ar'].forEach(function(l){T[l]=JSON.parse(JSON.stringify(T.en))});
-T.es.set='Ajustes';T.es.guide='Guía';T.es.greet='Hola. Soy Pongy, tu asistente personal.';T.es.greetN=function(n){return 'Hola, '+n+'. Soy Pongy.'};
-T.de.set='Einstellungen';T.de.guide='Anleitung';T.de.greet='Hallo. Ich bin Pongy, dein Assistent.';T.de.greetN=function(n){return 'Hallo, '+n+'.'};
-T.fr.set='Paramètres';T.fr.guide='Guide';T.fr.greet='Bonjour. Je suis Pongy, votre assistant.';T.fr.greetN=function(n){return 'Bonjour, '+n+'.'};
-T.it.set='Impostazioni';T.it.guide='Guida';T.it.greet='Ciao. Sono Pongy, il tuo assistente.';T.it.greetN=function(n){return 'Ciao, '+n+'.'};
-T.pt.set='Configurações';T.pt.guide='Guia';T.pt.greet='Olá. Sou o Pongy, seu assistente.';T.pt.greetN=function(n){return 'Olá, '+n+'.'};
-T.zh.set='设置';T.zh.guide='指南';T.zh.greet='你好。我是 Pongy，你的助手。';T.zh.greetN=function(n){return '你好，'+n+'。'};
-T.ja.set='設定';T.ja.guide='ガイド';T.ja.greet='こんにちは。Pongy です。';T.ja.greetN=function(n){return 'こんにちは、'+n+'。'};
-T.ar.set='الإعدادات';T.ar.guide='الدليل';T.ar.greet='مرحباً. أنا Pongy.';T.ar.greetN=function(n){return 'مرحباً '+n+'.'};
+T.es.set='Ajustes';T.es.guide='Guía';T.es.plusTitle='Pongy Plus';T.es.subBenefits='Ventajas:';T.es.payConfirm='Pagar';
+T.de.set='Einstellungen';T.de.guide='Anleitung';T.de.subBenefits='Vorteile:';T.de.payConfirm='Bezahlen';
+T.fr.set='Paramètres';T.fr.guide='Guide';T.fr.subBenefits='Avantages :';T.fr.payConfirm='Payer';
+T.it.set='Impostazioni';T.it.guide='Guida';T.it.subBenefits='Vantaggi:';T.it.payConfirm='Paga';
+T.pt.set='Configurações';T.pt.guide='Guia';T.pt.subBenefits='Vantagens:';T.pt.payConfirm='Pagar';
+T.zh.set='设置';T.zh.guide='指南';T.zh.subBenefits='订阅权益：';T.zh.payConfirm='支付';
+T.ja.set='設定';T.ja.guide='ガイド';T.ja.subBenefits='特典：';T.ja.payConfirm='支払う';
+T.ar.set='الإعدادات';T.ar.guide='الدليل';T.ar.subBenefits='المزايا:';T.ar.payConfirm='دفع';
 var LANGS=[{code:'en',label:'English',flag:'🇬🇧'},{code:'ru',label:'Русский',flag:'🇷🇺'},{code:'es',label:'Español',flag:'🇪🇸'},{code:'de',label:'Deutsch',flag:'🇩🇪'},{code:'fr',label:'Français',flag:'🇫🇷'},{code:'it',label:'Italiano',flag:'🇮🇹'},{code:'pt',label:'Português',flag:'🇵🇹'},{code:'zh',label:'中文',flag:'🇨🇳'},{code:'ja',label:'日本語',flag:'🇯🇵'},{code:'ar',label:'العربية',flag:'🇸🇦'}];
 var SPEECH_LANGS={en:'en-US',ru:'ru-RU',es:'es-ES',de:'de-DE',fr:'fr-FR',it:'it-IT',pt:'pt-PT',zh:'zh-CN',ja:'ja-JP',ar:'ar-SA'};
 var AGENTS=[{id:'extra',name:'agentExtra',desc:null,tag:'plus',best:true},{id:'standard',name:'agentStandard',desc:'agentStandardDesc',tag:'custom'},{id:'low',name:'agentLow',desc:'agentLowDesc',tag:'free'}];
@@ -442,6 +317,7 @@ var authToken=localStorage.getItem('pongy_token')||'';
 var currentUser=null;
 var authMode='login';
 var pendingEmail='',pendingPassword='',regCodeTimer=null;
+var payState={method:null,step:'card'};
 function getDeviceId(){var d=localStorage.getItem('pongy_device_id');if(!d){d='d_'+Date.now()+'_'+Math.random().toString(36).slice(2,12);localStorage.setItem('pongy_device_id',d)}return d}
 var DEVICE_ID=getDeviceId();
 function apiFetch(path,opts){opts=opts||{};opts.headers=opts.headers||{};if(authToken)opts.headers['Authorization']='Bearer '+authToken;if(opts.body&&!opts.headers['Content-Type']){opts.headers['Content-Type']='application/json';opts.body=JSON.stringify(opts.body)}return fetch(API_URL+path,opts).then(function(r){if(!r.ok)return r.json().then(function(e){throw new Error(e.error||r.status)});return r.json()})}
@@ -456,12 +332,12 @@ var sendHistory=[];var spamWarning=null;
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function safeUrl(u){try{var url=new URL(u);if(url.protocol==='http:'||url.protocol==='https:')return url.href}catch(e){}return '#'}
-var body=document.body,sidebar=$('sidebar'),chatList=$('chatList'),messages=$('messages'),userInput=$('userInput'),sendBtn=$('sendBtn'),stopBtn=$('stopBtn'),overlay=$('overlay'),nickInput=$('nickInput'),agentPopup=$('agentPopup'),agentLabel=$('agentLabel'),settingsModal=$('settingsModal'),subModal=$('subModal'),guideModal=$('guideModal'),guideToc=$('guideToc'),guideSections=$('guideSections'),confirmModal=$('confirmModal'),micBtn=$('micBtn'),sbSearchInput=$('sbSearchInput'),topbarTitle=$('topbarTitle'),upgradeBtn=$('upgradeBtn'),upgradeLabel=$('upgradeLabel');
+var body=document.body,sidebar=$('sidebar'),chatList=$('chatList'),messages=$('messages'),userInput=$('userInput'),sendBtn=$('sendBtn'),stopBtn=$('stopBtn'),overlay=$('overlay'),nickInput=$('nickInput'),agentPopup=$('agentPopup'),agentLabel=$('agentLabel'),settingsModal=$('settingsModal'),subModal=$('subModal'),subBody=$('subBody'),guideModal=$('guideModal'),guideToc=$('guideToc'),guideSections=$('guideSections'),confirmModal=$('confirmModal'),micBtn=$('micBtn'),sbSearchInput=$('sbSearchInput'),topbarTitle=$('topbarTitle'),upgradeBtn=$('upgradeBtn'),upgradeLabel=$('upgradeLabel');
 function t(){return T[settings.lang]||T.en}
 function isSubActive(){return currentUser&&currentUser.subscription_until&&currentUser.subscription_until>Date.now()}
-function updateUpgradeButton(){var tt=t();if(isSubActive()){upgradeBtn.classList.add('active');upgradeLabel.textContent='Plus Active'}else{upgradeBtn.classList.remove('active');upgradeLabel.textContent=tt.guide==='Руководство'?'Upgrade':'Upgrade'}}
+function updateUpgradeButton(){if(isSubActive()){upgradeBtn.classList.add('active');upgradeLabel.textContent='Plus Active'}else{upgradeBtn.classList.remove('active');upgradeLabel.textContent='Upgrade'}}
 function formatChatTime(ts,isActive){if(!ts)return '';if(isActive)return t().timeActive;var now=Date.now(),s=Math.floor((now-ts)/1000);if(s<5)return t().timeNow;if(s<60)return s+' '+t().timeSec;var m=Math.floor(s/60);if(m<60)return m+' '+t().timeMin;var h=Math.floor(m/60);var today=new Date(),yd=new Date(today.getTime()-86400000),d=new Date(ts);if(d.toDateString()===today.toDateString())return h+' '+t().timeHour;if(d.toDateString()===yd.toDateString())return t().timeYesterday;return d.toLocaleDateString(settings.lang,{day:'numeric',month:'short'})}
-function renderSubStatusBox(){var box=document.getElementById('subStatusBox');if(!box)return;if(isSubActive()){var daysLeft=Math.ceil((currentUser.subscription_until-Date.now())/86400000);var expiresDate=new Date(currentUser.subscription_until).toLocaleDateString(settings.lang,{day:'numeric',month:'long',year:'numeric'});box.innerHTML='<div style="padding:16px;border-radius:16px;background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(139,92,246,.08));border:1px solid rgba(99,102,241,.4)"><div style="font-weight:700;color:var(--accent);font-size:16px;margin-bottom:10px">⭐ Plus Active</div><div style="font-size:13px;color:var(--fg2);line-height:1.8"><div>• GPT-4o, Claude 3.5</div><div>• Gemini 2.5 Pro, Grok Beta</div><div>• Perplexity Sonar</div></div><div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(99,102,241,.2);font-size:13px;color:var(--fg)"><strong>'+daysLeft+' days left</strong><div style="font-size:11.5px;color:var(--fg2);margin-top:2px">until '+esc(expiresDate)+'</div></div></div>'}else{box.innerHTML='<div style="padding:16px;border-radius:16px;background:var(--bg3);border:1px solid var(--border)"><div style="font-weight:600;font-size:14px;color:var(--fg);margin-bottom:6px">Free Tier</div><div style="font-size:12.5px;color:var(--fg2);line-height:1.6">Access to 12+ free AI models. Upgrade to Plus for premium intelligence.</div><button type="button" id="upgradeBtnSettings" class="plan-btn" style="margin-top:12px">⭐ Buy Plus — $2.99/mo</button></div>';var btn=document.getElementById('upgradeBtnSettings');if(btn)btn.onclick=openSubscription}}
+function renderSubStatusBox(){var box=document.getElementById('subStatusBox');if(!box)return;if(isSubActive()){var daysLeft=Math.ceil((currentUser.subscription_until-Date.now())/86400000);var expiresDate=new Date(currentUser.subscription_until).toLocaleDateString(settings.lang,{day:'numeric',month:'long',year:'numeric'});box.innerHTML='<div style="padding:16px;border-radius:16px;background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(139,92,246,.08));border:1px solid rgba(99,102,241,.4)"><div style="font-weight:700;color:var(--accent);font-size:16px;margin-bottom:10px">⭐ Plus Active</div><div style="font-size:13px;color:var(--fg2);line-height:1.8">Extra Mode · Best Agents · 200 requests<br>100000+ tokens · Better support</div><div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(99,102,241,.2);font-size:13px;color:var(--fg)"><strong>'+daysLeft+' days left</strong><div style="font-size:11.5px;color:var(--fg2);margin-top:2px">until '+esc(expiresDate)+'</div></div></div>'}else{box.innerHTML='<div style="padding:16px;border-radius:16px;background:var(--bg3);border:1px solid var(--border)"><div style="font-weight:600;font-size:14px;color:var(--fg);margin-bottom:6px">Free Tier</div><div style="font-size:12.5px;color:var(--fg2);line-height:1.6">Access to 12+ free AI models. Upgrade for premium intelligence.</div><button type="button" id="upgradeBtnSettings" class="plan-btn" style="margin-top:12px">⭐ Upgrade to Plus</button></div>';var btn=document.getElementById('upgradeBtnSettings');if(btn)btn.onclick=openSubscription}}
 function applySettings(){body.classList.toggle('dark',settings.theme==='dark');body.classList.toggle('hidden-sidebar',state.sidebarHidden);var tt=t();$('langLabel').textContent=tt.lang;$('themeLabel').textContent=tt.theme;$('nickLabel').textContent=tt.nick;$('footerText').textContent=tt.foot;nickInput.placeholder=tt.nickPh;userInput.placeholder=tt.ph;sbSearchInput.placeholder=tt.searchPh;document.title=tt.app;$('shareBtn').title=tt.share;$('hideSidebarBtn').title=state.sidebarHidden?tt.showUi:tt.hideUi;updateAgentLabel();updateTopbarTitle();updateEyeIcon();updateUpgradeButton();renderChatList();renderMessages();save('pongy_settings_ui',settings)}
 function updateEyeIcon(){var icon=$('eyeIcon');if(state.sidebarHidden){icon.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><path d="M1 1l22 22"/>';$('hideSidebarBtn').classList.add('active')}else{icon.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';$('hideSidebarBtn').classList.remove('active')}}
 function updateTopbarTitle(){var chat=chats.find(function(c){return c.id===activeId});topbarTitle.textContent=(chat&&chat.title)||t().untitled}
@@ -475,7 +351,7 @@ function commitRename(id,newName){var trimmed=newName.trim();if(!trimmed){state.
 function togglePin(id){var chat=chats.find(function(c){return c.id===id});if(chat){chat.pinned=!chat.pinned;syncChat(chat)}renderChatList()}
 function doDeleteChat(id){deleteChatRemote(id);chats=chats.filter(function(c){return c.id!==id});if(!chats.length){chats=[{id:Date.now()+'-'+Math.random().toString(36).slice(2,6),title:'',messages:[],updatedAt:Date.now(),pinned:false}];syncChat(chats[0])}if(!chats.find(function(c){return c.id===activeId}))activeId=chats[0].id;renderChatList();renderMessages();updateTopbarTitle()}
 function showConfirm(title,text,yesLabel,noLabel,onYes){$('confirmTitle').textContent=title;$('confirmText').textContent=text;$('confirmYes').textContent=yesLabel;$('confirmNo').textContent=noLabel;confirmModal.classList.add('open');var yes=$('confirmYes'),no=$('confirmNo');var close=function(){confirmModal.classList.remove('open');yes.onclick=null;no.onclick=null};yes.onclick=function(){close();onYes()};no.onclick=close;confirmModal.onclick=function(e){if(e.target===confirmModal)close()}}
-var SVGS={brain:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0112 4.5v15a2.5 2.5 0 01-4.96.44 2.5 2.5 0 01-2.96-3.08 3 3 0 01-.34-5.58 2.5 2.5 0 011.32-4.24A2.5 2.5 0 019.5 2z"/><path d="M14.5 2A2.5 2.5 0 0012 4.5v15a2.5 2.5 0 004.96.44 2.5 2.5 0 002.96-3.08 3 3 0 00.34-5.58 2.5 2.5 0 00-1.32-4.24A2.5 2.5 0 0014.5 2z"/></svg>',search:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.35-4.35"/></svg>',bolt:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>',clock:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>',copy:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>',check:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',pencil:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.83 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5z"/></svg>',refine:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>',report:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>',plane:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>',retry:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>',crown:'<svg class="crown" viewBox="0 0 24 24" fill="currentColor"><path d="M2 18h20l-2-10-5 4-3-6-3 6-5-4z"/></svg>'};
+var SVGS={brain:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0112 4.5v15a2.5 2.5 0 01-4.96.44 2.5 2.5 0 01-2.96-3.08 3 3 0 01-.34-5.58 2.5 2.5 0 011.32-4.24A2.5 2.5 0 019.5 2z"/><path d="M14.5 2A2.5 2.5 0 0012 4.5v15a2.5 2.5 0 004.96.44 2.5 2.5 0 002.96-3.08 3 3 0 00.34-5.58 2.5 2.5 0 00-1.32-4.24A2.5 2.5 0 0014.5 2z"/></svg>',search:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.35-4.35"/></svg>',bolt:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>',clock:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>',copy:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>',check:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>',pencil:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.83 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5z"/></svg>',refine:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>',report:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>',plane:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>',retry:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>',crown:'<svg class="crown" viewBox="0 0 24 24" fill="currentColor"><path d="M2 18h20l-2-10-5 4-3-6-3 6-5-4z"/></svg>',sbp:'<svg class="pay-icon-sbp" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2.5"/><path d="M16 20h16M16 24h10M16 28h16M16 32h10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="30" cy="24" r="3" fill="currentColor"/></svg>',card:'<svg class="pay-icon-card" viewBox="0 0 48 48" fill="none"><rect x="6" y="12" width="36" height="24" rx="4" stroke="currentColor" stroke-width="2.5"/><path d="M6 20h36" stroke="currentColor" stroke-width="2.5"/><rect x="10" y="26" width="8" height="4" rx="1" fill="currentColor"/></svg>',ru:'<svg class="pay-icon-ru" viewBox="0 0 48 48" fill="none"><rect x="6" y="12" width="36" height="24" rx="4" stroke="currentColor" stroke-width="2.5"/><path d="M6 20h36" stroke="currentColor" stroke-width="2.5"/><rect x="10" y="26" width="8" height="4" rx="1" fill="currentColor"/><rect x="10" y="6" width="28" height="6" rx="1" fill="#fff" stroke="currentColor" stroke-width="1"/><rect x="10" y="6" width="28" height="2" fill="#fff"/><rect x="10" y="8" width="28" height="2" fill="#0039a6"/><rect x="10" y="10" width="28" height="2" fill="#d52b1e"/></svg>'};
 function renderMessages(){var chat=chats.find(function(c){return c.id===activeId});if(!chat)return;messages.innerHTML='';if(!chat.messages.length){var tt=t();var w=document.createElement('div');w.className='welcome';w.innerHTML='<div class="welcome-inner"><div class="big-logo"></div><p></p></div>';w.querySelector('.big-logo').innerHTML=LOGO_SVG;w.querySelector('p').textContent=settings.nickname?tt.greetN(settings.nickname):tt.greet;messages.appendChild(w);return}var wrap=document.createElement('div');wrap.className='msg-wrap';chat.messages.forEach(function(m,i){var isLast=i===chat.messages.length-1;wrap.appendChild(renderMessage(m,isLast&&state.streaming,i))});messages.appendChild(wrap);messages.scrollTop=messages.scrollHeight}
 function renderMessage(m,isActive,idx){var tt=t();var d=document.createElement('div');d.className='msg '+(m.role==='user'?'user':'ai');var av=document.createElement('div');av.className='avatar '+(m.role==='user'?'user':'ai');if(m.role==='user'){av.textContent=(settings.nickname||'U').trim().charAt(0).toUpperCase()||'U'}else{av.textContent='P'}d.appendChild(av);var content=document.createElement('div');content.className='msg-content';var b=document.createElement('div');b.className='bubble';b.id='bubble-'+idx;if(m.role==='user'){b.textContent=m.text||''}else if(isActive&&(!m.text||!m.text.length)){var phrases=[];if(m.meta&&m.meta.smart)phrases.push(tt.thinking);if(m.meta&&m.meta.search)phrases.push(tt.searching);if(!phrases.length)phrases.push(tt.composing);b.innerHTML='<div class="thinking-box"><div class="think-orb"></div><div class="think-text"><span>'+esc(phrases[0])+'</span><span class="dots"><span></span><span></span><span></span></span></div></div>'}else{b.innerHTML=renderMd(m.text||'');if(isActive)b.insertAdjacentHTML('beforeend','<span class="caret"></span>')}content.appendChild(b);
 if(m.role==='assistant'&&m.meta){var meta=document.createElement('div');meta.className='msg-meta';var html='';if(m.meta.smart)html+='<span class="meta-badge accent">'+SVGS.brain+'<span>'+esc(tt.reasoning)+'</span></span>';if(m.meta.search)html+='<span class="meta-badge accent">'+SVGS.search+'<span>'+esc(tt.search)+'</span></span>';if(!isActive&&m.meta.endTime){var totalMs=m.meta.endTime-m.meta.startTime;var genMs=m.meta.endTime-(m.meta.firstChunkTime||m.meta.startTime);var chars=m.meta.chars||(m.text?m.text.length:0);var cps=genMs>0?Math.round(chars/(genMs/1000)):0;var secs=(totalMs/1000).toFixed(1);if(cps>0)html+='<span class="meta-badge">'+SVGS.bolt+'<span>'+cps+' '+esc(tt.charsSec)+'</span></span>';html+='<span class="meta-badge">'+SVGS.clock+'<span>'+secs+' '+esc(tt.sec)+'</span></span>'}if(html){meta.innerHTML=html;content.appendChild(meta)}}
@@ -497,7 +373,7 @@ function updateInputState(){var v=userInput.value.trim();var can=v&&!state.strea
 userInput.addEventListener('input',function(){userInput.style.height='auto';userInput.style.height=Math.min(userInput.scrollHeight,160)+'px';updateInputState()});
 userInput.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();doSend()}});
 function checkSpam(text){var now=Date.now();sendHistory=sendHistory.filter(function(s){return now-s.time<5000});var hash=text.trim().toLowerCase().slice(0,200);var sameCount=sendHistory.filter(function(s){return s.hash===hash}).length;if(sameCount>=3)return{blocked:true,seconds:30};if(sendHistory.length>=5)return{blocked:true,seconds:10};sendHistory.push({time:now,hash:hash});return{blocked:false}}
-function showSpamWarning(seconds,retryText){if(spamWarning)spamWarning.remove();var warn=document.createElement('div');warn.style.cssText='position:fixed;bottom:120px;left:50%;transform:translateX(-50%);background:var(--bg);border:2px solid #ef4444;color:#ef4444;padding:12px 20px;border-radius:14px;box-shadow:0 12px 40px rgba(239,68,68,.3);z-index:9999;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:10px;cursor:pointer;max-width:calc(100% - 32px);animation:popIn .3s';var remaining=seconds;function update(){warn.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Message not delivered! Too fast. '+remaining+' s left'}update();warn.onclick=function(){if(remaining<=0){warn.remove();spamWarning=null;userInput.value=retryText;updateInputState();doSend()}};document.body.appendChild(warn);spamWarning=warn;var int=setInterval(function(){remaining--;if(remaining<=0){clearInterval(int);warn.style.background='rgba(16,185,129,.1)';warn.style.borderColor='#10b981';warn.style.color='#10b981';warn.innerHTML='✅ Unblocked. Click to send';}else update()},1000)}
+function showSpamWarning(seconds,retryText){if(spamWarning)spamWarning.remove();var warn=document.createElement('div');warn.style.cssText='position:fixed;bottom:120px;left:50%;transform:translateX(-50%);background:var(--bg);border:2px solid #ef4444;color:#ef4444;padding:12px 20px;border-radius:14px;box-shadow:0 12px 40px rgba(239,68,68,.3);z-index:9999;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:10px;cursor:pointer;max-width:calc(100% - 32px);animation:popIn .3s';var remaining=seconds;function update(){warn.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg> Message not delivered! Too fast. '+remaining+' s left'}update();warn.onclick=function(){if(remaining<=0){warn.remove();spamWarning=null;userInput.value=retryText;updateInputState();doSend()}};document.body.appendChild(warn);spamWarning=warn;var int=setInterval(function(){remaining--;if(remaining<=0){clearInterval(int);warn.style.background='rgba(16,185,129,.1)';warn.style.borderColor='#10b981';warn.style.color='#10b981';warn.innerHTML='✅ Unblocked. Click to send'}else update()},1000)}
 function doSend(){var v=userInput.value.trim();if(!v||state.streaming)return;var spam=checkSpam(v);if(spam.blocked){showSpamWarning(spam.seconds,v);return}if(isRecording)stopVoice();userInput.value='';userInput.style.height='auto';sendMessage(v,{smart:state.smart,search:state.search});updateInputState()}
 sendBtn.onclick=doSend;
 stopBtn.onclick=function(){if(state.abort)try{state.abort.abort()}catch(e){}};
@@ -512,8 +388,54 @@ if(SpeechRecognition){recognition=new SpeechRecognition();recognition.continuous
 function startVoice(){if(!recognition){alert(t().voiceUnsupported);return}recognition.lang=SPEECH_LANGS[settings.lang]||'en-US';finalTranscript=userInput.value;try{recognition.start()}catch(_){}}
 function stopVoice(){isRecording=false;if(recognition)try{recognition.stop()}catch(_){};micBtn.classList.remove('recording')}
 micBtn.onclick=function(){if(isRecording)stopVoice();else startVoice()};
-function openSubscription(){subModal.classList.add('open')}
+function openSubscription(){payState={method:null,step:'card'};renderSubscription();subModal.classList.add('open')}
 function closeSubscription(){subModal.classList.remove('open')}
+function renderSubscription(){var tt=t();var isPlus=isSubActive();var benefits=[tt.b1,tt.b2,tt.b3,tt.b4,tt.b5];var benefitsHtml=benefits.map(function(b){return '<li>'+esc(b)+'</li>'}).join('');
+if(payState.step==='card'){
+subBody.innerHTML='<div class="plan-card'+(isPlus?' plus':'')+'">'+
+'<div class="plan-title">⭐ '+esc(tt.plusTitle)+'</div>'+
+'<div style="font-size:12px;font-weight:600;color:var(--fg2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">'+esc(tt.subBenefits)+'</div>'+
+'<ul class="plan-features">'+benefitsHtml+'</ul>'+
+'<div class="plan-price">190 ₽ <span style="font-size:13px;color:var(--fg2);font-weight:500">/ month</span></div>'+
+'<button class="plan-btn" id="buyPlusBtn">'+(isPlus?esc('Extend'):'⭐ '+esc(tt.buyPlus))+'</button>'+
+'</div>';
+document.getElementById('buyPlusBtn').onclick=function(){payState.step='method';renderSubscription()};
+}else if(payState.step==='method'){
+subBody.innerHTML='<div style="font-size:14px;font-weight:600;color:var(--fg);margin-bottom:14px">'+esc(tt.payTitle)+'</div>'+
+'<div class="pay-methods">'+
+'<button type="button" class="pay-method'+(payState.method==='sbp'?' selected':'')+'" data-pay="sbp">'+SVGS.sbp+'<span>'+esc(tt.paySbp)+'</span></button>'+
+'<button type="button" class="pay-method'+(payState.method==='card'?' selected':'')+'" data-pay="card">'+SVGS.card+'<span>'+esc(tt.payCard)+'</span></button>'+
+'<button type="button" class="pay-method'+(payState.method==='ru'?' selected':'')+'" data-pay="ru">'+SVGS.ru+'<span>'+esc(tt.payCardRu)+'</span></button>'+
+'</div>'+
+'<button class="plan-btn" id="payNext" style="margin-top:16px;'+(payState.method?'':'opacity:.5;cursor:not-allowed')+'" '+(payState.method?'':'disabled')+'>'+esc(tt.payNext)+'</button>'+
+'<button class="pay-back" id="payBack">← '+esc(tt.payBack)+'</button>';
+subBody.querySelectorAll('.pay-method').forEach(function(el){el.onclick=function(){payState.method=el.dataset.pay;renderSubscription()}});
+var next=document.getElementById('payNext');if(next&&payState.method)next.onclick=function(){payState.step='form';renderSubscription()};
+document.getElementById('payBack').onclick=function(){payState.step='card';renderSubscription()};
+}else if(payState.step==='form'){
+var methodLabel=payState.method==='sbp'?tt.paySbp:payState.method==='ru'?tt.payCardRu:tt.payCard;
+subBody.innerHTML='<div style="font-size:13px;color:var(--fg2);margin-bottom:14px">'+esc(tt.payTitle)+': <b style="color:var(--accent)">'+esc(methodLabel)+'</b></div>'+
+'<div class="card-form">'+
+'<input class="inp" id="payNum" placeholder="'+esc(tt.cardNum)+'" maxlength="23" inputmode="numeric" autocomplete="cc-number">'+
+'<div class="row"><input class="inp" id="payExp" placeholder="'+esc(tt.cardExp)+'" maxlength="5" inputmode="numeric" autocomplete="cc-exp"><input class="inp" id="payCvc" placeholder="'+esc(tt.cardCvc)+'" maxlength="4" inputmode="numeric" type="password" autocomplete="cc-csc"></div>'+
+'<input class="inp" id="payName" placeholder="'+esc(tt.cardHolder)+'" autocomplete="cc-name">'+
+'<div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:14px;margin-top:4px"><span style="font-size:13px;color:var(--fg2)">'+esc(tt.payAmount)+'</span><span style="font-size:18px;font-weight:800;color:var(--fg)">190 ₽</span></div>'+
+'<button class="plan-btn" id="payConfirm" style="margin-top:6px">'+esc(tt.payConfirm)+'</button>'+
+'<button class="pay-back" id="payBack2">← '+esc(tt.payBack)+'</button>'+
+'</div>';
+var pNum=document.getElementById('payNum');if(pNum)pNum.oninput=function(){this.value=this.value.replace(/\D/g,'').replace(/(.{4})/g,'$1 ').trim().slice(0,23)};
+var pExp=document.getElementById('payExp');if(pExp)pExp.oninput=function(){this.value=this.value.replace(/\D/g,'').replace(/^(\d{2})(\d)/,'$1/$2').slice(0,5)};
+var pCvc=document.getElementById('payCvc');if(pCvc)pCvc.oninput=function(){this.value=this.value.replace(/\D/g,'').slice(0,4)};
+document.getElementById('payBack2').onclick=function(){payState.step='method';renderSubscription()};
+document.getElementById('payConfirm').onclick=function(){
+var btn=this;var orig=btn.innerHTML;btn.disabled=true;btn.innerHTML='⏳…';
+setTimeout(function(){
+btn.disabled=false;btn.innerHTML=orig;
+alert('⚠️ '+t().payUnavailable);
+},700);
+};
+}
+}
 function renderAgentPopup(){var tt=t();var html='';html+='<div class="popup-section"><div class="popup-title">'+esc(tt.agents)+'</div>';AGENTS.forEach(function(a){var cur=state.agent===a.id;var tag='';if(a.tag==='plus')tag='<span class="agent-tag plus">'+SVGS.crown+' '+esc(tt.tagPlus)+'</span>';else if(a.tag==='custom')tag='<span class="agent-tag custom">'+esc(tt.tagCustom)+'</span>';else tag='<span class="agent-tag free">'+esc(tt.tagFree)+'</span>';html+='<div class="agent-opt'+(cur?' current':'')+'" data-agent="'+a.id+'"><div class="agent-info"><div class="agent-name">'+esc(tt[a.name])+'</div>'+(a.desc?'<div class="agent-sub">'+esc(tt[a.desc])+'</div>':(a.best?'<div class="agent-sub">'+esc(tt.agentExtraBest)+'</div>':''))+'</div>'+tag+'</div>'});html+='</div><div class="popup-divider"></div><div class="popup-section"><div class="popup-title">'+esc(tt.thinkingLevel)+'</div>';THINKING.forEach(function(th){var cur=state.thinking===th.id;var tag='';if(th.tag==='plus')tag='<span class="think-tag plus">'+SVGS.crown+' '+esc(tt.tagPlus)+'</span>';else if(th.tag==='note')tag='<span class="think-tag note">'+esc(tt[th.desc])+'</span>';else tag='<span class="think-tag free">'+esc(tt[th.desc])+'</span>';html+='<div class="think-opt'+(cur?' current':'')+'" data-think="'+th.id+'"><div><div class="think-name">'+esc(tt[th.name])+'</div></div>'+tag+'</div>'});html+='</div>';agentPopup.innerHTML=html;
 agentPopup.querySelectorAll('.agent-opt').forEach(function(el){el.onclick=function(){var id=el.dataset.agent;if(id==='extra'&&!isSubActive()){closeAgentPopup();openSubscription();return}state.agent=id;updateAgentLabel();closeAgentPopup()}});
 agentPopup.querySelectorAll('.think-opt').forEach(function(el){el.onclick=function(){var id=el.dataset.think;if(id==='extra'&&!isSubActive()){closeAgentPopup();openSubscription();return}state.thinking=id;closeAgentPopup()}})}
@@ -528,7 +450,6 @@ $('closeSettings').onclick=closeSettings;
 settingsModal.onclick=function(e){if(e.target===settingsModal)closeSettings()};
 $('closeSub').onclick=closeSubscription;
 subModal.onclick=function(e){if(e.target===subModal)closeSubscription()};
-$('buyPlusBtn').onclick=function(){var btn=this;var orig=btn.innerHTML;btn.disabled=true;btn.innerHTML='⏳ Checking…';apiFetch('/api/pay/create',{method:'POST'}).then(function(data){if(data.confirmation_url){window.location.href=data.confirmation_url}else throw new Error(data.error||'Payment unavailable')}).catch(function(e){btn.disabled=false;btn.innerHTML=orig;alert('⚠️ '+(e.message||'Payment is currently unavailable.'))})};
 upgradeBtn.onclick=function(){if(isSubActive())return;openSubscription()};
 function renderLangGrid(){var g=$('langGrid');g.innerHTML='';LANGS.forEach(function(l){var b=document.createElement('button');b.type='button';b.className='opt'+(settings.lang===l.code?' active':'');b.innerHTML='<span class="flag">'+l.flag+'</span><span>'+esc(l.label)+'</span>';b.onclick=function(){if(settings.lang===l.code)return;var mainEl=document.getElementById('main');var sidebarEl=document.getElementById('sidebar');[mainEl,sidebarEl].forEach(function(el){if(el)el.classList.add('lang-switch-fade')});setTimeout(function(){settings.lang=l.code;applySettings();renderLangGrid();renderThemeGrid();renderSubStatusBox()},180);setTimeout(function(){[mainEl,sidebarEl].forEach(function(el){if(el)el.classList.remove('lang-switch-fade')})},420)};g.appendChild(b)})}
 function renderThemeGrid(){var g=$('themeGrid');g.innerHTML='';var tt=t();[{k:'light',l:tt.light,icon:'<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>'},{k:'dark',l:tt.dark,icon:'<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>'}].forEach(function(o){var b=document.createElement('button');b.type='button';b.className='opt'+(settings.theme===o.k?' active':'');b.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+o.icon+'</svg><span>'+esc(o.l)+'</span>';b.onclick=function(e){if(settings.theme===o.k)return;var rect=b.getBoundingClientRect();var x=rect.left+rect.width/2;var y=rect.top+rect.height/2;var newTheme=o.k;var doChange=function(){settings.theme=newTheme;applySettings();renderThemeGrid()};if(document.startViewTransition){document.documentElement.style.setProperty('--tx',x+'px');document.documentElement.style.setProperty('--ty',y+'px');document.startViewTransition(doChange)}else{document.body.style.opacity='0.85';setTimeout(function(){doChange();document.body.style.opacity='1'},180)}};g.appendChild(b)})}
@@ -547,8 +468,8 @@ $('verifyCodeBtn').onclick=function(){var code=document.getElementById('resetCod
 function checkPasswordsMatch(){var p1=document.getElementById('newPass1').value;var p2=document.getElementById('newPass2').value;var btn=document.getElementById('changePassBtn');var ok=p1.length>=6&&p1===p2;btn.disabled=!ok;btn.style.opacity=ok?'1':'.5';btn.style.cursor=ok?'pointer':'not-allowed'}
 document.getElementById('newPass1').addEventListener('input',checkPasswordsMatch);
 document.getElementById('newPass2').addEventListener('input',checkPasswordsMatch);
-$('changePassBtn').onclick=function(){var p1=document.getElementById('newPass1').value;var err=document.getElementById('resetErr3');err.style.display='none';var self=this;self.disabled=true;self.textContent='Updating…';fetch(API_URL+'/api/password/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:resetEmailValue,code:resetCodeValue,newPassword:p1})}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error);return j})}).then(function(){closeReset();alert('✅ Password changed successfully');document.getElementById('authPassword').value='';document.getElementById('resetEmail').value='';document.getElementById('resetCode').value='';document.getElementById('newPass1').value='';document.getElementById('newPass2').value='';checkPasswordsMatch()}).catch(function(e){err.textContent=e.message;err.style.display='block'}).finally(function(){self.disabled=false;self.textContent='Change password'})};
-$('logoutBtnSettings').onclick=function(){showConfirm('Sign out?','You will need to sign in again to access your chats.','Sign out','Cancel',function(){authToken='';currentUser=null;localStorage.removeItem('pongy_token');localStorage.removeItem('pongy_cached_user');chats=[];activeId=null;document.getElementById('authEmail').value='';document.getElementById('authPassword').value='';closeSettings();showAuthScreen();updateUpgradeButton()})};
+$('changePassBtn').onclick=function(){var p1=document.getElementById('newPass1').value;var err=document.getElementById('resetErr3');err.style.display='none';var self=this;self.disabled=true;self.textContent='Updating…';fetch(API_URL+'/api/password/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:resetEmailValue,code:resetCodeValue,newPassword:p1})}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error);return j})}).then(function(){closeReset();alert('✅ Password changed');document.getElementById('authPassword').value='';document.getElementById('resetEmail').value='';document.getElementById('resetCode').value='';document.getElementById('newPass1').value='';document.getElementById('newPass2').value='';checkPasswordsMatch()}).catch(function(e){err.textContent=e.message;err.style.display='block'}).finally(function(){self.disabled=false;self.textContent='Change password'})};
+$('logoutBtnSettings').onclick=function(){showConfirm('Sign out?','You will need to sign in again.','Sign out','Cancel',function(){authToken='';currentUser=null;localStorage.removeItem('pongy_token');localStorage.removeItem('pongy_cached_user');chats=[];activeId=null;document.getElementById('authEmail').value='';document.getElementById('authPassword').value='';closeSettings();showAuthScreen();updateUpgradeButton()})};
 function renderGuide(){var tt=t();var tabs=[{k:'guide',label:tt.gtocGuide},{k:'privacy',label:tt.gtocPrivacy},{k:'rules',label:tt.gtocRules},{k:'api',label:tt.gtocApi},{k:'security',label:tt.gtocSecurity}];guideToc.innerHTML=tabs.map(function(tb){return '<div class="guide-tab'+(state.guideSection===tb.k?' active':'')+'" data-sec="'+tb.k+'">'+esc(tb.label)+'</div>'}).join('');guideToc.querySelectorAll('.guide-tab').forEach(function(el){el.onclick=function(){state.guideSection=el.dataset.sec;renderGuide()}});var secs='';secs+='<div class="guide-section'+(state.guideSection==='guide'?' active':'')+'"><h3>'+esc(tt.gIntroTitle)+'</h3><p>'+esc(tt.gIntroBody)+'</p></div>';secs+='<div class="guide-section'+(state.guideSection==='privacy'?' active':'')+'"><h3>'+esc(tt.gPrivTitle)+'</h3><p>'+esc(tt.gPrivP1)+'</p><h4>'+esc(tt.gPrivP2)+'</h4><ul><li>'+esc(tt.gPrivList1)+'</li><li>'+esc(tt.gPrivList2)+'</li><li>'+esc(tt.gPrivList3)+'</li></ul><h4>'+esc(tt.gPrivP3)+'</h4><ul><li>'+esc(tt.gPrivList4)+'</li><li>'+esc(tt.gPrivList5)+'</li></ul></div>';secs+='<div class="guide-section'+(state.guideSection==='rules'?' active':'')+'"><h3>'+esc(tt.gRulesTitle)+'</h3><ul><li>'+esc(tt.gRule1)+'</li><li>'+esc(tt.gRule2)+'</li><li>'+esc(tt.gRule3)+'</li><li>'+esc(tt.gRule4)+'</li><li>'+esc(tt.gRule5)+'</li></ul><div class="note warn">'+esc(tt.gRulesNote)+'</div></div>';secs+='<div class="guide-section'+(state.guideSection==='api'?' active':'')+'"><h3>'+esc(tt.gApiTitle)+'</h3><p>'+esc(tt.gApiP1)+'</p><p>'+esc(tt.gApiP2)+'</p></div>';secs+='<div class="guide-section'+(state.guideSection==='security'?' active':'')+'"><h3>'+esc(tt.gSecTitle)+'</h3><p>'+esc(tt.gSecP1)+'</p><ul><li>'+esc(tt.gSecList1)+'</li><li>'+esc(tt.gSecList2)+'</li><li>'+esc(tt.gSecList3)+'</li><li>'+esc(tt.gSecList4)+'</li><li>'+esc(tt.gSecList5)+'</li><li>'+esc(tt.gSecList6)+'</li></ul><div class="note warn">'+esc(tt.gSecNote)+'</div></div>';guideSections.innerHTML=secs}
 function openGuide(){state.guideSection='guide';renderGuide();guideModal.classList.add('open')}
 function closeGuide(){guideModal.classList.remove('open')}
@@ -567,7 +488,7 @@ function setAuthError(msg){var el=document.getElementById('authError');if(msg){e
 function startCodeTimer(){var secondsLeft=90;var timerEl=document.getElementById('authCodeTimer');var resendEl=document.getElementById('authCodeResend');if(regCodeTimer)clearInterval(regCodeTimer);resendEl.style.display='none';function tick(){if(secondsLeft<=0){clearInterval(regCodeTimer);timerEl.textContent='';resendEl.style.display='block';return}var m=Math.floor(secondsLeft/60),s=secondsLeft%60;timerEl.textContent='Resend in '+m+':'+(s<10?'0':'')+s;secondsLeft--}tick();regCodeTimer=setInterval(tick,1000)}
 function initAuthUI(){document.getElementById('eyeAuth').onclick=function(){toggleEye('authPassword','eyeAuthIcon')};document.getElementById('eyeAuth2').onclick=function(){toggleEye('authPassword2','eyeAuthIcon2')};document.getElementById('authSwitch').onclick=function(){setAuthMode(authMode==='login'?'register':'login')};document.getElementById('googleBtn').onclick=function(){window.location.href=API_URL+'/auth/google'};document.getElementById('authCodeBack').onclick=function(){showAuthStep('fields');setAuthError('')};document.getElementById('forgotPasswordBtn').onclick=openReset;
 document.getElementById('authBtn').onclick=function(){var btn=this;var email=document.getElementById('authEmail').value.trim();var pass=document.getElementById('authPassword').value;setAuthError('');if(!email||!pass){setAuthError('Enter email and password');return}if(pass.length<6){setAuthError('Password must be at least 6 characters');return}
-if(authMode==='register'){var pass2=document.getElementById('authPassword2').value;if(pass!==pass2){setAuthError('Passwords do not match');return}var allowed=['gmail.com','mail.com','mail.ru','email.com','yandex.ru'];var domain=email.split('@')[1];if(!email.includes('@')||!allowed.includes((domain||'').toLowerCase())){setAuthError('Only gmail.com, mail.com, mail.ru, email.com, yandex.ru are allowed');return}btn.disabled=true;btn.textContent='Sending code…';fetch(API_URL+'/api/register/send-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error);return j})}).then(function(){pendingEmail=email;pendingPassword=pass;document.getElementById('authCodeEmail').textContent=email;showAuthStep('code');document.getElementById('authCode').value='';document.getElementById('authCode').focus();startCodeTimer()}).catch(function(e){setAuthError(e.message)}).finally(function(){btn.disabled=false;btn.textContent='Continue'})}else{btn.disabled=true;btn.textContent='Signing in…';apiFetch('/api/login',{method:'POST',body:{email:email,password:pass,deviceId:DEVICE_ID}}).then(function(data){authToken=data.token;localStorage.setItem('pongy_token',authToken);currentUser=data.user;save('pongy_cached_user',data.user);return loadUserChats()}).then(function(){hideAuthScreen();renderChatList();renderMessages();updateUpgradeButton()}).catch(function(e){setAuthError(e.message)}).finally(function(){btn.disabled=false;btn.textContent='Sign in'})}};
+if(authMode==='register'){var pass2=document.getElementById('authPassword2').value;if(pass!==pass2){setAuthError('Passwords do not match');return}var allowed=['gmail.com','mail.com','mail.ru','email.com','yandex.ru'];var domain=email.split('@')[1];if(!email.includes('@')||!allowed.includes((domain||'').toLowerCase())){setAuthError('Only gmail.com, mail.com, mail.ru, email.com, yandex.ru');return}btn.disabled=true;btn.textContent='Sending code…';fetch(API_URL+'/api/register/send-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error);return j})}).then(function(){pendingEmail=email;pendingPassword=pass;document.getElementById('authCodeEmail').textContent=email;showAuthStep('code');document.getElementById('authCode').value='';document.getElementById('authCode').focus();startCodeTimer()}).catch(function(e){setAuthError(e.message)}).finally(function(){btn.disabled=false;btn.textContent='Continue'})}else{btn.disabled=true;btn.textContent='Signing in…';apiFetch('/api/login',{method:'POST',body:{email:email,password:pass,deviceId:DEVICE_ID}}).then(function(data){authToken=data.token;localStorage.setItem('pongy_token',authToken);currentUser=data.user;save('pongy_cached_user',data.user);return loadUserChats()}).then(function(){hideAuthScreen();renderChatList();renderMessages();updateUpgradeButton()}).catch(function(e){setAuthError(e.message)}).finally(function(){btn.disabled=false;btn.textContent='Sign in'})}};
 document.getElementById('authCodeResend').onclick=function(){fetch(API_URL+'/api/register/send-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:pendingEmail})}).then(function(r){return r.json()}).then(function(j){if(j.error)setAuthError(j.error);else startCodeTimer()})};
 document.getElementById('authCodeBtn').onclick=function(){var btn=this;var code=document.getElementById('authCode').value.trim();setAuthError('');if(!code||code.length!==6){setAuthError('Enter the 6-digit code');return}btn.disabled=true;btn.textContent='Verifying…';apiFetch('/api/register',{method:'POST',body:{email:pendingEmail,password:pendingPassword,code:code,deviceId:DEVICE_ID}}).then(function(data){authToken=data.token;localStorage.setItem('pongy_token',authToken);currentUser=data.user;save('pongy_cached_user',data.user);return loadUserChats()}).then(function(){hideAuthScreen();renderChatList();renderMessages();updateUpgradeButton()}).catch(function(e){setAuthError(e.message)}).finally(function(){btn.disabled=false;btn.textContent='Confirm'})};
 document.getElementById('authCode').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('authCodeBtn').click()})}
