@@ -16,9 +16,10 @@ app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static('.'));
 
+// Сессии — используем /tmp (пишется на Linux, работает на Render)
 const FileStoreSession = FileStore(session);
 app.use(session({
-  store: new FileStoreSession({ path: './sessions', retries: 0, logFn: function(){} }),
+  store: new FileStoreSession({ path: '/tmp/pongy-sessions', retries: 0, logFn: function(){} }),
   secret: process.env.SESSION_SECRET || 'pongy-session-secret-change-me',
   resave: false,
   saveUninitialized: false,
@@ -82,33 +83,25 @@ const OPENROUTER_KEY = process.env.OPENROUTER_KEY || '';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://pongy-ai.devs.surf';
 
-console.log('[ENV] OPENROUTER_KEY:', OPENROUTER_KEY ? 'OK' : 'MISSING');
-console.log('[ENV] RESEND_API_KEY:', RESEND_API_KEY ? 'OK' : 'MISSING');
-console.log('[ENV] GOOGLE_CLIENT_ID:', GOOGLE_CLIENT_ID ? 'OK' : 'MISSING');
-console.log('[ENV] GOOGLE_CLIENT_SECRET:', GOOGLE_CLIENT_SECRET ? 'OK' : 'MISSING');
-
-// Разрешённые почтовые домены
 const ALLOWED_DOMAINS = ['gmail.com','mail.com','mail.ru','email.com','yandex.ru'];
 
 function isValidEmail(email) {
   if (!email || typeof email !== 'string') return false;
-  const trimmed = email.trim().toLowerCase();
-  const re = /^[a-z0-9._%+-]+@([a-z0-9.-]+\.[a-z]{2,})$/i;
-  const m = trimmed.match(re);
+  const t = email.trim().toLowerCase();
+  const m = t.match(/^[a-z0-9._%+-]+@([a-z0-9.-]+\.[a-z]{2,})$/i);
   if (!m) return false;
   return ALLOWED_DOMAINS.includes(m[1]);
 }
 
 async function checkMxRecord(email) {
   try {
-    const domain = email.split('@')[1];
-    const records = await dns.promises.resolveMx(domain);
+    const records = await dns.promises.resolveMx(email.split('@')[1]);
     return Array.isArray(records) && records.length > 0;
   } catch (e) { return false; }
 }
 
-// ПУЛЫ МОДЕЛЕЙ
 const FREE_MODELS = [
   'deepseek/deepseek-chat-v3-0324:free','meta-llama/llama-3.3-70b-instruct:free',
   'qwen/qwen-2.5-72b-instruct:free','mistralai/mistral-nemo:free',
@@ -159,10 +152,7 @@ function makeToken(user) {
 }
 
 function sendEmail(to, subject, html) {
-  if (!RESEND_API_KEY) {
-    console.log('[EMAIL-DEMO] to=' + to + ' subject=' + subject);
-    return Promise.resolve();
-  }
+  if (!RESEND_API_KEY) { console.log('[EMAIL-DEMO] to=' + to); return Promise.resolve(); }
   return fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + RESEND_API_KEY },
@@ -171,38 +161,81 @@ function sendEmail(to, subject, html) {
     .then(j => { if (j && j.id) console.log('[Resend] sent:', j.id); });
 }
 
-// GOOGLE OAUTH
+// ============ GOOGLE OAUTH ============
 passport.use(new GoogleStrategy({
   clientID: GOOGLE_CLIENT_ID || 'not-set',
   clientSecret: GOOGLE_CLIENT_SECRET || 'not-set',
   callbackURL: 'https://pongy-server.onrender.com/auth/google/callback'
 }, function(accessToken, refreshToken, profile, done) {
-  const email = profile.emails && profile.emails[0] && profile.emails[0].value;
-  if (!email) return done(new Error('No email'), null);
-  let user = db.prepare('SELECT * FROM users WHERE google_id=? OR email=?').get(profile.id, email.toLowerCase());
-  if (!user) {
-    const info = db.prepare('INSERT INTO users (email, google_id, nickname, avatar, email_verified) VALUES (?, ?, ?, ?, 1)')
-      .run(email.toLowerCase(), profile.id, profile.displayName || '', (profile.photos && profile.photos[0] && profile.photos[0].value) || '');
-    user = { id: info.lastInsertRowid, email: email.toLowerCase(), nickname: profile.displayName || '', avatar: (profile.photos && profile.photos[0] && profile.photos[0].value) || '', subscription_until: 0, google_id: profile.id };
-  } else {
-    db.prepare('UPDATE users SET google_id=?, avatar=? WHERE id=?').run(profile.id, (profile.photos && profile.photos[0] && profile.photos[0].value) || '', user.id);
-    user.google_id = profile.id;
+  try {
+    const email = profile.emails && profile.emails[0] && profile.emails[0].value;
+    if (!email) return done(new Error('No email from Google'), null);
+
+    const emailLower = email.toLowerCase();
+    const avatar = (profile.photos && profile.photos[0] && profile.photos[0].value) || '';
+
+    // Пробуем найти по google_id или email
+    let user = db.prepare('SELECT * FROM users WHERE google_id=? OR email=?').get(profile.id, emailLower);
+
+    if (!user) {
+      // Создаём нового
+      try {
+        const info = db.prepare('INSERT INTO users (email, google_id, nickname, avatar, email_verified) VALUES (?, ?, ?, ?, 1)')
+          .run(emailLower, profile.id, profile.displayName || '', avatar);
+        user = { id: info.lastInsertRowid, email: emailLower, nickname: profile.displayName || '', avatar: avatar, subscription_until: 0, google_id: profile.id };
+      } catch (e) {
+        // UNIQUE conflict — пользователь есть, но без google_id
+        console.error('[Google] Insert failed:', e.message);
+        user = db.prepare('SELECT * FROM users WHERE email=?').get(emailLower);
+        if (!user) return done(e, null);
+      }
+    }
+
+    // Обновляем google_id и avatar если нужно
+    if (user && !user.google_id) {
+      db.prepare('UPDATE users SET google_id=?, avatar=?, email_verified=1 WHERE id=?').run(profile.id, avatar, user.id);
+      user.google_id = profile.id;
+      user.avatar = avatar;
+    }
+
+    return done(null, user);
+  } catch (e) {
+    console.error('[Google] Strategy error:', e);
+    return done(e, null);
   }
-  return done(null, user);
 }));
+
 passport.serializeUser((user, done) => done(null, user.id));
-passport.deserializeUser((id, done) => done(null, db.prepare('SELECT * FROM users WHERE id=?').get(id)));
+passport.deserializeUser((id, done) => {
+  try {
+    const user = db.prepare('SELECT * FROM users WHERE id=?').get(id);
+    done(null, user || null);
+  } catch (e) { done(e, null); }
+});
 
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-app.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/?google_error=1' }),
-  (req, res) => {
-    const token = makeToken(req.user);
-    res.redirect(`/?google_token=${token}`);
-  }
-);
 
-// AUTH: ОТПРАВКА КОДА (проверяет домен + MX)
+app.get('/auth/google/callback', (req, res, next) => {
+  passport.authenticate('google', (err, user, info) => {
+    if (err) {
+      console.error('[Google] Callback error:', err && err.message);
+      return res.redirect(FRONTEND_URL + '/?google_error=' + encodeURIComponent((err && err.message) || 'unknown'));
+    }
+    if (!user) {
+      console.error('[Google] No user:', info);
+      return res.redirect(FRONTEND_URL + '/?google_error=nouser');
+    }
+    try {
+      const token = makeToken(user);
+      res.redirect(FRONTEND_URL + '/?google_token=' + token);
+    } catch (e) {
+      console.error('[Google] Token error:', e);
+      res.redirect(FRONTEND_URL + '/?google_error=token');
+    }
+  })(req, res, next);
+});
+
+// ============ AUTH ============
 app.post('/api/register/send-code', authLimit, async (req, res) => {
   const { email } = req.body || {};
   if (!email) return res.status(400).json({ error: 'Введите email' });
@@ -228,7 +261,6 @@ app.post('/api/register/send-code', authLimit, async (req, res) => {
   res.json({ ok: true });
 });
 
-// AUTH: РЕГИСТРАЦИЯ (только после успешной отправки кода)
 app.post('/api/register', authLimit, (req, res) => {
   const { email, password, code, deviceId } = req.body || {};
   if (!email || !password || password.length < 6) return res.status(400).json({ error: 'Пароль минимум 6 символов' });
@@ -258,7 +290,6 @@ app.post('/api/register', authLimit, (req, res) => {
   }
 });
 
-// AUTH: ВХОД
 app.post('/api/login', authLimit, (req, res) => {
   const { email, password, deviceId } = req.body || {};
   const did = String(deviceId || '').slice(0, 64);
@@ -302,7 +333,7 @@ app.put('/api/me', auth, (req, res) => {
   res.json({ ok: true });
 });
 
-// PASSWORD RESET
+// ============ PASSWORD RESET ============
 app.post('/api/password/send-code', authLimit, async (req, res) => {
   const { email } = req.body || {};
   if (!email) return res.status(400).json({ error: 'Email required' });
@@ -331,7 +362,7 @@ app.post('/api/password/reset', authLimit, (req, res) => {
   res.json({ ok: true });
 });
 
-// CHATS
+// ============ CHATS ============
 app.get('/api/chats', auth, (req, res) => {
   const rows = db.prepare('SELECT * FROM chats WHERE user_id=? ORDER BY pinned DESC, updated_at DESC').all(req.user.id);
   res.json(rows.map(r => ({ ...r, messages: JSON.parse(r.messages), pinned: !!r.pinned })));
@@ -353,7 +384,7 @@ app.delete('/api/chats/:id', auth, (req, res) => {
 
 app.post('/api/pay/create', auth, (req, res) => res.status(503).json({ error: 'В данный момент оплата недоступна. Попробуйте позже.' }));
 
-// AI PROXY
+// ============ AI PROXY ============
 app.post('/api/chat', auth, chatLimit, async (req, res) => {
   const { messages, model } = req.body || {};
   if (!Array.isArray(messages) || !messages.length) return res.status(400).json({ error: 'messages required' });
@@ -369,7 +400,7 @@ app.post('/api/chat', auth, chatLimit, async (req, res) => {
     try {
       const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENROUTER_KEY, 'HTTP-Referer': 'https://pongy-ai.devs.surf', 'X-Title': 'Pongy AI' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENROUTER_KEY, 'HTTP-Referer': FRONTEND_URL, 'X-Title': 'Pongy AI' },
         body: JSON.stringify({ model: m, stream: true, messages })
       });
       if (r.status === 401) return res.status(401).send(await r.text());
