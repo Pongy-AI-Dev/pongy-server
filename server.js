@@ -7,6 +7,7 @@ import rateLimit from 'express-rate-limit';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import session from 'express-session';
+import FileStore from 'session-file-store';
 import 'dotenv/config';
 
 const app = express();
@@ -14,15 +15,21 @@ app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static('.'));
 
+// ============ SESSION (файловое хранилище) ============
+const FileStoreSession = FileStore(session);
 app.use(session({
+  store: new FileStoreSession({ path: './sessions', retries: 0, logFn: function(){} }),
   secret: process.env.SESSION_SECRET || 'pongy-session-secret-change-me',
   resave: false,
   saveUninitialized: false,
   cookie: { secure: false, maxAge: 30 * 24 * 60 * 60 * 1000 }
 }));
+
+// ============ PASSPORT ============
 app.use(passport.initialize());
 app.use(passport.session());
 
+// ============ DATABASE ============
 const db = new Database('pongy.db');
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
@@ -79,6 +86,7 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
 
+// ============ ПУЛЫ МОДЕЛЕЙ ============
 const FREE_MODELS = [
   'deepseek/deepseek-chat-v3-0324:free',
   'meta-llama/llama-3.3-70b-instruct:free',
@@ -125,8 +133,8 @@ const PLUS_MODELS = [
 
 function pickModelsForQuery(text, isPlus) {
   var lower = (text || '').toLowerCase();
-  var codeKeywords = ['код', 'code', 'функция', 'function', 'python', 'javascript', 'java', 'html', 'css', 'sql', 'bash', 'баг', 'bug', 'ошибка в коде', 'error', 'напиши программу', 'напиши скрипт', 'react', 'vue', 'node', 'php', 'c++', 'c#', 'compile', 'компил', 'отлад', 'debug', 'regex', 'алгоритм'];
-  var mathKeywords = ['математик', 'math', 'решить', 'уравнени', 'формул', 'вычислить', 'логик', 'задач', 'докажи', 'теорем', 'производн', 'интеграл', 'вероятност', 'статистик', 'solve', 'calculate'];
+  var codeKeywords = ['код','code','функция','function','python','javascript','java','html','css','sql','bash','баг','bug','error','напиши программу','напиши скрипт','react','vue','node','php','c++','c#','compile','компил','отлад','debug','regex','алгоритм'];
+  var mathKeywords = ['математик','math','решить','уравнени','формул','вычислить','логик','задач','докажи','теорем','производн','интеграл','вероятност','статистик','solve','calculate'];
   var isCode = codeKeywords.some(function(k){ return lower.indexOf(k) !== -1; });
   var isMath = mathKeywords.some(function(k){ return lower.indexOf(k) !== -1; });
   var list;
@@ -137,6 +145,7 @@ function pickModelsForQuery(text, isPlus) {
   return list;
 }
 
+// ============ МИДЛВАРЫ ============
 const authLimit = rateLimit({ windowMs: 15*60*1000, max: 30 });
 const chatLimit = rateLimit({ windowMs: 60*1000, max: 30 });
 app.use(rateLimit({ windowMs: 60*1000, max: 200 }));
@@ -213,7 +222,6 @@ app.post('/api/register', authLimit, (req, res) => {
   if (!email || !password || password.length < 6) return res.status(400).json({ error: 'Email и пароль (мин. 6) обязательны' });
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ error: 'Неверный формат email' });
 
-  // Проверяем код подтверждения
   const vc = db.prepare('SELECT * FROM verify_codes WHERE email=?').get(email.toLowerCase());
   if (!vc) return res.status(400).json({ error: 'Сначала подтвердите email кодом' });
   if (vc.expires_at < Date.now()) return res.status(400).json({ error: 'Код подтверждения истёк' });
