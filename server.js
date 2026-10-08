@@ -8,6 +8,7 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import session from 'express-session';
 import FileStore from 'session-file-store';
+import dns from 'dns';
 import 'dotenv/config';
 
 const app = express();
@@ -15,7 +16,6 @@ app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static('.'));
 
-// ============ SESSION (файловое хранилище) ============
 const FileStoreSession = FileStore(session);
 app.use(session({
   store: new FileStoreSession({ path: './sessions', retries: 0, logFn: function(){} }),
@@ -24,12 +24,9 @@ app.use(session({
   saveUninitialized: false,
   cookie: { secure: false, maxAge: 30 * 24 * 60 * 60 * 1000 }
 }));
-
-// ============ PASSPORT ============
 app.use(passport.initialize());
 app.use(passport.session());
 
-// ============ DATABASE ============
 const db = new Database('pongy.db');
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
@@ -86,66 +83,66 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
 
-// ============ ПУЛЫ МОДЕЛЕЙ ============
+console.log('[ENV] OPENROUTER_KEY:', OPENROUTER_KEY ? 'OK' : 'MISSING');
+console.log('[ENV] RESEND_API_KEY:', RESEND_API_KEY ? 'OK' : 'MISSING');
+console.log('[ENV] GOOGLE_CLIENT_ID:', GOOGLE_CLIENT_ID ? 'OK' : 'MISSING');
+console.log('[ENV] GOOGLE_CLIENT_SECRET:', GOOGLE_CLIENT_SECRET ? 'OK' : 'MISSING');
+
+// Разрешённые почтовые домены
+const ALLOWED_DOMAINS = ['gmail.com','mail.com','mail.ru','email.com','yandex.ru'];
+
+function isValidEmail(email) {
+  if (!email || typeof email !== 'string') return false;
+  const trimmed = email.trim().toLowerCase();
+  const re = /^[a-z0-9._%+-]+@([a-z0-9.-]+\.[a-z]{2,})$/i;
+  const m = trimmed.match(re);
+  if (!m) return false;
+  return ALLOWED_DOMAINS.includes(m[1]);
+}
+
+async function checkMxRecord(email) {
+  try {
+    const domain = email.split('@')[1];
+    const records = await dns.promises.resolveMx(domain);
+    return Array.isArray(records) && records.length > 0;
+  } catch (e) { return false; }
+}
+
+// ПУЛЫ МОДЕЛЕЙ
 const FREE_MODELS = [
-  'deepseek/deepseek-chat-v3-0324:free',
-  'meta-llama/llama-3.3-70b-instruct:free',
-  'qwen/qwen-2.5-72b-instruct:free',
-  'mistralai/mistral-nemo:free',
-  'google/gemma-2-27b-it:free',
-  'google/gemma-2-9b-it:free',
-  'microsoft/phi-3-medium-128k-instruct:free',
-  'meta-llama/llama-3.1-8b-instruct:free',
-  'meta-llama/llama-3.2-3b-instruct:free',
-  'microsoft/phi-3-mini-128k-instruct:free',
-  'mistralai/mistral-7b-instruct:free',
-  'qwen/qwen-2.5-7b-instruct:free'
+  'deepseek/deepseek-chat-v3-0324:free','meta-llama/llama-3.3-70b-instruct:free',
+  'qwen/qwen-2.5-72b-instruct:free','mistralai/mistral-nemo:free',
+  'google/gemma-2-27b-it:free','google/gemma-2-9b-it:free',
+  'microsoft/phi-3-medium-128k-instruct:free','meta-llama/llama-3.1-8b-instruct:free',
+  'meta-llama/llama-3.2-3b-instruct:free','microsoft/phi-3-mini-128k-instruct:free',
+  'mistralai/mistral-7b-instruct:free','qwen/qwen-2.5-7b-instruct:free'
 ];
-
 const REASONING_MODELS = [
-  'deepseek/deepseek-r1:free',
-  'deepseek/deepseek-r1-distill-llama-70b:free',
-  'qwen/qwq-32b-preview:free',
-  ...FREE_MODELS
+  'deepseek/deepseek-r1:free','deepseek/deepseek-r1-distill-llama-70b:free',
+  'qwen/qwq-32b-preview:free',...FREE_MODELS
 ];
-
 const CODE_MODELS = [
-  'deepseek/deepseek-chat-v3-0324:free',
-  'qwen/qwen-2.5-coder-32b-instruct:free',
-  'meta-llama/llama-3.3-70b-instruct:free',
-  ...FREE_MODELS
+  'deepseek/deepseek-chat-v3-0324:free','qwen/qwen-2.5-coder-32b-instruct:free',
+  'meta-llama/llama-3.3-70b-instruct:free',...FREE_MODELS
 ];
-
 const PLUS_MODELS = [
-  'openai/gpt-4o-mini',
-  'openai/gpt-4o',
-  'anthropic/claude-3.5-sonnet',
-  'anthropic/claude-3-haiku',
-  'google/gemini-2.5-flash',
-  'google/gemini-2.5-pro',
-  'deepseek/deepseek-chat-v3-0324',
-  'deepseek/deepseek-r1',
-  'x-ai/grok-beta',
-  'perplexity/sonar-small-chat',
-  'meta-llama/llama-3.3-70b-instruct',
-  'mistralai/mistral-large'
+  'openai/gpt-4o-mini','openai/gpt-4o','anthropic/claude-3.5-sonnet',
+  'anthropic/claude-3-haiku','google/gemini-2.5-flash','google/gemini-2.5-pro',
+  'deepseek/deepseek-chat-v3-0324','deepseek/deepseek-r1','x-ai/grok-beta',
+  'perplexity/sonar-small-chat','meta-llama/llama-3.3-70b-instruct','mistralai/mistral-large'
 ];
 
 function pickModelsForQuery(text, isPlus) {
   var lower = (text || '').toLowerCase();
-  var codeKeywords = ['код','code','функция','function','python','javascript','java','html','css','sql','bash','баг','bug','error','напиши программу','напиши скрипт','react','vue','node','php','c++','c#','compile','компил','отлад','debug','regex','алгоритм'];
-  var mathKeywords = ['математик','math','решить','уравнени','формул','вычислить','логик','задач','докажи','теорем','производн','интеграл','вероятност','статистик','solve','calculate'];
-  var isCode = codeKeywords.some(function(k){ return lower.indexOf(k) !== -1; });
-  var isMath = mathKeywords.some(function(k){ return lower.indexOf(k) !== -1; });
-  var list;
-  if (isCode) list = CODE_MODELS.slice();
-  else if (isMath) list = REASONING_MODELS.slice();
-  else list = FREE_MODELS.slice();
+  var codeKw = ['код','code','функция','function','python','javascript','java','html','css','sql','bash','баг','bug','error','react','vue','node','php','c++','c#','compile','компил','debug','regex','алгоритм'];
+  var mathKw = ['математик','math','решить','уравнени','формул','вычислить','логик','задач','докажи','теорем','интеграл','вероятност','solve','calculate'];
+  var isCode = codeKw.some(function(k){ return lower.indexOf(k) !== -1; });
+  var isMath = mathKw.some(function(k){ return lower.indexOf(k) !== -1; });
+  var list = isCode ? CODE_MODELS.slice() : isMath ? REASONING_MODELS.slice() : FREE_MODELS.slice();
   if (isPlus) list = PLUS_MODELS.concat(list);
   return list;
 }
 
-// ============ МИДЛВАРЫ ============
 const authLimit = rateLimit({ windowMs: 15*60*1000, max: 30 });
 const chatLimit = rateLimit({ windowMs: 60*1000, max: 30 });
 app.use(rateLimit({ windowMs: 60*1000, max: 200 }));
@@ -170,62 +167,77 @@ function sendEmail(to, subject, html) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + RESEND_API_KEY },
     body: JSON.stringify({ from: 'Pongy AI <onboarding@resend.dev>', to: [to], subject, html })
-  }).then(function(r){
-    if(!r.ok) return r.text().then(function(t){ console.error('[Resend]', t); });
-    return r.json();
-  }).then(function(j){ if(j) console.log('[Resend] sent:', j.id); });
+  }).then(r => r.ok ? r.json() : r.text().then(t => console.error('[Resend]', t)))
+    .then(j => { if (j && j.id) console.log('[Resend] sent:', j.id); });
 }
 
-// ============ GOOGLE OAUTH ============
-if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
-  passport.use(new GoogleStrategy({
-      clientID: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: 'https://pongy-server.onrender.com/auth/google/callback'
-    },
-    function(accessToken, refreshToken, profile, done) {
-      const email = profile.emails && profile.emails[0] && profile.emails[0].value;
-      if (!email) return done(new Error('No email'), null);
-      let user = db.prepare('SELECT * FROM users WHERE google_id=? OR email=?').get(profile.id, email.toLowerCase());
-      if (!user) {
-        const info = db.prepare('INSERT INTO users (email, google_id, nickname, avatar, email_verified) VALUES (?, ?, ?, ?, 1)')
-          .run(email.toLowerCase(), profile.id, profile.displayName || '', (profile.photos && profile.photos[0] && profile.photos[0].value) || '');
-        user = { id: info.lastInsertRowid, email: email.toLowerCase(), nickname: profile.displayName || '', avatar: (profile.photos && profile.photos[0] && profile.photos[0].value) || '', subscription_until: 0, google_id: profile.id };
-      } else {
-        db.prepare('UPDATE users SET google_id=?, avatar=? WHERE id=?').run(profile.id, (profile.photos && profile.photos[0] && profile.photos[0].value) || '', user.id);
-        user.google_id = profile.id;
-        user.avatar = (profile.photos && profile.photos[0] && profile.photos[0].value) || '';
-      }
-      return done(null, user);
-    }
-  ));
-  passport.serializeUser((user, done) => done(null, user.id));
-  passport.deserializeUser((id, done) => {
-    const user = db.prepare('SELECT * FROM users WHERE id=?').get(id);
-    done(null, user);
-  });
+// GOOGLE OAUTH
+passport.use(new GoogleStrategy({
+  clientID: GOOGLE_CLIENT_ID || 'not-set',
+  clientSecret: GOOGLE_CLIENT_SECRET || 'not-set',
+  callbackURL: 'https://pongy-server.onrender.com/auth/google/callback'
+}, function(accessToken, refreshToken, profile, done) {
+  const email = profile.emails && profile.emails[0] && profile.emails[0].value;
+  if (!email) return done(new Error('No email'), null);
+  let user = db.prepare('SELECT * FROM users WHERE google_id=? OR email=?').get(profile.id, email.toLowerCase());
+  if (!user) {
+    const info = db.prepare('INSERT INTO users (email, google_id, nickname, avatar, email_verified) VALUES (?, ?, ?, ?, 1)')
+      .run(email.toLowerCase(), profile.id, profile.displayName || '', (profile.photos && profile.photos[0] && profile.photos[0].value) || '');
+    user = { id: info.lastInsertRowid, email: email.toLowerCase(), nickname: profile.displayName || '', avatar: (profile.photos && profile.photos[0] && profile.photos[0].value) || '', subscription_until: 0, google_id: profile.id };
+  } else {
+    db.prepare('UPDATE users SET google_id=?, avatar=? WHERE id=?').run(profile.id, (profile.photos && profile.photos[0] && profile.photos[0].value) || '', user.id);
+    user.google_id = profile.id;
+  }
+  return done(null, user);
+}));
+passport.serializeUser((user, done) => done(null, user.id));
+passport.deserializeUser((id, done) => done(null, db.prepare('SELECT * FROM users WHERE id=?').get(id)));
 
-  app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/?google_error=1' }),
+  (req, res) => {
+    const token = makeToken(req.user);
+    res.redirect(`/?google_token=${token}`);
+  }
+);
 
-  app.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/?google_error=1' }),
-    (req, res) => {
-      const token = makeToken(req.user);
-      res.redirect(`/?google_token=${token}`);
-    }
-  );
-}
+// AUTH: ОТПРАВКА КОДА (проверяет домен + MX)
+app.post('/api/register/send-code', authLimit, async (req, res) => {
+  const { email } = req.body || {};
+  if (!email) return res.status(400).json({ error: 'Введите email' });
+  if (!isValidEmail(email)) return res.status(400).json({ error: 'Разрешены только gmail.com, mail.com, mail.ru, email.com, yandex.ru' });
+  const existing = db.prepare('SELECT id FROM users WHERE email=?').get(email.toLowerCase());
+  if (existing) return res.status(409).json({ error: 'Этот email уже зарегистрирован' });
 
-// ============ AUTH ============
+  const mxOk = await checkMxRecord(email);
+  if (!mxOk) return res.status(400).json({ error: 'Такого почтового ящика не существует' });
+
+  const code = String(Math.floor(100000 + Math.random() * 900000));
+  db.prepare('INSERT OR REPLACE INTO verify_codes (email, code, expires_at) VALUES (?, ?, ?)').run(email.toLowerCase(), code, Date.now() + 10*60*1000);
+
+  try {
+    await sendEmail(email, 'Pongy AI — код подтверждения',
+      '<div style="font-family:sans-serif;padding:32px 24px;background:#f7f7f9;border-radius:20px;max-width:480px;margin:0 auto">' +
+      '<div style="text-align:center;margin-bottom:24px"><div style="width:64px;height:64px;margin:0 auto 16px;border-radius:20px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:32px;font-weight:700;line-height:64px">P</div><h2 style="color:#111;margin:0">Pongy AI</h2></div>' +
+      '<p style="color:#666;font-size:14px">Ваш код подтверждения:</p>' +
+      '<div style="font-size:34px;font-weight:bold;letter-spacing:8px;color:#6366f1;background:#fff;padding:20px;border-radius:14px;text-align:center;margin:16px 0;font-family:Consolas,monospace">' + code + '</div>' +
+      '<p style="color:#999;font-size:12.5px">Код действует 10 минут.</p></div>'
+    );
+  } catch (e) { console.error('[send-code]', e.message); }
+  res.json({ ok: true });
+});
+
+// AUTH: РЕГИСТРАЦИЯ (только после успешной отправки кода)
 app.post('/api/register', authLimit, (req, res) => {
-  const { email, password, deviceId, code } = req.body || {};
-  if (!email || !password || password.length < 6) return res.status(400).json({ error: 'Email и пароль (мин. 6) обязательны' });
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ error: 'Неверный формат email' });
+  const { email, password, code, deviceId } = req.body || {};
+  if (!email || !password || password.length < 6) return res.status(400).json({ error: 'Пароль минимум 6 символов' });
+  if (!isValidEmail(email)) return res.status(400).json({ error: 'Недопустимый домен email' });
 
   const vc = db.prepare('SELECT * FROM verify_codes WHERE email=?').get(email.toLowerCase());
-  if (!vc) return res.status(400).json({ error: 'Сначала подтвердите email кодом' });
-  if (vc.expires_at < Date.now()) return res.status(400).json({ error: 'Код подтверждения истёк' });
-  if (vc.code !== String(code)) return res.status(400).json({ error: 'Неверный код подтверждения' });
+  if (!vc) return res.status(400).json({ error: 'Сначала получите код подтверждения' });
+  if (vc.expires_at < Date.now()) return res.status(400).json({ error: 'Код истёк' });
+  if (vc.code !== String(code)) return res.status(400).json({ error: 'Неверный код' });
 
   const did = String(deviceId || '').slice(0, 64);
   if (did) {
@@ -246,39 +258,7 @@ app.post('/api/register', authLimit, (req, res) => {
   }
 });
 
-app.post('/api/register/send-code', authLimit, async (req, res) => {
-  const { email } = req.body || {};
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ error: 'Введите корректный email' });
-  const existing = db.prepare('SELECT id FROM users WHERE email=?').get(email.toLowerCase());
-  if (existing) return res.status(409).json({ error: 'Email уже зарегистрирован' });
-
-  const code = String(Math.floor(100000 + Math.random() * 900000));
-  db.prepare('INSERT OR REPLACE INTO verify_codes (email, code, expires_at) VALUES (?, ?, ?)').run(email.toLowerCase(), code, Date.now() + 10*60*1000);
-
-  try {
-    await sendEmail(email, 'Pongy AI — код подтверждения',
-      '<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#f7f7f9;border-radius:20px">' +
-      '<div style="text-align:center;margin-bottom:24px"><div style="width:64px;height:64px;margin:0 auto 16px;border-radius:20px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:32px;font-weight:700;line-height:64px">P</div><h2 style="color:#111;margin:0;font-size:20px">Pongy AI</h2></div>' +
-      '<h3 style="color:#111;margin:0 0 12px;font-size:17px">Подтверждение регистрации</h3>' +
-      '<p style="color:#666;font-size:14px;margin:0 0 16px">Ваш код:</p>' +
-      '<div style="font-size:34px;font-weight:bold;letter-spacing:8px;color:#6366f1;background:#fff;padding:20px;border-radius:14px;text-align:center;margin:0 0 20px;font-family:Consolas,Monaco,monospace">' + code + '</div>' +
-      '<p style="color:#999;font-size:12.5px;margin:0">Код действует 10 минут.</p>' +
-      '</div>'
-    );
-  } catch (e) { console.error('[send-code]', e.message); }
-
-  res.json({ ok: true });
-});
-
-app.post('/api/register/verify-code', authLimit, (req, res) => {
-  const { email, code } = req.body || {};
-  const row = db.prepare('SELECT * FROM verify_codes WHERE email=?').get((email || '').toLowerCase());
-  if (!row) return res.status(400).json({ error: 'Код не найден' });
-  if (row.expires_at < Date.now()) return res.status(400).json({ error: 'Код истёк' });
-  if (row.code !== String(code)) return res.status(400).json({ error: 'Неверный код' });
-  res.json({ ok: true });
-});
-
+// AUTH: ВХОД
 app.post('/api/login', authLimit, (req, res) => {
   const { email, password, deviceId } = req.body || {};
   const did = String(deviceId || '').slice(0, 64);
@@ -286,7 +266,7 @@ app.post('/api/login', authLimit, (req, res) => {
     const att = db.prepare('SELECT * FROM login_attempts WHERE device_id=?').get(did);
     if (att && att.blocked_until > Date.now()) {
       const mins = Math.ceil((att.blocked_until - Date.now()) / 60000);
-      return res.status(429).json({ error: 'Устройство заблокировано. Попробуйте через ' + mins + ' мин.' });
+      return res.status(429).json({ error: 'Устройство заблокировано. Ещё ' + mins + ' мин.' });
     }
   }
   const user = db.prepare('SELECT * FROM users WHERE email = ?').get((email || '').toLowerCase());
@@ -297,7 +277,7 @@ app.post('/api/login', authLimit, (req, res) => {
       const attempts = (att ? att.attempts : 0) + 1;
       if (attempts >= 10) {
         db.prepare('INSERT OR REPLACE INTO login_attempts (device_id, attempts, blocked_until) VALUES (?, 0, ?)').run(did, Date.now() + 30*60*1000);
-        return res.status(429).json({ error: 'Слишком много неверных попыток. Устройство заблокировано на 30 минут.' });
+        return res.status(429).json({ error: 'Слишком много попыток. Блокировка на 30 минут.' });
       }
       db.prepare('INSERT OR REPLACE INTO login_attempts (device_id, attempts, blocked_until) VALUES (?, ?, 0)').run(did, attempts);
     }
@@ -322,7 +302,7 @@ app.put('/api/me', auth, (req, res) => {
   res.json({ ok: true });
 });
 
-// ============ PASSWORD RESET ============
+// PASSWORD RESET
 app.post('/api/password/send-code', authLimit, async (req, res) => {
   const { email } = req.body || {};
   if (!email) return res.status(400).json({ error: 'Email required' });
@@ -330,14 +310,9 @@ app.post('/api/password/send-code', authLimit, async (req, res) => {
   if (!user) return res.json({ ok: true });
   const code = String(Math.floor(100000 + Math.random() * 900000));
   db.prepare('INSERT OR REPLACE INTO reset_codes (email, code, expires_at) VALUES (?, ?, ?)').run(email.toLowerCase(), code, Date.now() + 10*60*1000);
-  try {
-    await sendEmail(email, 'Pongy AI — код сброса пароля',
-      '<div style="font-family:sans-serif;padding:24px;background:#f7f7f9;border-radius:16px;max-width:480px;margin:0 auto"><h2 style="color:#6366f1;margin:0 0 16px">Сброс пароля</h2><p>Ваш код:</p><div style="font-size:34px;font-weight:bold;letter-spacing:8px;color:#6366f1;background:#fff;padding:20px;border-radius:14px;text-align:center;margin:16px 0">' + code + '</div><p style="color:#999;font-size:12.5px">Код действует 10 минут.</p></div>'
-    );
-  } catch (e) { console.error('[send-code]', e.message); }
+  try { await sendEmail(email, 'Pongy AI — сброс пароля', '<div style="font-family:sans-serif;padding:24px"><h2>Сброс пароля</h2><p>Код: <b style="font-size:24px;color:#6366f1">' + code + '</b></p></div>'); } catch(e){}
   res.json({ ok: true });
 });
-
 app.post('/api/password/verify-code', authLimit, (req, res) => {
   const { email, code } = req.body || {};
   const row = db.prepare('SELECT * FROM reset_codes WHERE email=?').get((email || '').toLowerCase());
@@ -346,19 +321,17 @@ app.post('/api/password/verify-code', authLimit, (req, res) => {
   if (row.code !== String(code)) return res.status(400).json({ error: 'Неверный код' });
   res.json({ ok: true });
 });
-
 app.post('/api/password/reset', authLimit, (req, res) => {
   const { email, code, newPassword } = req.body || {};
   if (!newPassword || newPassword.length < 6) return res.status(400).json({ error: 'Пароль минимум 6 символов' });
   const row = db.prepare('SELECT * FROM reset_codes WHERE email=?').get((email || '').toLowerCase());
   if (!row || row.code !== String(code) || row.expires_at < Date.now()) return res.status(400).json({ error: 'Код недействителен' });
-  const hash = bcrypt.hashSync(newPassword, 10);
-  db.prepare('UPDATE users SET password=? WHERE email=?').run(hash, email.toLowerCase());
+  db.prepare('UPDATE users SET password=? WHERE email=?').run(bcrypt.hashSync(newPassword, 10), email.toLowerCase());
   db.prepare('DELETE FROM reset_codes WHERE email=?').run(email.toLowerCase());
   res.json({ ok: true });
 });
 
-// ============ CHATS ============
+// CHATS
 app.get('/api/chats', auth, (req, res) => {
   const rows = db.prepare('SELECT * FROM chats WHERE user_id=? ORDER BY pinned DESC, updated_at DESC').all(req.user.id);
   res.json(rows.map(r => ({ ...r, messages: JSON.parse(r.messages), pinned: !!r.pinned })));
@@ -378,54 +351,40 @@ app.delete('/api/chats/:id', auth, (req, res) => {
   res.json({ ok: true });
 });
 
-// ============ SUBSCRIPTION (temporarily disabled) ============
-app.post('/api/pay/create', auth, (req, res) => {
-  return res.status(503).json({ error: 'В данный момент оплата недоступна. Попробуйте позже.' });
-});
+app.post('/api/pay/create', auth, (req, res) => res.status(503).json({ error: 'В данный момент оплата недоступна. Попробуйте позже.' }));
 
-// ============ AI PROXY ============
+// AI PROXY
 app.post('/api/chat', auth, chatLimit, async (req, res) => {
   const { messages, model } = req.body || {};
   if (!Array.isArray(messages) || !messages.length) return res.status(400).json({ error: 'messages required' });
   if (!OPENROUTER_KEY) return res.status(500).json({ error: 'Server not configured' });
-
   const user = db.prepare('SELECT subscription_until FROM users WHERE id = ?').get(req.user.id);
   const isPlus = user && user.subscription_until && user.subscription_until > Date.now();
   let lastUserText = '';
-  for (let i = messages.length - 1; i >= 0; i--) {
-    if (messages[i].role === 'user') { lastUserText = messages[i].content || ''; break; }
-  }
+  for (let i = messages.length - 1; i >= 0; i--) if (messages[i].role === 'user') { lastUserText = messages[i].content || ''; break; }
   let modelsToTry = pickModelsForQuery(lastUserText, isPlus);
   if (model) modelsToTry = [model, ...modelsToTry.filter(m => m !== model)];
-
   let lastError = null, lastStatus = 500;
   for (const m of modelsToTry) {
     try {
       const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + OPENROUTER_KEY,
-          'HTTP-Referer': 'https://pongy-ai.devs.surf',
-          'X-Title': 'Pongy AI'
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENROUTER_KEY, 'HTTP-Referer': 'https://pongy-ai.devs.surf', 'X-Title': 'Pongy AI' },
         body: JSON.stringify({ model: m, stream: true, messages })
       });
-      if (r.status === 401) { const txt = await r.text(); return res.status(401).send(txt); }
+      if (r.status === 401) return res.status(401).send(await r.text());
       if (!r.ok) { lastError = await r.text(); lastStatus = r.status; console.log('[Pongy] skip:', m, r.status); continue; }
-      console.log('[Pongy] ✅ using:', m, isPlus ? '[Plus]' : '[Free]');
+      console.log('[Pongy] using:', m, isPlus ? '[Plus]' : '[Free]');
       res.setHeader('Content-Type', 'text/event-stream');
       res.setHeader('Cache-Control', 'no-cache');
       res.setHeader('Connection', 'keep-alive');
       res.setHeader('X-Accel-Buffering', 'no');
-      res.setHeader('X-Used-Model', m);
       const reader = r.body.getReader();
       const dec = new TextDecoder();
       while (true) { const { done, value } = await reader.read(); if (done) break; res.write(dec.decode(value, { stream: true })); }
       res.end(); return;
     } catch (e) { lastError = e.message; }
   }
-  console.error('[Pongy] ❌ all failed');
   res.status(lastStatus).send(lastError || 'All models unavailable');
 });
 
