@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import Database from 'better-sqlite3';
 import rateLimit from 'express-rate-limit';
-import { v4 as uuidv4 } from 'uuid';
 import 'dotenv/config';
 
 const app = express();
@@ -22,6 +21,7 @@ db.exec(`
     password TEXT NOT NULL,
     nickname TEXT DEFAULT '',
     subscription_until INTEGER DEFAULT 0,
+    device_id TEXT DEFAULT '',
     created_at INTEGER DEFAULT (strftime('%s','now')*1000)
   );
   CREATE TABLE IF NOT EXISTS chats (
@@ -34,16 +34,28 @@ db.exec(`
     PRIMARY KEY (id, user_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
   );
+  CREATE TABLE IF NOT EXISTS reset_codes (
+    email TEXT PRIMARY KEY,
+    code TEXT NOT NULL,
+    expires_at INTEGER NOT NULL
+  );
+  CREATE TABLE IF NOT EXISTS login_attempts (
+    device_id TEXT PRIMARY KEY,
+    attempts INTEGER DEFAULT 0,
+    blocked_until INTEGER DEFAULT 0
+  );
+  CREATE TABLE IF NOT EXISTS device_registrations (
+    device_id TEXT NOT NULL,
+    email TEXT NOT NULL,
+    created_at INTEGER DEFAULT (strftime('%s','now')*1000),
+    PRIMARY KEY (device_id, email)
+  );
   CREATE INDEX IF NOT EXISTS idx_chats_user ON chats(user_id);
 `);
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
 const OPENROUTER_KEY = process.env.OPENROUTER_KEY || '';
-const YOOKASSA_SHOP_ID = process.env.YOOKASSA_SHOP_ID || '';
-const YOOKASSA_SECRET = process.env.YOOKASSA_SECRET || '';
-const YOOKASSA_ENDPOINT = 'https://api.yookassa.ru/v3';
-const PLUS_PRICE = '190.00';
-const PLUS_DAYS = 30;
+const RESEND_API_KEY = process.env.RESEND_API_KEY || 're_8fgi4qFe_9T9amqoQZLE27LDNfZNtqyQS';
 
 const FREE_MODELS = [
   'deepseek/deepseek-r1:free',
@@ -54,47 +66,65 @@ const FREE_MODELS = [
 ];
 
 const PLUS_MODELS = [
-  'deepseek/deepseek-chat-v3-0324',
-  'deepseek/deepseek-r1',
+  'openai/gpt-4o-mini',
+  'anthropic/claude-3.5-sonnet',
   'google/gemini-2.5-flash',
-  'anthropic/claude-sonnet-4.5'
+  'deepseek/deepseek-chat-v3-0324',
+  'x-ai/grok-beta'
 ];
 
-const authLimit = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, message: { error: 'Too many attempts' } });
-const chatLimit = rateLimit({ windowMs: 60 * 1000, max: 20, message: { error: 'Rate limit exceeded' } });
-const globalLimit = rateLimit({ windowMs: 60 * 1000, max: 120 });
-app.use(globalLimit);
+const authLimit = rateLimit({ windowMs: 15*60*1000, max: 30 });
+const chatLimit = rateLimit({ windowMs: 60*1000, max: 30 });
+app.use(rateLimit({ windowMs: 60*1000, max: 200 }));
 
 function auth(req, res, next) {
   const h = req.headers.authorization || '';
   const token = h.replace('Bearer ', '');
   if (!token) return res.status(401).json({ error: 'no token' });
-  try {
-    req.user = jwt.verify(token, JWT_SECRET);
-    next();
-  } catch (e) {
-    res.status(401).json({ error: 'invalid token' });
-  }
+  try { req.user = jwt.verify(token, JWT_SECRET); next(); }
+  catch (e) { res.status(401).json({ error: 'invalid token' }); }
+}
+function makeToken(user) {
+  return jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '365d' });
 }
 
-function makeToken(user) {
-  return jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '30d' });
+function sendEmail(to, subject, html) {
+  if (!RESEND_API_KEY) {
+    console.log('[EMAIL-DEMO] to=' + to + ' subject=' + subject);
+    return Promise.resolve();
+  }
+  return fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + RESEND_API_KEY },
+    body: JSON.stringify({ from: 'Pongy AI <onboarding@resend.dev>', to: [to], subject, html })
+  }).then(function(r){
+    if(!r.ok) return r.text().then(function(t){ console.error('[Resend]', t); });
+    return r.json();
+  }).then(function(j){ if(j) console.log('[Resend] sent:', j.id); });
 }
 
 // ============ AUTH ============
 app.post('/api/register', authLimit, (req, res) => {
-  const { email, password } = req.body || {};
-  if (!email || !password || password.length < 6) {
-    return res.status(400).json({ error: 'Email and password (min 6) required' });
+  const { email, password, deviceId } = req.body || {};
+  if (!email || !password || password.length < 6) return res.status(400).json({ error: 'Email and password (min 6) required' });
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ error: 'Invalid email format' });
+  
+  const did = String(deviceId || '').slice(0, 64);
+  if (did) {
+    const count = db.prepare('SELECT COUNT(DISTINCT email) as c FROM device_registrations WHERE device_id=?').get(did);
+    if (count.c >= 3) {
+      return res.status(429).json({ error: 'На 1 устройство можно регистрировать не более 3 аккаунтов' });
+    }
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return res.status(400).json({ error: 'Invalid email format' });
-  }
+  
   try {
     const hash = bcrypt.hashSync(password, 10);
-    const info = db.prepare('INSERT INTO users (email, password) VALUES (?, ?)').run(email.toLowerCase(), hash);
+    const info = db.prepare('INSERT INTO users (email, password, device_id) VALUES (?, ?, ?)').run(email.toLowerCase(), hash, did);
     const user = { id: info.lastInsertRowid, email: email.toLowerCase() };
-    res.json({ token: makeToken(user), user });
+    if (did) {
+      try { db.prepare('INSERT OR IGNORE INTO device_registrations (device_id, email) VALUES (?, ?)').run(did, user.email); } catch(e){}
+    }
+    res.json({ token: makeToken(user), user: { id: user.id, email: user.email, nickname: '', subscription_until: 0 } });
   } catch (e) {
     if (String(e).includes('UNIQUE')) return res.status(409).json({ error: 'Email already registered' });
     res.status(500).json({ error: 'Server error' });
@@ -102,19 +132,41 @@ app.post('/api/register', authLimit, (req, res) => {
 });
 
 app.post('/api/login', authLimit, (req, res) => {
-  const { email, password } = req.body || {};
+  const { email, password, deviceId } = req.body || {};
+  const did = String(deviceId || '').slice(0, 64);
+  
+  if (did) {
+    const att = db.prepare('SELECT * FROM login_attempts WHERE device_id=?').get(did);
+    if (att && att.blocked_until > Date.now()) {
+      const mins = Math.ceil((att.blocked_until - Date.now()) / 60000);
+      return res.status(429).json({ error: 'Устройство заблокировано. Попробуйте через ' + mins + ' мин.' });
+    }
+  }
+  
   const user = db.prepare('SELECT * FROM users WHERE email = ?').get((email || '').toLowerCase());
-  if (!user || !bcrypt.compareSync(password, user.password)) {
+  const ok = user && bcrypt.compareSync(password, user.password);
+  
+  if (!ok) {
+    if (did) {
+      const att = db.prepare('SELECT * FROM login_attempts WHERE device_id=?').get(did);
+      const attempts = (att ? att.attempts : 0) + 1;
+      if (attempts >= 10) {
+        const blockedUntil = Date.now() + 30*60*1000;
+        db.prepare('INSERT OR REPLACE INTO login_attempts (device_id, attempts, blocked_until) VALUES (?, 0, ?)').run(did, blockedUntil);
+        return res.status(429).json({ error: 'Слишком много неверных попыток. Устройство заблокировано на 30 минут.' });
+      }
+      db.prepare('INSERT OR REPLACE INTO login_attempts (device_id, attempts, blocked_until) VALUES (?, ?, 0)').run(did, attempts);
+    }
     return res.status(401).json({ error: 'Invalid credentials' });
   }
+  
+  if (did) {
+    db.prepare('INSERT OR REPLACE INTO login_attempts (device_id, attempts, blocked_until) VALUES (?, 0, 0)').run(did);
+  }
+  
   res.json({
     token: makeToken(user),
-    user: {
-      id: user.id,
-      email: user.email,
-      nickname: user.nickname,
-      subscription_until: user.subscription_until
-    }
+    user: { id: user.id, email: user.email, nickname: user.nickname, subscription_until: user.subscription_until }
   });
 });
 
@@ -130,28 +182,68 @@ app.put('/api/me', auth, (req, res) => {
   res.json({ ok: true });
 });
 
+// ============ PASSWORD RESET ============
+app.post('/api/password/send-code', authLimit, async (req, res) => {
+  const { email } = req.body || {};
+  if (!email) return res.status(400).json({ error: 'Email required' });
+  const user = db.prepare('SELECT id FROM users WHERE email=?').get(email.toLowerCase());
+  if (!user) return res.json({ ok: true });
+  
+  const code = String(Math.floor(100000 + Math.random() * 900000));
+  const expiresAt = Date.now() + 10 * 60 * 1000;
+  db.prepare('INSERT OR REPLACE INTO reset_codes (email, code, expires_at) VALUES (?, ?, ?)').run(email.toLowerCase(), code, expiresAt);
+  
+  try {
+    await sendEmail(email, 'Pongy AI — код сброса пароля',
+      '<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#f7f7f9;border-radius:20px">' +
+      '<div style="text-align:center;margin-bottom:24px"><div style="width:64px;height:64px;margin:0 auto 16px;border-radius:20px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:32px;font-weight:700;line-height:64px">P</div><h2 style="color:#111;margin:0;font-size:20px">Pongy AI</h2></div>' +
+      '<h3 style="color:#111;margin:0 0 12px;font-size:17px">Сброс пароля</h3>' +
+      '<p style="color:#666;font-size:14px;margin:0 0 16px;line-height:1.6">Ваш код подтверждения:</p>' +
+      '<div style="font-size:34px;font-weight:bold;letter-spacing:8px;color:#6366f1;background:#fff;padding:20px;border-radius:14px;text-align:center;margin:0 0 20px;font-family:Consolas,Monaco,monospace">' + code + '</div>' +
+      '<p style="color:#999;font-size:12.5px;margin:0;line-height:1.6">Код действует 10 минут. Если вы не запрашивали сброс — просто проигнорируйте это письмо.</p>' +
+      '<p style="color:#999;font-size:11.5px;margin:20px 0 0;text-align:center">Pongy AI · support@pongy.ai</p>' +
+      '</div>'
+    );
+  } catch (e) { console.error('[send-code]', e.message); }
+  
+  res.json({ ok: true });
+});
+
+app.post('/api/password/verify-code', authLimit, (req, res) => {
+  const { email, code } = req.body || {};
+  const row = db.prepare('SELECT * FROM reset_codes WHERE email=?').get((email || '').toLowerCase());
+  if (!row) return res.status(400).json({ error: 'Код не найден' });
+  if (row.expires_at < Date.now()) return res.status(400).json({ error: 'Код истёк' });
+  if (row.code !== String(code)) return res.status(400).json({ error: 'Неверный код' });
+  res.json({ ok: true });
+});
+
+app.post('/api/password/reset', authLimit, (req, res) => {
+  const { email, code, newPassword } = req.body || {};
+  if (!newPassword || newPassword.length < 6) return res.status(400).json({ error: 'Пароль минимум 6 символов' });
+  const row = db.prepare('SELECT * FROM reset_codes WHERE email=?').get((email || '').toLowerCase());
+  if (!row || row.code !== String(code) || row.expires_at < Date.now()) return res.status(400).json({ error: 'Код недействителен' });
+  const hash = bcrypt.hashSync(newPassword, 10);
+  db.prepare('UPDATE users SET password=? WHERE email=?').run(hash, email.toLowerCase());
+  db.prepare('DELETE FROM reset_codes WHERE email=?').run(email.toLowerCase());
+  res.json({ ok: true });
+});
+
 // ============ CHATS ============
 app.get('/api/chats', auth, (req, res) => {
   const rows = db.prepare('SELECT * FROM chats WHERE user_id=? ORDER BY pinned DESC, updated_at DESC').all(req.user.id);
   res.json(rows.map(r => ({ ...r, messages: JSON.parse(r.messages), pinned: !!r.pinned })));
 });
-
 app.put('/api/chats/:id', auth, (req, res) => {
   const { title, messages, pinned } = req.body || {};
   const id = String(req.params.id).slice(0, 64);
   if (!Array.isArray(messages)) return res.status(400).json({ error: 'messages must be array' });
   const upd = Date.now();
   const exists = db.prepare('SELECT 1 FROM chats WHERE id=? AND user_id=?').get(id, req.user.id);
-  if (exists) {
-    db.prepare('UPDATE chats SET title=?, messages=?, pinned=?, updated_at=? WHERE id=? AND user_id=?')
-      .run(title || '', JSON.stringify(messages), pinned ? 1 : 0, upd, id, req.user.id);
-  } else {
-    db.prepare('INSERT INTO chats (id, user_id, title, messages, updated_at, pinned) VALUES (?,?,?,?,?,?)')
-      .run(id, req.user.id, title || '', JSON.stringify(messages), upd, pinned ? 1 : 0);
-  }
+  if (exists) db.prepare('UPDATE chats SET title=?, messages=?, pinned=?, updated_at=? WHERE id=? AND user_id=?').run(title||'', JSON.stringify(messages), pinned?1:0, upd, id, req.user.id);
+  else db.prepare('INSERT INTO chats (id, user_id, title, messages, updated_at, pinned) VALUES (?,?,?,?,?,?)').run(id, req.user.id, title||'', JSON.stringify(messages), upd, pinned?1:0);
   res.json({ ok: true });
 });
-
 app.delete('/api/chats/:id', auth, (req, res) => {
   db.prepare('DELETE FROM chats WHERE id=? AND user_id=?').run(req.params.id, req.user.id);
   res.json({ ok: true });
@@ -160,20 +252,15 @@ app.delete('/api/chats/:id', auth, (req, res) => {
 // ============ AI PROXY ============
 app.post('/api/chat', auth, chatLimit, async (req, res) => {
   const { messages, model } = req.body || {};
-  if (!Array.isArray(messages) || !messages.length) {
-    return res.status(400).json({ error: 'messages required' });
-  }
+  if (!Array.isArray(messages) || !messages.length) return res.status(400).json({ error: 'messages required' });
   if (!OPENROUTER_KEY) return res.status(500).json({ error: 'Server not configured' });
 
   const user = db.prepare('SELECT subscription_until FROM users WHERE id = ?').get(req.user.id);
   const isPlus = user && user.subscription_until && user.subscription_until > Date.now();
-
   let modelsToTry = isPlus ? [...PLUS_MODELS, ...FREE_MODELS] : [...FREE_MODELS];
   if (model) modelsToTry = [model, ...modelsToTry.filter(m => m !== model)];
 
-  let lastError = null;
-  let lastStatus = 500;
-
+  let lastError = null, lastStatus = 500;
   for (const m of modelsToTry) {
     try {
       const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -181,166 +268,29 @@ app.post('/api/chat', auth, chatLimit, async (req, res) => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + OPENROUTER_KEY,
-          'HTTP-Referer': 'https://pongy.chat',
+          'HTTP-Referer': 'https://pongy-ai.devs.surf',
           'X-Title': 'Pongy AI'
         },
         body: JSON.stringify({ model: m, stream: true, messages })
       });
-
-      if (r.status === 401) {
-        const txt = await r.text();
-        return res.status(401).send(txt);
-      }
-
-      if (!r.ok) {
-        lastError = await r.text();
-        lastStatus = r.status;
-        console.log('[Pongy] Model failed: ' + m + ' → ' + r.status);
-        continue;
-      }
-
-      console.log('[Pongy] Using model: ' + m + (isPlus ? ' [Plus]' : ' [Free]'));
+      if (r.status === 401) { const txt = await r.text(); return res.status(401).send(txt); }
+      if (!r.ok) { lastError = await r.text(); lastStatus = r.status; console.log('[Pongy] fail:', m, r.status); continue; }
+      console.log('[Pongy] model:', m, isPlus ? '[Plus]' : '[Free]');
       res.setHeader('Content-Type', 'text/event-stream');
       res.setHeader('Cache-Control', 'no-cache');
       res.setHeader('Connection', 'keep-alive');
       res.setHeader('X-Accel-Buffering', 'no');
-
       const reader = r.body.getReader();
       const dec = new TextDecoder();
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        res.write(dec.decode(value, { stream: true }));
-      }
-      res.end();
-      return;
-    } catch (e) {
-      lastError = e.message;
-      console.log('[Pongy] Model error: ' + m + ' → ' + e.message);
-    }
+      while (true) { const { done, value } = await reader.read(); if (done) break; res.write(dec.decode(value, { stream: true })); }
+      res.end(); return;
+    } catch (e) { lastError = e.message; }
   }
-
   console.error('[Pongy] All models failed');
-  res.status(lastStatus).send(lastError || 'All models currently unavailable');
+  res.status(lastStatus).send(lastError || 'All models unavailable');
 });
 
-// ============ ЮKASSA: СОЗДАНИЕ ПЛАТЕЖА ============
-app.post('/api/pay/create', auth, async (req, res) => {
-  if (!YOOKASSA_SHOP_ID || !YOOKASSA_SECRET) {
-    return res.status(500).json({ error: 'Payment system not configured' });
-  }
-
-  try {
-    const idempotenceKey = uuidv4();
-    const authHeader = 'Basic ' + Buffer.from(YOOKASSA_SHOP_ID + ':' + YOOKASSA_SECRET).toString('base64');
-
-    const body = {
-      amount: { value: PLUS_PRICE, currency: 'RUB' },
-      capture: true,
-      confirmation: {
-        type: 'redirect',
-        return_url: 'https://pongy.chat/?payment=success'
-      },
-      description: 'Pongy Plus — 1 month subscription',
-      metadata: { user_id: String(req.user.id) }
-    };
-
-    const r = await fetch(YOOKASSA_ENDPOINT + '/payments', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Idempotence-Key': idempotenceKey,
-        'Authorization': authHeader
-      },
-      body: JSON.stringify(body)
-    });
-
-    const data = await r.json();
-
-    if (!r.ok) {
-      console.error('[YooKassa] Payment creation failed:', data);
-      return res.status(r.status).json({
-        error: data.description || data.error || 'Payment creation failed'
-      });
-    }
-
-    res.json({
-      ok: true,
-      payment_id: data.id,
-      confirmation_url: data.confirmation.confirmation_url
-    });
-  } catch (e) {
-    console.error('[YooKassa] Error:', e.message);
-    res.status(500).json({ error: 'Payment service unavailable' });
-  }
-});
-
-// ============ ЮKASSA: WEBHOOK ============
-app.post('/api/webhook/yookassa', express.json({ limit: '1mb' }), (req, res) => {
-  try {
-    const event = req.body;
-    res.json({ ok: true });
-
-    if (event.event === 'payment.succeeded') {
-      const payment = event.object;
-      const userId = payment.metadata && payment.metadata.user_id;
-
-      if (!userId) {
-        console.error('[YooKassa] No user_id in payment metadata');
-        return;
-      }
-
-      if (payment.status !== 'succeeded') {
-        console.log('[YooKassa] Payment not succeeded, skipping');
-        return;
-      }
-
-      const now = Date.now();
-      const user = db.prepare('SELECT subscription_until FROM users WHERE id = ?').get(userId);
-
-      if (!user) {
-        console.error('[YooKassa] User not found:', userId);
-        return;
-      }
-
-      const base = Math.max(now, user.subscription_until || 0);
-      const until = base + PLUS_DAYS * 24 * 60 * 60 * 1000;
-
-      db.prepare('UPDATE users SET subscription_until = ? WHERE id = ?').run(until, userId);
-
-      console.log('[YooKassa] ✅ User ' + userId + ' got Plus until ' + new Date(until).toISOString());
-    }
-
-    if (event.event === 'payment.canceled') {
-      console.log('[YooKassa] Payment canceled:', event.object.id);
-    }
-  } catch (e) {
-    console.error('[YooKassa] Webhook error:', e.message);
-  }
-});
-
-// ============ ЮKASSA: СТАТУС ПЛАТЕЖА ============
-app.get('/api/pay/status/:id', auth, async (req, res) => {
-  if (!YOOKASSA_SHOP_ID || !YOOKASSA_SECRET) {
-    return res.status(500).json({ error: 'Payment system not configured' });
-  }
-
-  try {
-    const authHeader = 'Basic ' + Buffer.from(YOOKASSA_SHOP_ID + ':' + YOOKASSA_SECRET).toString('base64');
-    const r = await fetch(YOOKASSA_ENDPOINT + '/payments/' + req.params.id, {
-      headers: { 'Authorization': authHeader }
-    });
-    const data = await r.json();
-    res.json(data);
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-// ============ HEALTH / FRONTEND ============
-app.get('/', (req, res) => {
-  res.sendFile('index.html', { root: '.' });
-});
+app.get('/', (req, res) => res.sendFile('index.html', { root: '.' }));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('✅ Pongy API listening on port ' + PORT));
+app.listen(PORT, () => console.log('✅ Pongy API on :' + PORT));
